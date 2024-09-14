@@ -1,0 +1,45 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Cambia esta rama a la que prefieras para disparar el despliegue
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # Asegúrate de que los permisos de contenido estén configurados para escritura
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3  # Actualizado a v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'  # Actualizado a Node.js 20
+
+      - name: Install tree
+        run: sudo apt-get install tree
+
+      - name: Show directory structure
+        run: tree -L 2  # Limita la profundidad a 2 niveles para mayor claridad
+
+      - name: List files in tfg directory
+        run: ls -la tfg
+
+      - name: Install dependencies and build project
+        run: |
+          cd tfg || exit 1
+          npm install
+          npm run build --if-present
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4  # Actualizado a v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./tfg/build  # Cambia esta ruta según la ubicación de tu carpeta de build
+          publish_branch: gh-pages  # Especifica la rama de destino para GitHub Pages
+          allow_empty_commit: true  # Permite commits vacíos
