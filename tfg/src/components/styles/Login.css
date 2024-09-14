@@ -1,3 +1,4 @@
+/* Estilos generales */
 .login-container {
   position: relative;
   display: flex;
@@ -31,17 +32,15 @@
 }
 
 .logo-container {
-  margin-bottom: 20px; /* Espacio entre el logo y el formulario */
+  margin-bottom: 20px;
 }
 
 .logo-image {
-  width: 140px; /* Ajusta el tamaño según tu preferencia */
-  height: 70px; /* Mantén el tamaño igual para hacer un círculo */
-  object-fit: cover; /* Asegura que la imagen mantenga la proporción en el círculo */
-  object-position: center; /* Centra la imagen dentro del contenedor */
+  width: 140px; /* Tamaño del logo */
+  height: 70px;
+  object-fit: cover;
+  object-position: center;
 }
-
-
 
 .form-group {
   display: flex;
@@ -59,7 +58,7 @@ input {
 }
 
 .login-button {
-  width: 170px; /* Ajusta el ancho del botón */
+  width: 170px;
   padding: 10px;
   background-color: #28a745;
   color: white;
@@ -69,9 +68,49 @@ input {
   cursor: pointer;
   transition: background-color 0.3s ease;
   display: block;
-  margin: 0 auto; /* Centra el botón horizontalmente */
+  margin: 0 auto;
 }
 
 .login-button:hover {
   background-color: #218838;
+}
+
+/* Media queries para dispositivos móviles */
+@media (max-width: 768px) {
+  .login-form {
+    width: 90%; /* Reduce el ancho del formulario */
+    padding: 30px;
+  }
+
+  .logo-image {
+    width: 120px; /* Ajusta el tamaño del logo para pantallas pequeñas */
+    height: 60px;
+  }
+
+  .login-button {
+    width: 150px; /* Ajusta el tamaño del botón en pantallas pequeñas */
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-form {
+    width: 100%; /* Usa todo el ancho disponible */
+    padding: 20px;
+  }
+
+  .logo-image {
+    width: 100px; /* Tamaño más pequeño del logo para móviles */
+    height: 50px;
+  }
+
+  .login-button {
+    width: 130px;
+    padding: 6px;
+  }
+
+  input {
+    font-size: 14px; /* Tamaño de texto más pequeño para inputs */
+    padding: 10px;
+  }
 }
