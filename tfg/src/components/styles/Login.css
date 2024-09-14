@@ -1,3 +1,69 @@
-h2{
-    color: black;
+.login-container {
+  position: relative; /* Necesario para posicionar el pseudo-elemento correctamente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden; /* Para asegurarte de que el pseudo-elemento no desborde el contenedor */
+}
+
+.login-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../images/LoginWallpaper.jpeg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(5px); /* Ajusta el valor del desenfoque según tus necesidades */
+  z-index: -1; /* Coloca el pseudo-elemento detrás del contenido del contenedor */
+}
+
+.login-form {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 40px;
+  width: 400px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+label {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+input {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-sizing: border-box; /* Esto asegura que el padding no afecte al ancho total del input */
+  width: 100%; /* El input ocupa todo el ancho disponible dentro del contenedor */
+}
+
+.login-button {
+  width: 200px; /* Establece un ancho fijo para el botón */
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: block; /* Asegúrate de que el botón no esté alineado horizontalmente */
+  margin: 0 auto; /* Centra el botón horizontalmente */
+}
+
+.login-button:hover {
+  background-color: #218838;
 }
