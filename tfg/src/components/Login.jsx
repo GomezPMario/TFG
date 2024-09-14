@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './styles/Login.css';
+import logo from '../components/images/LogoCAAB.png'; // Asegúrate de ajustar la ruta de la imagen según tu estructura de archivos
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -15,7 +16,9 @@ const Login = () => {
     return (
         <div className="login-container">
             <form className="login-form" onSubmit={handleLogin}>
-                <h2>Iniciar Sesión</h2>
+                <div className="logo-container">
+                    <img src={logo} alt="Logo" className="logo-image" />
+                </div>
                 <div className="form-group">
                     <input
                         type="text"
