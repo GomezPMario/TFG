@@ -1,16 +1,35 @@
 import React, { useState } from 'react';
 import './styles/Login.css';
-import logo from '../components/images/LogoCAAB.png'; // Asegúrate de ajustar la ruta de la imagen según tu estructura de archivos
+import logo from '../components/images/LogoCAAB.png';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+const baseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-    const handleLogin = (e) => {
+    const navigate = useNavigate(); // Hook para redirección
+
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // Aquí puedes agregar la lógica de autenticación
-        console.log('Username:', username);
-        console.log('Password:', password);
+        setError('');
+
+        try {
+            const response = await axios.post(`${baseURL}/api/login`, {
+                username,
+                password
+            });
+
+            if (response.status === 200) {
+                console.log('Login successful');
+                navigate('/consultas'); // Redirige a /consultas
+            }
+        } catch (err) {
+            setError(err.response?.data?.message || 'An error occurred');
+        }
     };
 
     return (
@@ -40,6 +59,7 @@ const Login = () => {
                     />
                 </div>
                 <button type="submit" className="login-button">Iniciar Sesión</button>
+                {error && <div className="error-message">{error}</div>}
             </form>
         </div>
     );
