@@ -10,3 +10,5 @@ CREATE TABLE usuarios (
     alias VARCHAR(50) UNIQUE,
     cuenta_corriente VARCHAR(50)
 );
+
+-- RAILWAY
