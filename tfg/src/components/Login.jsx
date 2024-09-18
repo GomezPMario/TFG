@@ -4,7 +4,7 @@ import logo from '../components/images/LogoCAAB.png';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const baseURL = process.env.REACT_APP_API_BASE_URL || 'https://tfg-sxm4.onrender.com';
+const baseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -18,25 +18,19 @@ const Login = () => {
         setError('');
 
         try {
-            console.log('Attempting login with:', { username, password });
-            const response = await axios.post(`${baseURL}/login`, {
+            const response = await axios.post(`${baseURL}/api/login`, {
                 username,
                 password
             });
-
-            console.log('Response status:', response.status);
-            console.log('Response data:', response.data);
 
             if (response.status === 200) {
                 console.log('Login successful');
                 navigate('/consultas'); // Redirige a /consultas
             }
         } catch (err) {
-            console.error('Login error:', err);
             setError(err.response?.data?.message || 'An error occurred');
         }
     };
-
 
     return (
         <div className="login-container">

@@ -41,8 +41,8 @@ db.connect((err) => {
 
         // Insertar datos
         const insertDataQuery = `
-            INSERT INTO users (username, password, nombre, apellido, domicilio, numero_colegiado, alias) 
-            VALUES ('1234567Q', '12345', 'Mario', 'Gómez', 'Federacion', 224, 'PEÑA');
+            INSERT INTO usuarios (username, password, nombre, apellido, domicilio, numero_colegiado, alias) 
+            VALUES ('73614529Q', '12345', 'Mario', 'Gómez', 'C Juslibol 33 5C', 224, 'PEÑA');
         `;
 
         db.query(insertDataQuery, (err) => {

@@ -23,6 +23,8 @@ const db = mysql.createConnection({
     port: process.env.DB_PORT
 });
 
+
+
 // Verificar la conexión a la base de datos
 db.connect((err) => {
     if (err) {
@@ -30,10 +32,6 @@ db.connect((err) => {
         return;
     }
     console.log('Connected to the MySQL database');
-});
-
-app.get('/', (req, res) => {
-    res.send('Hello World!');
 });
 
 // Ruta de ejemplo para obtener todos los datos de la tabla 'users'
@@ -48,7 +46,7 @@ app.get('/api/users', (req, res) => {
 });
 
 // Ruta para autenticación de usuarios
-app.post('/login', (req, res) => {
+app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     console.log('Received login request:', { username, password });
 
