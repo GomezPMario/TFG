@@ -5,10 +5,10 @@ dotenv.config();
 
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
+    database: process.env.DB_NAME
 });
 
 db.connect((err) => {
@@ -41,8 +41,8 @@ db.connect((err) => {
 
         // Insertar datos
         const insertDataQuery = `
-            INSERT INTO usuarios (username, password, nombre, apellido, domicilio, numero_colegiado, alias) 
-            VALUES ('73614529Q', '12345', 'Mario', 'Gómez', 'C Juslibol 33 5C', 224, 'PEÑA');
+            INSERT INTO users (username, password, nombre, apellido, domicilio, numero_colegiado, alias) 
+            VALUES ('1234567Q', '12345', 'Mario', 'Gómez', 'Federacion', 224, 'PEÑA');
         `;
 
         db.query(insertDataQuery, (err) => {

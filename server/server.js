@@ -1,32 +1,27 @@
-const express = require('express');
 const mysql = require('mysql2');
+const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
-// Cargar variables de entorno desde el archivo .env
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5000; // Puerto del servidor Express
+const port = process.env.PORT || 5000;
 
 app.use(cors({
-    origin: 'https://gomezpmario.github.io/TFG'
+    origin: 'http://localhost:3000' // Asumiendo que React corre en este puerto
 }));
 app.use(express.json());
 
-// Conexión a la base de datos MySQL
-const db = mysql.createConnection({
+const connection = mysql.createConnection({
     host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
+    database: process.env.DB_NAME
 });
 
-
-
-// Verificar la conexión a la base de datos
-db.connect((err) => {
+connection.connect((err) => {
     if (err) {
         console.error('Error connecting to the database:', err);
         return;
@@ -34,10 +29,9 @@ db.connect((err) => {
     console.log('Connected to the MySQL database');
 });
 
-// Ruta de ejemplo para obtener todos los datos de la tabla 'users'
 app.get('/api/users', (req, res) => {
     const sql = 'SELECT * FROM users';
-    db.query(sql, (err, result) => {
+    connection.query(sql, (err, result) => {
         if (err) {
             return res.status(500).send(err);
         }
@@ -45,16 +39,15 @@ app.get('/api/users', (req, res) => {
     });
 });
 
-// Ruta para autenticación de usuarios
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     console.log('Received login request:', { username, password });
 
     const sql = 'SELECT * FROM users WHERE username = ? AND password = ?';
-    db.query(sql, [username, password], (err, result) => {
+    connection.query(sql, [username, password], (err, result) => {
         if (err) {
             console.error('Error querying the database:', err);
-            return res.status(500).json({ message: 'Error querying the database' });
+            return res.status(500).json({ message: 'Error querying the database', error: err.message });
         }
 
         console.log('Query result:', result);
@@ -67,7 +60,6 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-// Iniciar el servidor Express
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
