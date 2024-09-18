@@ -58,7 +58,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd TFG/server || exit 1
+          cd ./server || exit 1
           npm install
 
       - name: Deploy to Render
