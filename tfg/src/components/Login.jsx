@@ -4,7 +4,7 @@ import logo from '../components/images/LogoCAAB.png';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const baseURL = 'https://tfg-sxm4.onrender.com/';
+const baseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -18,7 +18,7 @@ const Login = () => {
         setError('');
 
         try {
-            const response = await axios.post(`${baseURL}/api/login`, {
+            const response = await axios.post(`${baseURL}/login`, {
                 username,
                 password
             });
