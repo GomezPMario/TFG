@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5000; // Puerto del servidor Express
+const port = process.env.PORT || 3000; // Puerto del servidor Express
 
 app.use(cors({
     origin: 'https://gomezpmario.github.io/TFG'
@@ -30,6 +30,10 @@ db.connect((err) => {
         return;
     }
     console.log('Connected to the MySQL database');
+});
+
+app.get('/', (req, res) => {
+    res.send('Hello World!');
 });
 
 // Ruta de ejemplo para obtener todos los datos de la tabla 'users'

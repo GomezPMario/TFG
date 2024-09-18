@@ -18,19 +18,25 @@ const Login = () => {
         setError('');
 
         try {
+            console.log('Attempting login with:', { username, password });
             const response = await axios.post(`${baseURL}/login`, {
                 username,
                 password
             });
+
+            console.log('Response status:', response.status);
+            console.log('Response data:', response.data);
 
             if (response.status === 200) {
                 console.log('Login successful');
                 navigate('/consultas'); // Redirige a /consultas
             }
         } catch (err) {
+            console.error('Login error:', err);
             setError(err.response?.data?.message || 'An error occurred');
         }
     };
+
 
     return (
         <div className="login-container">
