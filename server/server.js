@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000; // Puerto del servidor Express
+const port = process.env.PORT || 5000; // Puerto del servidor Express
 
 app.use(cors({
     origin: 'https://gomezpmario.github.io/TFG'

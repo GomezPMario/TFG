@@ -43,24 +43,3 @@ jobs:
           publish_dir: ./tfg/build  # Cambia esta ruta según la ubicación de tu carpeta de build
           publish_branch: gh-pages  # Especifica la rama de destino para GitHub Pages
           allow_empty_commit: true  # Permite commits vacíos
-
-  deploy_server:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: |
-          cd ./server || exit 1
-          npm install
-
-      - name: Deploy to Render
-        run: |
-          curl -X POST "https://api.render.com/deploy/srv-crlh8qogph6c73e65810?key=${{ secrets.RENDER_DEPLOY_KEY }}"
