@@ -1,33 +1,42 @@
 import React, { useState } from 'react';
 import './styles/Login.css';
 import logo from '../components/images/LogoCAAB.png';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const baseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+const baseURL = 'http://localhost:5000';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const navigate = useNavigate(); // Hook para redirección
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
 
+        console.log('Sending login request:', { username, password });
+
         try {
             const response = await axios.post(`${baseURL}/api/login`, {
                 username,
                 password
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
+
+            console.log('Response:', response);
 
             if (response.status === 200) {
                 console.log('Login successful');
-                navigate('/consultas'); // Redirige a /consultas
+                navigate('/consultas');
             }
         } catch (err) {
+            console.error('Login error:', err);
             setError(err.response?.data?.message || 'An error occurred');
         }
     };
