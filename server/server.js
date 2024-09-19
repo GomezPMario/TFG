@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://gomezpmario.github.io']
+    origin: ['http://localhost:3000', 'https://gomezpmario.github.io/TFG']
 }));
 app.use(express.json());
 
