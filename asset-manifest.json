@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/TFG/static/css/main.6b95df68.css",
-    "main.js": "/TFG/static/js/main.060fd9e3.js",
+    "main.js": "/TFG/static/js/main.40a3b271.js",
     "static/js/453.3c9de2ab.chunk.js": "/TFG/static/js/453.3c9de2ab.chunk.js",
     "static/media/LoginWallpaper.jpeg": "/TFG/static/media/LoginWallpaper.0d429ebd4ce696420d8b.jpeg",
     "static/media/LogoCAAB.png": "/TFG/static/media/LogoCAAB.b98001116c66cf4b3e29.png",
     "index.html": "/TFG/index.html",
     "main.6b95df68.css.map": "/TFG/static/css/main.6b95df68.css.map",
-    "main.060fd9e3.js.map": "/TFG/static/js/main.060fd9e3.js.map",
+    "main.40a3b271.js.map": "/TFG/static/js/main.40a3b271.js.map",
     "453.3c9de2ab.chunk.js.map": "/TFG/static/js/453.3c9de2ab.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.6b95df68.css",
-    "static/js/main.060fd9e3.js"
+    "static/js/main.40a3b271.js"
   ]
 }
