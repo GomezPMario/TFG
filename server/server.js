@@ -8,6 +8,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
+app.options('*', cors());
 app.use(cors({
     origin: ['http://localhost:3000', 'https://gomezpmario.github.io'], // Añade el origen de GitHub Pages
 }));
@@ -39,7 +40,7 @@ app.get('/api/users', (req, res) => {
     });
 });
 
-app.post('/api/login', (req, res) => {
+app.post('/login', (req, res) => {
     const { username, password } = req.body;
     console.log('Received login request:', { username, password });
 
