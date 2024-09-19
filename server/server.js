@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors({
-    origin: 'http://localhost:3000' // Asumiendo que React corre en este puerto
+    origin: ['http://localhost:3000', 'https://gomezpmario.github.io']
 }));
 app.use(express.json());
 
