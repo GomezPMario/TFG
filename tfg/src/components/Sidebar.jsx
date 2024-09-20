@@ -13,40 +13,40 @@ const Sidebar = () => {
 
                 <ul className="list-unstyled components">
                     <li className="active">
-                        <a href="">Perfil</a>
+                        <a href="/consultas">Perfil</a>
                     </li>
                     <li>
-                        <a href="">Mostrar Partidos</a>
+                        <a href="/consultas">Mostrar Partidos</a>
                     </li>
                     <li>
-                        <a href="">Informes</a>
+                        <a href="/consultas">Informes</a>
                     </li>
                     <li>
-                        <a href="">Disponibilidad</a>
+                        <a href="/consultas">Disponibilidad</a>
                     </li>
                     <li>
-                        <a href="">Generar Designación</a>
+                        <a href="/consultas">Generar Designación</a>
                     </li>
                     <li>
-                        <a href="">Árbitros</a>
+                        <a href="/consultas">Árbitros</a>
                     </li>
                     <li>
-                        <a href="">Campos</a>
+                        <a href="/consultas">Campos</a>
                     </li>
                     <li>
-                        <a href="">Categorías</a>
+                        <a href="/consultas">Categorías</a>
                     </li>
                     <li>
-                        <a href="">Equipos</a>
+                        <a href="/consultas">Equipos</a>
                     </li>
                     <li>
-                        <a href="">Tarifas</a>
+                        <a href="/consultas">Tarifas</a>
                     </li>
                     <li>
-                        <a href="">Listado de partidos</a>
+                        <a href="/consultas">Listado de partidos</a>
                     </li>
                     <li>
-                        <a href="">Miscelaneo</a>
+                        <a href="/consultas">Miscelaneo</a>
                     </li>
                 </ul>
             </nav>
