@@ -15,7 +15,7 @@ const Sidebar = () => {
                     <li className="active">
                         <a href="/consultas">Perfil</a>
                     </li>
-                    <li>
+                    {/* <li>
                         <a href="/consultas">Mostrar Partidos</a>
                     </li>
                     <li>
@@ -46,8 +46,8 @@ const Sidebar = () => {
                         <a href="/consultas">Listado de partidos</a>
                     </li>
                     <li>
-                        <a href="/consultas">Miscelaneo</a>
-                    </li>
+                        <a href="/consultas">Misceláneo</a>
+                    </li> */}
                 </ul>
             </nav>
         </div>
