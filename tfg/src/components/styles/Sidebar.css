@@ -55,16 +55,18 @@ html, body {
 
 #sidebar ul.components li {
     margin: 0; /* Elimina márgenes en cada elemento de la lista */
+    display: flex; /* Alinea los elementos hijos en la misma línea */
+    align-items: center; /* Centra verticalmente los elementos */
 }
 
 #sidebar ul li a {
     padding: 10px 15px; /* Ajusta el padding de los enlaces */
     font-size: 1.1em;
-    display: block;
     color: #fff; /* Color de los enlaces */
-    background: #6C80CC; /* Fondo consistente para todos los enlaces */
+    background: transparent; /* Elimina el fondo del enlace para que se vea el del li */
     transition: background 0.3s;
     text-decoration: none; /* Elimina el subrayado */
+    flex: 1; /* Permite que el enlace ocupe el espacio restante */
 }
 
 #sidebar ul li a:hover {

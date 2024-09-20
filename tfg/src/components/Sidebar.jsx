@@ -2,6 +2,7 @@ import React from 'react';
 import './styles/Sidebar.css';
 import LogoCAAB from './images/LogoCAAB.png'; // Importa la imagen
 
+
 const Sidebar = () => {
     return (
         <div className="wrapper">
