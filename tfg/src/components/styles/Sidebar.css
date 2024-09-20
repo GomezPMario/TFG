@@ -14,7 +14,7 @@ html, body {
 #sidebar {
     min-width: 250px;
     max-width: 250px;
-    background: #7386D5;
+    background: #6C80CC; /* Cambia el color normal del sidebar */
     color: #fff;
     transition: all 0.3s;
     height: 100vh; /* Asegura que el sidebar ocupe todo el alto */
@@ -45,7 +45,7 @@ html, body {
 
 #sidebar .sidebar-header {
     padding: 15px; /* Reduce el padding para acercar los enlaces al logo */
-    background: #6d7fcc;
+    background: #6C80CC; /* Color del encabezado */
 }
 
 #sidebar ul.components {
@@ -62,19 +62,19 @@ html, body {
     font-size: 1.1em;
     display: block;
     color: #fff; /* Color de los enlaces */
-    background: #7386D5; /* Fondo consistente para todos los enlaces */
+    background: #6C80CC; /* Fondo consistente para todos los enlaces */
     transition: background 0.3s;
     text-decoration: none; /* Elimina el subrayado */
 }
 
 #sidebar ul li a:hover {
-    background: #6d7fcc; /* Color de fondo al pasar el cursor */
+    background: #7387D5; /* Color de fondo al pasar el cursor */
     color: #fff; /* Mantén el color del texto */
     text-decoration: none; /* Asegura que no haya subrayado al hacer hover */
 }
 
 #sidebar ul li.active > a {
-    background: #6d7fcc;
+    background: #7387D5; /* Color de fondo para el enlace activo */
     color: #fff;
     text-decoration: none; /* Sin subrayado en el enlace activo */
 }
