@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import Login from './components/Login';
-import Sidebar from './components/Sidebar';
 import Consultas from './components/Consultas';
 
 function App() {

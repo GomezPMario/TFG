@@ -12,10 +12,10 @@ const Sidebar = () => {
                 </div>
 
                 <ul className="list-unstyled components">
-                    <li className="active">
+                    <li>
                         <a href="/consultas">Perfil</a>
                     </li>
-                    {/* <li>
+                    <li className="active">
                         <a href="/consultas">Mostrar Partidos</a>
                     </li>
                     <li>
@@ -47,7 +47,7 @@ const Sidebar = () => {
                     </li>
                     <li>
                         <a href="/consultas">Misceláneo</a>
-                    </li> */}
+                    </li>
                 </ul>
             </nav>
         </div>
