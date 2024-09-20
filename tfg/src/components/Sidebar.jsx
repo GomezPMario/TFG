@@ -13,40 +13,40 @@ const Sidebar = () => {
 
                 <ul className="list-unstyled components">
                     <li className="active">
-                        <a href="#">Perfil</a>
+                        <a href="">Perfil</a>
                     </li>
                     <li>
-                        <a href="#">Mostrar Partidos</a>
+                        <a href="">Mostrar Partidos</a>
                     </li>
                     <li>
-                        <a href="#">Informes</a>
+                        <a href="">Informes</a>
                     </li>
                     <li>
-                        <a href="#">Disponibilidad</a>
+                        <a href="">Disponibilidad</a>
                     </li>
                     <li>
-                        <a href="#">Generar Designación</a>
+                        <a href="">Generar Designación</a>
                     </li>
                     <li>
-                        <a href="#">Árbitros</a>
+                        <a href="">Árbitros</a>
                     </li>
                     <li>
-                        <a href="#">Campos</a>
+                        <a href="">Campos</a>
                     </li>
                     <li>
-                        <a href="#">Categorías</a>
+                        <a href="">Categorías</a>
                     </li>
                     <li>
-                        <a href="#">Equipos</a>
+                        <a href="">Equipos</a>
                     </li>
                     <li>
-                        <a href="#">Tarifas</a>
+                        <a href="">Tarifas</a>
                     </li>
                     <li>
-                        <a href="#">Listado de partidos</a>
+                        <a href="">Listado de partidos</a>
                     </li>
                     <li>
-                        <a href="#">Miscelaneo</a>
+                        <a href="">Miscelaneo</a>
                     </li>
                 </ul>
             </nav>
