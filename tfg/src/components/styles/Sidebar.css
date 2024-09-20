@@ -1,0 +1,108 @@
+html, body {
+    height: 100%; /* Asegura que el html y body ocupen toda la pantalla */
+    margin: 0;
+    padding: 0;
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    height: 100vh; /* Ocupa todo el alto de la pantalla */
+}
+
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background: #7386D5;
+    color: #fff;
+    transition: all 0.3s;
+    height: 100vh; /* Asegura que el sidebar ocupe todo el alto */
+    overflow-y: scroll; /* Permite el scroll sin mostrar la barra */
+}
+
+/* Oculta la barra de desplazamiento */
+#sidebar::-webkit-scrollbar {
+    width: 0; /* Oculta la barra de scroll en navegadores WebKit (Chrome, Safari) */
+    background: transparent; /* Fondo transparente */
+}
+
+#sidebar::-moz-scrollbar {
+    width: 0; /* Oculta la barra de scroll en Firefox */
+    background: transparent; /* Fondo transparente */
+}
+
+#sidebar.active {
+    margin-left: -250px;
+}
+
+.sidebar-logo {
+    width: 150px; /* Ajusta el tamaño de la imagen */
+    height: auto;
+    display: block;
+    margin: 10px auto; /* Reduce el margen para acercar los enlaces al logo */
+}
+
+#sidebar .sidebar-header {
+    padding: 15px; /* Reduce el padding para acercar los enlaces al logo */
+    background: #6d7fcc;
+}
+
+#sidebar ul.components {
+    padding: 0; /* Elimina el padding extra */
+    margin: 0; /* Elimina el margen */
+}
+
+#sidebar ul.components li {
+    margin: 0; /* Elimina márgenes en cada elemento de la lista */
+}
+
+#sidebar ul li a {
+    padding: 10px 15px; /* Ajusta el padding de los enlaces */
+    font-size: 1.1em;
+    display: block;
+    color: #fff; /* Color de los enlaces */
+    background: #7386D5; /* Fondo consistente para todos los enlaces */
+    transition: background 0.3s;
+    text-decoration: none; /* Elimina el subrayado */
+}
+
+#sidebar ul li a:hover {
+    background: #6d7fcc; /* Color de fondo al pasar el cursor */
+    color: #fff; /* Mantén el color del texto */
+    text-decoration: none; /* Asegura que no haya subrayado al hacer hover */
+}
+
+#sidebar ul li.active > a {
+    background: #6d7fcc;
+    color: #fff;
+    text-decoration: none; /* Sin subrayado en el enlace activo */
+}
+
+ul.CTAs {
+    padding: 20px;
+}
+
+ul.CTAs a {
+    text-align: center;
+    font-size: 0.9em !important;
+    display: block;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+#content {
+    width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+}

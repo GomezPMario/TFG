@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const baseURL = 'https://tfg-ojja.onrender.com';
 
-const Login = () => {
+const Login = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -16,8 +16,6 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
-
-        console.log('Sending login request:', { username, password });
 
         try {
             const response = await axios.post(`${baseURL}/login`, {
@@ -29,14 +27,12 @@ const Login = () => {
                 }
             });
 
-            console.log('Response:', response);
-
             if (response.status === 200) {
-                console.log('Login successful');
+                // Llamamos a onLogin cuando el login es exitoso
+                onLogin();
                 navigate('/consultas');
             }
         } catch (err) {
-            console.error('Login error:', err);
             setError(err.response?.data?.message || 'An error occurred');
         }
     };

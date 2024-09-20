@@ -1,9 +1,13 @@
 import React from 'react';
+import Sidebar from './Sidebar';
 
 const Consultas = () => {
     return (
-        <div>
-            <h2>testing</h2>
+        <div style={{ display: 'flex' }}>
+            <Sidebar />
+            <div>
+                <h2>testing</h2>
+            </div>
         </div>
     );
 };
