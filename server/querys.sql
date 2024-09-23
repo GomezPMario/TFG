@@ -52,5 +52,5 @@ VALUES
 ('arbitro1', 'password1', 'Juan', 'Pérez', 'Calle 123', 'cuenta1', 'arbitro1_alias', 1001, 1, 1),
 ('luis', 'luis', 'Luis Miguel', 'Lázaro', 'Federacion', 'cuenta1', 'luis', 1001, 1, 1),
 ('arbitro2', 'password2', 'Pedro', 'Gómez', 'Avenida 456', 'cuenta2', 'arbitro2_alias', 1002, 2, 3),
+('mario', 'mario', 'Mario', 'Gómez', 'Federación', 'cuenta3', 'arbitro3_alias', 1003, 3, 2),
 ('arbitro3', 'password3', 'Luis', 'Ramírez', 'Plaza 789', 'cuenta3', 'arbitro3_alias', 1003, 3, 2); 
-
