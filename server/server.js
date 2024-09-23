@@ -30,7 +30,7 @@ connection.connect((err) => {
     console.log('Connected to the MySQL database');
 });
 
-app.get('/login', (req, res) => {
+app.get('/allarbitros', (req, res) => {
     const sql = 'SELECT * FROM arbitros';
     connection.query(sql, (err, result) => {
         if (err) {
