@@ -21,6 +21,8 @@ db.connect((err) => {
     console.log('Connected to the MySQL database');
 });
 
+db.end();
+
 // Exportar la conexión para poder usarla en otros archivos si es necesario
 module.exports = db;
 
