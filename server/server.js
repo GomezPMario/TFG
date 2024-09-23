@@ -52,27 +52,46 @@ app.get('/allarbitros', (req, res) => {
     });
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    console.log('Received login request:', { username, password });
+    console.log('Login attempt:', username, password); // Añade esta línea
 
-    const sql = 'SELECT * FROM arbitros WHERE username = ? AND password = ?';
-    console.log('Running SQL:', sql, [username, password]); // Log para mostrar la consulta y los valores que se pasan
-    connection.query(sql, [username, password], (err, result) => {
-        if (err) {
-            console.error('Error querying the database:', err);
-            return res.status(500).json({ message: 'Error querying the database', error: err.message });
-        }
+    try {
+        const [rows] = await db.query(
+            'SELECT username, password, nombre, apellido, domicilio, cuenta, alias, numero_colegiado, permiso, categoria_id FROM arbitros WHERE username = ? AND password = ?',
+            [username, password]
+        );
 
-        console.log('Query result:', result); // Log para mostrar el resultado de la consulta
+        console.log('Query result:', rows); // Añade esta línea
 
-        if (result.length > 0) {
-            res.status(200).json({ message: 'Login successful' });
+        if (rows.length > 0) {
+            const arbitro = rows[0];
+            res.json({
+                success: true,
+                message: 'Inicio de sesión exitoso',
+                arbitro: {
+                    username: arbitro.username,
+                    password: arbitro.password,
+                    nombre: arbitro.nombre,
+                    apellido: arbitro.apellido,
+                    domicilio: arbitro.domicilio,
+                    cuenta: arbitro.cuenta,
+                    alias: arbitro.alias,
+                    numero_colegiado: arbitro.numero_colegiado,
+                    permiso: arbitro.permiso,
+                    categoria_id: arbitro.categoria_id
+                }
+            });
         } else {
-            res.status(401).json({ message: 'Invalid username or password' });
+            res.status(401).json({ success: false, message: 'Usuario o contraseña incorrectos' });
         }
-    });
+    } catch (error) {
+        console.error(error); // Asegúrate de ver el error en la consola
+        res.status(500).json({ success: false, message: 'Error del servidor' });
+    }
 });
+
+
 
 // Escuchando en el puerto configurado
 app.listen(port, () => {

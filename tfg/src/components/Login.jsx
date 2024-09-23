@@ -27,16 +27,27 @@ const Login = ({ onLogin }) => {
                 }
             });
 
-            if (response.status === 200) {
+            if (response.status === 200 && response.data.success) {
                 // Almacena el token en localStorage
                 localStorage.setItem('token', response.data.token); // Asegúrate de que la respuesta contenga el token
+
+                // Verifica que la respuesta tenga el arbitro
+                if (response.data.arbitro) {
+                    localStorage.setItem('permiso', response.data.arbitro.permiso);
+                } else {
+                    setError('Error en la respuesta del servidor');
+                }
+
                 onLogin();
                 navigate('/consultas');
             }
         } catch (err) {
+            console.error('Error:', err); // Para depurar
             setError(err.response?.data?.message || 'An error occurred');
         }
     };
+
+
 
 
     return (
@@ -65,8 +76,8 @@ const Login = ({ onLogin }) => {
                         required
                     />
                 </div>
-                <button type="submit" className="login-button">Iniciar Sesión</button>
                 {error && <div className="error-message">{error}</div>}
+                <button type="submit" className="login-button">Iniciar Sesión</button>
             </form>
         </div>
     );
