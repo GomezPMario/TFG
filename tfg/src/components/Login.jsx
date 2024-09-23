@@ -28,7 +28,8 @@ const Login = ({ onLogin }) => {
             });
 
             if (response.status === 200) {
-                // Llamamos a onLogin cuando el login es exitoso
+                // Almacena el token en localStorage
+                localStorage.setItem('token', response.data.token); // Asegúrate de que la respuesta contenga el token
                 onLogin();
                 navigate('/consultas');
             }
@@ -36,6 +37,7 @@ const Login = ({ onLogin }) => {
             setError(err.response?.data?.message || 'An error occurred');
         }
     };
+
 
     return (
         <div className="login-container">
