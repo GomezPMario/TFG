@@ -23,5 +23,7 @@ db.connect((err) => {
     // No hacemos nada más aquí, solo se conecta a la base de datos
 });
 
+db.end();
+
 // Exportar la conexión para poder usarla en otros archivos si es necesario
 module.exports = db;
