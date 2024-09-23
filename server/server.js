@@ -1,8 +1,8 @@
 const express = require('express');
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise'); // Asegúrate de usar mysql2/promise
 const cors = require('cors');
 const dotenv = require('dotenv');
-const fs = require('fs');
+const db = require('./db_setup');
 
 dotenv.config();
 
@@ -21,48 +21,27 @@ app.use(cors({
 }));
 app.use(express.json());
 
-const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-});
-
-// Intento de conexión a la base de datos
-connection.connect((err) => {
-    if (err) {
-        console.error('Error connecting to the database:', err);
-        return;
-    }
-    console.log('Connected to the MySQL database');
-});
-
-
-app.get('/allarbitros', (req, res) => {
+// Endpoint para obtener todos los árbitros
+app.get('/allarbitros', async (req, res) => {
     const sql = 'SELECT * FROM arbitros';
-    console.log('Running SQL:', sql); // Log para mostrar la consulta que se va a ejecutar
-    connection.query(sql, (err, result) => {
-        if (err) {
-            console.error('Error querying the database:', err);
-            return res.status(500).send(err);
-        }
-        console.log('Query result:', result); // Log para mostrar el resultado de la consulta
+    try {
+        const [result] = await db.query(sql); // Usa db aquí
         res.json(result);
-    });
+    } catch (err) {
+        console.error('Error querying the database:', err);
+        return res.status(500).send(err);
+    }
 });
 
+// Endpoint para iniciar sesión
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    console.log('Login attempt:', username, password); // Añade esta línea
 
     try {
         const [rows] = await db.query(
             'SELECT username, password, nombre, apellido, domicilio, cuenta, alias, numero_colegiado, permiso, categoria_id FROM arbitros WHERE username = ? AND password = ?',
             [username, password]
         );
-
-        console.log('Query result:', rows); // Añade esta línea
 
         if (rows.length > 0) {
             const arbitro = rows[0];
@@ -86,12 +65,10 @@ app.post('/login', async (req, res) => {
             res.status(401).json({ success: false, message: 'Usuario o contraseña incorrectos' });
         }
     } catch (error) {
-        console.error(error); // Asegúrate de ver el error en la consola
+        console.error(error);
         res.status(500).json({ success: false, message: 'Error del servidor' });
     }
 });
-
-
 
 // Escuchando en el puerto configurado
 app.listen(port, () => {
