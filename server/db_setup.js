@@ -1,7 +1,8 @@
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
 
-// Cargar las variables de entorno desde el archivo .env
+// Cargar las variables de entorno desde el archivo .env en el directorio 'server'
+dotenv.config({ path: './server/.env' });
 dotenv.config();
 
 // Crear la conexión con la base de datos utilizando las variables de entorno
