@@ -6,6 +6,7 @@ import LogoCAAB from './images/LogoCAAB.png'; // Importa la imagen
 // Iconos
 import { FaUserGear } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
+import { GiPriceTag } from "react-icons/gi";
 import { IoDocumentsOutline } from "react-icons/io5";
 import { IoMdAlarm } from "react-icons/io";
 import { IoCloudUploadOutline } from "react-icons/io5";
@@ -41,6 +42,9 @@ const Sidebar = ({ onLogout }) => {
                     </li>
                     <li className="active">
                         <a href="/consultas"><FaEye />Mostrar Partidos</a>
+                    </li>
+                    <li>
+                        <a href="/consultas"><GiPriceTag />Mostrar Nóminas</a>
                     </li>
                     <li>
                         <a href="/consultas"><IoDocumentsOutline />Informes</a>

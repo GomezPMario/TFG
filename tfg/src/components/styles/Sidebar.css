@@ -11,8 +11,7 @@ html, body {
 }
 
 #sidebar {
-    min-width: 280px;
-    max-width: 280px;
+    width: 280px;
     background: #6C80CC; /* Cambia el color normal del sidebar */
     color: #fff;
     height: 100vh; /* Asegura que el sidebar ocupe todo el alto */
@@ -47,20 +46,19 @@ html, body {
 
 #sidebar ul li {
     margin: 0; /* Elimina márgenes en cada elemento de la lista */
-    padding-left: 20px; /* Espacio adicional a la izquierda */
-    padding-right: 15px; /* Opcional: espaciado a la derecha */
+    padding: 0;
 }
 
 #sidebar ul li a {
     display: flex; /* Alinea el icono y el texto en una línea */
     align-items: center; /* Centra verticalmente los elementos */
-    padding: 10px; /* Padding vertical y horizontal */
+    padding: 12px 30px; /* Padding vertical y horizontal */
     font-size: 1.1em;
     color: #fff;
     background: transparent;
     transition: background 0.3s;
     text-decoration: none;
-    width: 100%; /* Ocupa el 100% del li */
+    width: calc(100% - 60px);
 }
 
 /* Espacio entre el icono y el texto */
