@@ -35,7 +35,15 @@ connection.connect((err) => {
         return;
     }
     console.log('Connected to the MySQL database');
+    connection.query('SELECT DATABASE()', (err, results) => {
+        if (err) {
+            console.error('Error fetching current database:', err);
+            return;
+        }
+        console.log('Current database:', results[0]['DATABASE()']);
+    });
 });
+
 
 app.get('/allarbitros', (req, res) => {
     const sql = 'SELECT * FROM arbitros';
