@@ -20,10 +20,20 @@ db.connect((err) => {
         return;
     }
     console.log('Connected to the MySQL database');
-    // No hacemos nada más aquí, solo se conecta a la base de datos
-});
 
-db.end();
+    // Seleccionar la base de datos 'defaultdb'
+    db.query('USE defaultdb', (err) => {
+        if (err) {
+            console.error('Error selecting database:', err);
+        } else {
+            console.log('Database selected: defaultdb');
+        }
+
+        // Cerrar la conexión después de seleccionar la base de datos
+        db.end();
+    });
+});
 
 // Exportar la conexión para poder usarla en otros archivos si es necesario
 module.exports = db;
+
