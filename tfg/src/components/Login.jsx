@@ -4,8 +4,8 @@ import logo from '../components/images/LogoCAAB.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const baseURL = 'https://tfg-ojja.onrender.com';
-// const baseURL = 'http://localhost:5000';
+// const baseURL = 'https://tfg-ojja.onrender.com';
+const baseURL = 'http://localhost:5000';
 
 const Login = ({ onLogin }) => {
     const [username, setUsername] = useState('');
@@ -29,8 +29,10 @@ const Login = ({ onLogin }) => {
             });
 
             if (response.status === 200 && response.data.success) {
-                // Almacena el token en localStorage
-                localStorage.setItem('token', response.data.token); // Asegúrate de que la respuesta contenga el token
+                const arbitro = response.data.arbitro;
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('arbitro', JSON.stringify(arbitro));
+                console.log(arbitro);
 
                 // Verifica que la respuesta tenga el arbitro
                 if (response.data.arbitro) {

@@ -1,0 +1,18 @@
+.perfil-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.perfil-container ul {
+    list-style: none;
+    padding: 0;
+}
+
+.perfil-container li {
+    margin: 10px 0;
+}
+
+.perfil-container strong {
+    color: #333;
+}
