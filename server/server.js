@@ -57,13 +57,15 @@ app.post('/login', async (req, res) => {
                     nombre: arbitro.nombre,
                     apellido: arbitro.apellido,
                     domicilio: arbitro.domicilio,
+                    telefono: arbitro.telefono,
+                    email: arbitro.email,
                     cuenta: arbitro.cuenta,
                     alias: arbitro.alias,
                     numero_colegiado: arbitro.numero_colegiado,
                     permiso: arbitro.permiso,
                     categoria_id: arbitro.categoria_id,
-                    categoria: arbitro.categoria,        // Nueva categoría
-                    subcategoria: arbitro.subcategoria   // Nueva subcategoría
+                    categoria: arbitro.categoria,        
+                    subcategoria: arbitro.subcategoria
                 }
             });
         } else {
