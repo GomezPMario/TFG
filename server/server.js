@@ -39,7 +39,10 @@ app.post('/login', async (req, res) => {
 
     try {
         const [rows] = await db.query(
-            'SELECT * FROM arbitros WHERE username = ? AND password = ?',
+            `SELECT arbitros.*, escala.categoria, escala.subcategoria 
+            FROM arbitros 
+            JOIN escala ON arbitros.categoria_id = escala.id 
+            WHERE username = ? AND password = ?`,
             [username, password]
         );
 
@@ -58,7 +61,9 @@ app.post('/login', async (req, res) => {
                     alias: arbitro.alias,
                     numero_colegiado: arbitro.numero_colegiado,
                     permiso: arbitro.permiso,
-                    categoria_id: arbitro.categoria_id
+                    categoria_id: arbitro.categoria_id,
+                    categoria: arbitro.categoria,        // Nueva categoría
+                    subcategoria: arbitro.subcategoria   // Nueva subcategoría
                 }
             });
         } else {
@@ -69,6 +74,7 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error del servidor' });
     }
 });
+
 
 // Escuchando en el puerto configurado
 app.listen(port, () => {
