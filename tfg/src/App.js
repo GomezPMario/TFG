@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import Login from './components/Login';
@@ -18,25 +18,40 @@ import Partidos from './components/Partidos';
 import Miscelaneo from './components/Miscelaneo';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsAuthenticated(!!token); // Si hay token, se considera autenticado
-  }, []);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    // Verifica si hay un token en localStorage
+    return localStorage.getItem('token') ? true : false;
+  });
 
   const handleLogin = () => {
     setIsAuthenticated(true);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('token'); // Elimina el token
     setIsAuthenticated(false);
   };
 
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem('token'); // Elimina el token al cerrar la pestaña
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
   return (
     <Router>
-      {isAuthenticated ? (
+      {!isAuthenticated ? (
+        <Routes>
+          <Route path="/" element={<Login onLogin={handleLogin} />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      ) : (
         <>
           <Sidebar onLogout={handleLogout} />
           <Routes>
@@ -56,11 +71,6 @@ function App() {
             <Route path="*" element={<Navigate to="/consultas" />} />
           </Routes>
         </>
-      ) : (
-        <Routes>
-          <Route path="/" element={<Login onLogin={handleLogin} />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
       )}
     </Router>
   );

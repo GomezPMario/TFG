@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom'; // Importa Link
+import { useNavigate, Link, useLocation } from 'react-router-dom'; // Importa useLocation
 import './styles/Sidebar.css';
 import LogoCAAB from './images/LogoCAAB.png';
 
@@ -21,6 +21,7 @@ import { BsMotherboard } from "react-icons/bs";
 const Sidebar = ({ onLogout }) => {
     const [permiso, setPermiso] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation(); // Obtiene la ubicación actual
 
     useEffect(() => {
         const userPermiso = localStorage.getItem('permiso');
@@ -42,46 +43,46 @@ const Sidebar = ({ onLogout }) => {
                 </div>
 
                 <ul className="list-unstyled components">
-                    <li>
-                        <Link to="/perfil"><FaUserGear />Perfil</Link> {/* Cambié href a Link */}
+                    <li className={location.pathname === '/perfil' ? 'active' : ''}>
+                        <Link to="/perfil"><FaUserGear />Perfil</Link>
                     </li>
-                    <li className="active">
-                        <Link to="/consultas"><FaEye />Mostrar Partidos</Link> {/* Cambié href a Link */}
+                    <li className={location.pathname === '/consultas' ? 'active' : ''}>
+                        <Link to="/consultas"><FaEye />Mostrar Partidos</Link>
                     </li>
-                    <li>
-                        <Link to="/nominas"><GiPriceTag />Mostrar Nóminas</Link> {/* Cambié href a Link */}
+                    <li className={location.pathname === '/nominas' ? 'active' : ''}>
+                        <Link to="/nominas"><GiPriceTag />Mostrar Nóminas</Link>
                     </li>
-                    <li>
-                        <Link to="/informes"><IoDocumentsOutline />Informes</Link> {/* Cambié href a Link */}
+                    <li className={location.pathname === '/informes' ? 'active' : ''}>
+                        <Link to="/informes"><IoDocumentsOutline />Informes</Link>
                     </li>
-                    <li>
-                        <Link to="/disponibilidad"><IoMdAlarm />Disponibilidad</Link> {/* Cambié href a Link */}
+                    <li className={location.pathname === '/disponibilidad' ? 'active' : ''}>
+                        <Link to="/disponibilidad"><IoMdAlarm />Disponibilidad</Link>
                     </li>
 
                     {permiso === '1' && (
                         <>
-                            <li>
+                            <li className={location.pathname === '/designacion' ? 'active' : ''}>
                                 <Link to="/designacion"><IoCloudUploadOutline />Generar Designación</Link>
                             </li>
-                            <li>
+                            <li className={location.pathname === '/arbitros' ? 'active' : ''}>
                                 <Link to="/arbitros"><GiWhistle />Árbitros</Link>
                             </li>
-                            <li>
+                            <li className={location.pathname === '/campos' ? 'active' : ''}>
                                 <Link to="/campos"><PiCourtBasketballDuotone />Campos</Link>
                             </li>
-                            <li>
+                            <li className={location.pathname === '/categorias' ? 'active' : ''}>
                                 <Link to="/categorias"><GiStairsGoal />Categorías</Link>
                             </li>
-                            <li>
+                            <li className={location.pathname === '/equipos' ? 'active' : ''}>
                                 <Link to="/equipos"><RiTeamLine />Equipos</Link>
                             </li>
-                            <li>
+                            <li className={location.pathname === '/tarifas' ? 'active' : ''}>
                                 <Link to="/tarifas"><GiMoneyStack />Tarifas</Link>
                             </li>
-                            <li>
+                            <li className={location.pathname === '/partidos' ? 'active' : ''}>
                                 <Link to="/partidos"><PiRankingDuotone />Listado de partidos</Link>
                             </li>
-                            <li>
+                            <li className={location.pathname === '/miscelaneo' ? 'active' : ''}>
                                 <Link to="/miscelaneo"><BsMotherboard />Misceláneo</Link>
                             </li>
                         </>

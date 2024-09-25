@@ -39,7 +39,7 @@ app.post('/login', async (req, res) => {
 
     try {
         const [rows] = await db.query(
-            'SELECT username, password, nombre, apellido, domicilio, cuenta, alias, numero_colegiado, permiso, categoria_id FROM arbitros WHERE username = ? AND password = ?',
+            'SELECT * FROM arbitros WHERE username = ? AND password = ?',
             [username, password]
         );
 
