@@ -52,25 +52,27 @@ function App() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       ) : (
-        <>
+        <div className="app-container"> {/* Contenedor principal con flexbox */}
           <Sidebar onLogout={handleLogout} />
-          <Routes>
-            <Route path="/consultas" element={<Consultas />} />
-            <Route path="/perfil" element={<Perfil />} />
-            <Route path="/nominas" element={<Nominas />} />
-            <Route path="/informes" element={<Informes />} />
-            <Route path="/disponibilidad" element={<Disponibilidad />} />
-            <Route path="/designacion" element={<Designacion />} />
-            <Route path="/arbitros" element={<Arbitros />} />
-            <Route path="/campos" element={<Campos />} />
-            <Route path="/categorias" element={<Categorias />} />
-            <Route path="/equipos" element={<Equipos />} />
-            <Route path="/tarifas" element={<Tarifas />} />
-            <Route path="/partidos" element={<Partidos />} />
-            <Route path="/miscelaneo" element={<Miscelaneo />} />
-            <Route path="*" element={<Navigate to="/consultas" />} />
-          </Routes>
-        </>
+          <div className="content"> {/* Contenedor del contenido de las rutas */}
+            <Routes>
+              <Route path="/consultas" element={<Consultas />} />
+              <Route path="/perfil" element={<Perfil />} />
+              <Route path="/nominas" element={<Nominas />} />
+              <Route path="/informes" element={<Informes />} />
+              <Route path="/disponibilidad" element={<Disponibilidad />} />
+              <Route path="/designacion" element={<Designacion />} />
+              <Route path="/arbitros" element={<Arbitros />} />
+              <Route path="/campos" element={<Campos />} />
+              <Route path="/categorias" element={<Categorias />} />
+              <Route path="/equipos" element={<Equipos />} />
+              <Route path="/tarifas" element={<Tarifas />} />
+              <Route path="/partidos" element={<Partidos />} />
+              <Route path="/miscelaneo" element={<Miscelaneo />} />
+              <Route path="*" element={<Navigate to="/consultas" />} />
+            </Routes>
+          </div>
+        </div>
       )}
     </Router>
   );

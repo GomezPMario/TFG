@@ -2,6 +2,24 @@
   font-family: 'Poppins', sans-serif;
 }
 
+.app-container {
+  display: flex;
+  height: 100vh; /* Ocupará todo el alto de la ventana */
+}
+
+.sidebar {
+  width: 280px; /* Ancho fijo para el Sidebar */
+  height: 100vh; /* Ocupará todo el alto */
+  background-color: #6C80CC; /* Color de fondo del Sidebar */
+}
+
+.content {
+  flex-grow: 1; /* Ocupa el resto del espacio disponible */
+  padding: 20px; /* Espacio interno para el contenido */
+  background-color: #fff; /* Fondo blanco para el contenido principal */
+  overflow-y: auto; /* Permitir scroll si el contenido es largo */
+}
+
 .App {
   text-align: center;
 }
