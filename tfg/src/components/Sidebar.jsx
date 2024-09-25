@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // Importa Link
 import './styles/Sidebar.css';
-import LogoCAAB from './images/LogoCAAB.png'; // Importa la imagen
+import LogoCAAB from './images/LogoCAAB.png';
 
 // Iconos
 import { FaUserGear } from "react-icons/fa6";
@@ -19,10 +19,9 @@ import { PiRankingDuotone } from "react-icons/pi";
 import { BsMotherboard } from "react-icons/bs";
 
 const Sidebar = ({ onLogout }) => {
-    const [permiso, setPermiso] = useState(null); // Estado para el permiso del árbitro
+    const [permiso, setPermiso] = useState(null);
     const navigate = useNavigate();
 
-    // Obtener el permiso del árbitro desde localStorage
     useEffect(() => {
         const userPermiso = localStorage.getItem('permiso');
         setPermiso(userPermiso);
@@ -44,47 +43,46 @@ const Sidebar = ({ onLogout }) => {
 
                 <ul className="list-unstyled components">
                     <li>
-                        <a href="/consultas"><FaUserGear />Perfil</a>
+                        <Link to="/perfil"><FaUserGear />Perfil</Link> {/* Cambié href a Link */}
                     </li>
                     <li className="active">
-                        <a href="/consultas"><FaEye />Mostrar Partidos</a>
+                        <Link to="/consultas"><FaEye />Mostrar Partidos</Link> {/* Cambié href a Link */}
                     </li>
                     <li>
-                        <a href="/consultas"><GiPriceTag />Mostrar Nóminas</a>
+                        <Link to="/nominas"><GiPriceTag />Mostrar Nóminas</Link> {/* Cambié href a Link */}
                     </li>
                     <li>
-                        <a href="/consultas"><IoDocumentsOutline />Informes</a>
+                        <Link to="/informes"><IoDocumentsOutline />Informes</Link> {/* Cambié href a Link */}
                     </li>
                     <li>
-                        <a href="/consultas"><IoMdAlarm />Disponibilidad</a>
+                        <Link to="/disponibilidad"><IoMdAlarm />Disponibilidad</Link> {/* Cambié href a Link */}
                     </li>
 
-                    {/* Solo visible para árbitros con permiso 1 */}
                     {permiso === '1' && (
                         <>
                             <li>
-                                <a href="/consultas"><IoCloudUploadOutline />Generar Designación</a>
+                                <Link to="/designacion"><IoCloudUploadOutline />Generar Designación</Link>
                             </li>
                             <li>
-                                <a href="/consultas"><GiWhistle />Árbitros</a>
+                                <Link to="/arbitros"><GiWhistle />Árbitros</Link>
                             </li>
                             <li>
-                                <a href="/consultas"><PiCourtBasketballDuotone />Campos</a>
+                                <Link to="/campos"><PiCourtBasketballDuotone />Campos</Link>
                             </li>
                             <li>
-                                <a href="/consultas"><GiStairsGoal />Categorías</a>
+                                <Link to="/categorias"><GiStairsGoal />Categorías</Link>
                             </li>
                             <li>
-                                <a href="/consultas"><RiTeamLine />Equipos</a>
+                                <Link to="/equipos"><RiTeamLine />Equipos</Link>
                             </li>
                             <li>
-                                <a href="/consultas"><GiMoneyStack />Tarifas</a>
+                                <Link to="/tarifas"><GiMoneyStack />Tarifas</Link>
                             </li>
                             <li>
-                                <a href="/consultas"><PiRankingDuotone />Listado de partidos</a>
+                                <Link to="/partidos"><PiRankingDuotone />Listado de partidos</Link>
                             </li>
                             <li>
-                                <a href="/consultas"><BsMotherboard />Misceláneo</a>
+                                <Link to="/miscelaneo"><BsMotherboard />Misceláneo</Link>
                             </li>
                         </>
                     )}

@@ -1,10 +1,8 @@
 import React from 'react';
-import Sidebar from './Sidebar';
 
-const Consultas = ({ onLogout }) => {
+const Consultas = () => {
     return (
-        <div style={{ display: 'flex' }}>
-            <Sidebar onLogout={onLogout} />
+        <div>
             <div>
                 <h2>testing</h2>
             </div>
