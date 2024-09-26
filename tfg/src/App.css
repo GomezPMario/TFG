@@ -4,7 +4,7 @@
 
 .app-container {
   display: flex;
-  height: 100vh; /* Ocupará todo el alto de la ventana */
+  height: 100vh; /* Alto de la ventana */
 }
 
 .sidebar {
