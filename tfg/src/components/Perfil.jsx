@@ -41,7 +41,13 @@ const Perfil = () => {
                     </div>
                     <div className="perfil-column">
                         <ul>
-                            <li><FaTag className="icon" /> <strong>Permiso:</strong> {arbitro.permiso}</li>
+                            <li>
+                                <FaTag className="icon" />
+                                <strong>Permiso:</strong>
+                                {arbitro.permiso === '1' && 'Admin'}
+                                {arbitro.permiso === '2' && 'Técnico'}
+                                {arbitro.permiso === '3' && 'Árbitro - Oficial'}
+                            </li>
                             <li><FaTag className="icon" /> <strong>Categoría:</strong> {arbitro.categoria || 'N/A'} - {arbitro.subcategoria || 'N/A'}</li>
                         </ul>
                     </div>
