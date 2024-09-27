@@ -1,52 +1,55 @@
 const express = require('express');
-const db = require('./db_setup'); // Asegúrate de que la conexión a la base de datos está bien configurada
 const router = express.Router();
+const pool = require('./db_setup'); // Asegúrate de tener la conexión a la base de datos
 
-// Endpoint para actualizar el perfil del árbitro
+// Función para obtener el ID de la categoría
+// Función para obtener el ID de la categoría
+const obtenerCategoriaId = async (categoria, subcategoria) => {
+    const [rows] = await pool.query(
+        'SELECT id FROM escala WHERE categoria = ? AND subcategoria = ?',
+        [categoria, subcategoria]
+    );
+    return rows.length > 0 ? rows[0].id : null;
+};
+
+// Ruta para actualizar el perfil
 router.put('/updatePerfil/:id', async (req, res) => {
-    const { id } = req.params; // Obtener el ID del árbitro de la URL
-    const { nombre, apellido, domicilio, telefono, email, cuenta, username, password, permiso, categoria, subcategoria, numeroColegiado } = req.body; // Campos que se pueden actualizar
+    const id = req.params.id;
+    const updatedData = req.body;
 
     try {
-        // Consulta para obtener los datos del árbitro y su permiso
-        const [rows] = await db.query('SELECT permiso FROM arbitros WHERE id = ?', [id]);
-
-        if (rows.length === 0) {
-            return res.status(404).json({ success: false, message: 'Árbitro no encontrado' });
+        // Obtener el ID de la categoría correspondiente
+        const categoriaId = await obtenerCategoriaId(updatedData.categoria, updatedData.subcategoria);
+        if (!categoriaId) {
+            return res.status(404).json({ success: false, message: 'Categoría o subcategoría no encontrada' });
         }
 
-        const currentPermiso = rows[0].permiso;
+        // Actualizar el perfil en la base de datos
+        await pool.query(
+            'UPDATE arbitros SET username = ?, password = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria_id = ?, numero_colegiado = ?, alias = ? WHERE id = ?',
+            [
+                updatedData.username,
+                updatedData.password,
+                updatedData.nombre,
+                updatedData.apellido,
+                updatedData.domicilio,
+                updatedData.telefono,
+                updatedData.email,
+                updatedData.cuenta,
+                updatedData.permiso,
+                categoriaId,
+                updatedData.numero_colegiado,  // Asegúrate de incluir esto
+                updatedData.alias,               // Aquí se añade el alias
+                id
+            ]
+        );
 
-        // Verifica el permiso del árbitro
-        if (currentPermiso === '1') {
-            // Si es admin, puede actualizar todos los campos
-            await db.query(
-                `UPDATE arbitros SET username = ?, password = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria = ?, subcategoria = ?, numeroColegiado = ? WHERE id = ?`,
-                [username, password, nombre, apellido, domicilio, telefono, email, cuenta, permiso, categoria, subcategoria, numeroColegiado, id]
-            );
-        } else if (currentPermiso === '2' || currentPermiso === '3') {
-            // Si es técnico o árbitro, no puede actualizar ciertos campos
-            await db.query(
-                `UPDATE arbitros SET nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ? WHERE id = ?`,
-                [nombre, apellido, domicilio, telefono, email, id]
-            );
-
-            // Si tiene permiso 2 o 3, permite actualizar el número de colegiado
-            if (currentPermiso === '3') {
-                await db.query(
-                    `UPDATE arbitros SET numeroColegiado = ? WHERE id = ?`,
-                    [numeroColegiado, id]
-                );
-            }
-        } else {
-            return res.status(403).json({ success: false, message: 'No tienes permiso para realizar esta acción' });
-        }
-
-        res.json({ success: true, message: 'Perfil actualizado con éxito' });
+        res.json({ success: true, message: 'Perfil actualizado correctamente' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Error del servidor' });
+        console.error('Error al actualizar el perfil:', error);
+        res.status(500).json({ success: false, message: 'Error al actualizar el perfil' });
     }
 });
 
+// Exportar el router
 module.exports = router;

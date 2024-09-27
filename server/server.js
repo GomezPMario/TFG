@@ -55,6 +55,7 @@ app.post('/login', async (req, res) => {
                 success: true,
                 message: 'Inicio de sesión exitoso',
                 arbitro: {
+                    id: arbitro.id,
                     username: arbitro.username,
                     password: arbitro.password,
                     nombre: arbitro.nombre,

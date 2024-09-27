@@ -31,6 +31,7 @@ const Perfil = () => {
     };
 
     const actualizarPerfil = async (id) => {
+        console.log('ID del árbitro:', id);
         try {
             const response = await axios.put(`${baseURL}/api/updatePerfil/${id}`, updatedData, {
                 headers: {
@@ -45,6 +46,8 @@ const Perfil = () => {
             console.error('Error al actualizar el perfil:', error.response ? error.response.data : error.message);
         }
     };
+
+
 
     const toggleEditing = () => {
         setIsEditing(!isEditing);
