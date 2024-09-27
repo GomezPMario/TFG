@@ -1,8 +1,9 @@
 const express = require('express');
-const mysql = require('mysql2/promise'); // Asegúrate de usar mysql2/promise
+const mysql = require('mysql2/promise');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const db = require('./db_setup');
+const perfilRoutes = require('./perfil');
 
 dotenv.config();
 
@@ -20,6 +21,8 @@ app.use(cors({
     origin: ['http://localhost:3000', 'https://gomezpmario.github.io'], // Añade el origen de GitHub Pages
 }));
 app.use(express.json());
+
+app.use('/api', perfilRoutes);
 
 // Endpoint para obtener todos los árbitros
 app.get('/allarbitros', async (req, res) => {

@@ -125,3 +125,12 @@
     margin-right: 8px; /* Espacio entre el icono y el texto */
 }
 
+/* Sección de categoría */
+.categoria-container {
+    display: flex;
+    align-items: center; /* Centra verticalmente */
+}
+
+.categoria-container select {
+    margin-right: 10px; /* Espaciado entre los desplegables */
+}

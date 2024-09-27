@@ -1,22 +1,54 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import './styles/Perfil.css';
-
+import { baseURL } from './Login';
 import { FaUser, FaEnvelope, FaPhone, FaHome, FaKey, FaTag } from 'react-icons/fa';
 import { GiPencilRuler } from "react-icons/gi";
 
 const Perfil = () => {
     const [arbitro, setArbitro] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [updatedData, setUpdatedData] = useState({});
+    const categorias = ['A1', 'A2', 'A3', 'A4', 'P1', 'P2', 'P3', 'Escuela'];
+    const subcategorias = ['Principal', 'Auxiliar', 'Comodín'];
 
     useEffect(() => {
         const storedArbitro = localStorage.getItem('arbitro');
         if (storedArbitro) {
-            setArbitro(JSON.parse(storedArbitro));
+            const parsedArbitro = JSON.parse(storedArbitro);
+            setArbitro(parsedArbitro);
+            setUpdatedData(parsedArbitro); // Inicializa el estado de los datos actualizados
         }
     }, []);
 
     if (!arbitro) {
         return <p>Loading...</p>;
     }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setUpdatedData(prevData => ({ ...prevData, [name]: value }));
+    };
+
+    const actualizarPerfil = async (id) => {
+        try {
+            const response = await axios.put(`${baseURL}/api/updatePerfil/${id}`, updatedData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log(response.data);
+            setIsEditing(false); // Desactiva el modo de edición
+            setArbitro(updatedData); // Actualiza el árbitro con los nuevos datos
+            localStorage.setItem('arbitro', JSON.stringify(updatedData)); // Guarda en localStorage
+        } catch (error) {
+            console.error('Error al actualizar el perfil:', error.response ? error.response.data : error.message);
+        }
+    };
+
+    const toggleEditing = () => {
+        setIsEditing(!isEditing);
+    };
 
     return (
         <div className="perfil-page">
@@ -25,20 +57,50 @@ const Perfil = () => {
                 <div className="perfil-content">
                     <div className="perfil-column">
                         <ul>
-                            <li><FaUser className="icon" /> <strong>Usuario:</strong> {arbitro.username}</li>
-                            <li><FaKey className="icon" /> <strong>Contraseña:</strong> {arbitro.password}</li>
-                            <li><FaTag className="icon" /> <strong>Alias:</strong> {arbitro.alias}</li>
-                            <li><FaTag className="icon" /> <strong>Número de Colegiado:</strong> {arbitro.numero_colegiado}</li>
-                            <li><FaPhone className="icon" /> <strong>Teléfono:</strong> {arbitro.telefono}</li>
+                            <li><FaUser className="icon" /> <strong>Usuario:</strong> {isEditing ?
+                                <input type="text" name="username" value={updatedData.username} onChange={handleChange} />
+                                : arbitro.username}
+                            </li>
+                            <li><FaKey className="icon" /> <strong>Contraseña:</strong> {isEditing ?
+                                <input type="text" name="password" value={updatedData.password} onChange={handleChange} />
+                                : arbitro.password}
+                            </li>
+                            <li><FaTag className="icon" /> <strong>Alias:</strong> {isEditing ?
+                                <input type="text" name="alias" value={updatedData.alias} onChange={handleChange} />
+                                : arbitro.alias}
+                            </li>
+                            <li><FaTag className="icon" /> <strong>Número de Colegiado:</strong> {isEditing ?
+                                <input type="text" name="numero_colegiado" value={updatedData.numero_colegiado} onChange={handleChange} />
+                                : arbitro.numero_colegiado}
+                            </li>
+                            <li><FaPhone className="icon" /> <strong>Teléfono:</strong> {isEditing ?
+                                <input type="text" name="telefono" value={updatedData.telefono} onChange={handleChange} />
+                                : arbitro.telefono}
+                            </li>
                         </ul>
                     </div>
                     <div className="perfil-column">
                         <ul>
-                            <li><FaUser className="icon" /> <strong>Nombre:</strong> {arbitro.nombre}</li>
-                            <li><FaUser className="icon" /> <strong>Apellido:</strong> {arbitro.apellido}</li>
-                            <li><FaEnvelope className="icon" /> <strong>Email:</strong> {arbitro.email}</li>
-                            <li><FaHome className="icon" /> <strong>Domicilio:</strong> {arbitro.domicilio}</li>
-                            <li><FaUser className="icon" /> <strong>Cuenta:</strong> {arbitro.cuenta}</li>
+                            <li><FaUser className="icon" /> <strong>Nombre:</strong> {isEditing ?
+                                <input type="text" name="nombre" value={updatedData.nombre} onChange={handleChange} />
+                                : arbitro.nombre}
+                            </li>
+                            <li><FaUser className="icon" /> <strong>Apellido:</strong> {isEditing ?
+                                <input type="text" name="apellido" value={updatedData.apellido} onChange={handleChange} />
+                                : arbitro.apellido}
+                            </li>
+                            <li><FaEnvelope className="icon" /> <strong>Email:</strong> {isEditing ?
+                                <input type="text" name="email" value={updatedData.email} onChange={handleChange} />
+                                : arbitro.email}
+                            </li>
+                            <li><FaHome className="icon" /> <strong>Domicilio:</strong> {isEditing ?
+                                <input type="text" name="domicilio" value={updatedData.domicilio} onChange={handleChange} />
+                                : arbitro.domicilio}
+                            </li>
+                            <li><FaUser className="icon" /> <strong>Cuenta:</strong> {isEditing ?
+                                <input type="text" name="cuenta" value={updatedData.cuenta} onChange={handleChange} />
+                                : arbitro.cuenta}
+                            </li>
                         </ul>
                     </div>
                     <div className="perfil-column">
@@ -46,16 +108,47 @@ const Perfil = () => {
                             <li>
                                 <FaTag className="icon" />
                                 <strong>Permiso:</strong>
-                                {arbitro.permiso === '1' && 'Admin'}
-                                {arbitro.permiso === '2' && 'Técnico'}
-                                {arbitro.permiso === '3' && 'Árbitro - Oficial'}
+                                {isEditing && arbitro.permiso === '1' ?
+                                    <select name="permiso" value={updatedData.permiso} onChange={handleChange}>
+                                        <option value="1">Admin</option>
+                                        <option value="2">Técnico</option>
+                                        <option value="3">Árbitro - Oficial</option>
+                                    </select>
+                                    : arbitro.permiso === '1' ? 'Admin' :
+                                        arbitro.permiso === '2' ? 'Técnico' : 'Árbitro - Oficial'
+                                }
                             </li>
-                            <li><FaTag className="icon" /> <strong>Categoría:</strong> {arbitro.categoria || 'N/A'} - {arbitro.subcategoria || 'N/A'}</li>
+                            <li>
+                                <FaTag className="icon" />
+                                <strong>Categoría:</strong>
+                                {isEditing ?
+                                    <div className="categoria-container">
+                                        <select name="categoria" value={updatedData.categoria} onChange={handleChange}>
+                                            {categorias.map(categoria => (
+                                                <option key={categoria} value={categoria}>{categoria}</option>
+                                            ))}
+                                        </select>
+                                        <select name="subcategoria" value={updatedData.subcategoria} onChange={handleChange}>
+                                            {subcategorias.map(subcategoria => (
+                                                <option key={subcategoria} value={subcategoria}>{subcategoria}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    :
+                                    <>
+                                        {arbitro.categoria || 'N/A'} - {arbitro.subcategoria || 'N/A'}
+                                    </>
+                                }
+                            </li>
+
                         </ul>
                     </div>
                 </div>
             </div>
-            <button className="editar-perfil-btn"><GiPencilRuler />Editar perfil</button>
+            <button className="editar-perfil-btn" onClick={toggleEditing}>
+                <GiPencilRuler /> {isEditing ? 'Cancelar' : 'Editar perfil'}
+            </button>
+            {isEditing && <button className="guardar-perfil-btn" onClick={() => actualizarPerfil(arbitro.id)}>Guardar cambios</button>}
         </div>
     );
 };
