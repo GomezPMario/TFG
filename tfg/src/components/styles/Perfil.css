@@ -194,3 +194,35 @@
     display: none; /* Oculta la barra de desplazamiento en Chrome, Safari y Opera */
 }
 
+.boton-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Espacio entre los botones */
+    margin-top: 10px; /* Reduce el margen superior */
+}
+
+.aceptar-btn,
+.cancelar-btn {
+    display: flex;
+    align-items: center;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.aceptar-btn:hover,
+.cancelar-btn:hover {
+    background-color: #357ABD;
+}
+
+.aceptar-btn:active,
+.cancelar-btn:active {
+    background-color: #285a8a;
+}
+

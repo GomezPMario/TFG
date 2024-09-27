@@ -50,6 +50,11 @@ const Perfil = () => {
         setIsEditing(!isEditing);
     };
 
+    const cancelEdit = () => {
+        setIsEditing(false);
+        setUpdatedData(arbitro); // Reestablecer los datos originales
+    };
+
     const isEditable = (field) => {
         if (arbitro.permiso === '1') {
             return true; // Admin puede editar todo
@@ -165,9 +170,20 @@ const Perfil = () => {
                     </div>
                 </div>
             </div>
-            <button className="editar-perfil-btn" onClick={toggleEditing}>
-                <GiPencilRuler /> {isEditing ? 'Cancelar' : 'Editar perfil'}
-            </button>
+
+            {/* Botones Aceptar y Cancelar fuera del perfil-container */}
+            <div className="boton-container">
+                {isEditing ? (
+                    <>
+                        <button className="aceptar-btn" onClick={() => actualizarPerfil(arbitro.id)}>Aceptar</button>
+                        <button className="cancelar-btn" onClick={cancelEdit}>Cancelar</button>
+                    </>
+                ) : (
+                    <button className="editar-perfil-btn" onClick={toggleEditing}>
+                        <GiPencilRuler /> Editar perfil
+                    </button>
+                )}
+            </div>
         </div>
     );
 };
