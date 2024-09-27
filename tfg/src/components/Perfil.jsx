@@ -157,7 +157,6 @@ const Perfil = () => {
             <button className="editar-perfil-btn" onClick={toggleEditing}>
                 <GiPencilRuler /> {isEditing ? 'Cancelar' : 'Editar perfil'}
             </button>
-            {isEditing && <button className="guardar-perfil-btn" onClick={() => actualizarPerfil(arbitro.id)}>Guardar cambios</button>}
         </div>
     );
 };

@@ -65,6 +65,10 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     transition: background-color 0.3s ease;
+    height: 50px; /* Altura fija para mantener consistencia */
+    width: 100%; /* Asegura que el ancho sea siempre el mismo */
+    max-width: 800px; /* O cualquier valor que se ajuste a tu diseño */
+    box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
 }
 
 .perfil-container li:hover {
@@ -143,8 +147,25 @@
 
 .categoria-container select {
     margin-right: 10px; /* Espaciado entre los desplegables */
-    padding: 8px; /* Añadir un poco de padding para el diseño */
+    padding: 5px; /* Añadir un poco de padding para el diseño */
     border-radius: 8px;
     border: 1px solid #ccc; /* Añadir borde */
     font-size: 1rem; /* Ajustar tamaño de fuente */
+}
+
+/* Modo de edición */
+.editable-mode li {
+    height: 50px; /* Mantiene la misma altura en modo de edición */
+    width: 100%; /* Asegura que el ancho sea siempre el mismo en modo de edición */
+    max-width: 800px; /* O el mismo valor que en el modo normal */
+    box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+}
+
+.editable-mode input,
+.editable-mode select {
+    width: 100%; /* Ajusta el ancho para que sea el mismo en ambos modos */
+    height: 28px; /* Ajustar la altura de los campos de entrada */
+    margin-left: 10px; /* Espaciado para alineación */
+    padding: 5px; /* Añadir un poco de padding para un mejor diseño */
+    box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
 }
