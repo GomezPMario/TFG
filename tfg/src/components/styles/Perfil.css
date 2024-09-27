@@ -1,10 +1,23 @@
+.perfil-page {
+    display: flex;
+    flex-direction: column; /* Para apilar el perfil y el botón verticalmente */
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Para asegurar que el contenedor y el botón estén siempre centrados verticalmente */
+    padding: 20px; /* Para asegurarnos de que no haya problemas en pantallas pequeñas */
+    background-color: #f5f7fa; /* Color de fondo suave */
+}
+
 .perfil-container {
-    padding: 20px;
+    padding: 30px;
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 1100px;
-    margin: 0 auto;
+    border-radius: 16px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    width: 100%;
+    margin-bottom: 20px; /* Añadimos espacio inferior para el botón */
+    transition: all 0.3s ease;
+    text-align: center; /* Para alinear el contenido dentro del perfil */
 }
 
 .perfil-content {
@@ -15,13 +28,26 @@
 
 .perfil-column {
     flex: 1;
+    border-radius: 12px;
+    padding: 20px;
 }
 
 .perfil-container h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
     text-align: center;
     color: #333;
+    font-weight: 700;
+    position: relative;
+}
+
+.perfil-container h1::after {
+    content: '';
+    width: 80px;
+    height: 4px;
+    background-color: #4a90e2;
+    display: block;
+    margin: 8px auto 0;
 }
 
 .perfil-container ul {
@@ -30,30 +56,72 @@
 }
 
 .perfil-container li {
-    margin: 10px 0;
-    font-size: 1rem;
+    margin: 15px 0;
+    font-size: 1.1rem;
     display: flex;
     align-items: center;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease;
+}
+
+.perfil-container li:hover {
+    background-color: #eaf4ff;
 }
 
 .perfil-container strong {
-    margin-right: 8px;
+    margin-right: 12px;
     color: #333;
+    font-weight: 600;
 }
 
 .icon {
     margin-right: 10px;
-    color: #4a90e2; /* Color del icono */
-    font-size: 1.2rem;
+    color: #4a90e2;
+    font-size: 1.5rem;
+    transition: color 0.3s ease;
+}
+
+.perfil-container li:hover .icon {
+    color: #1d70b8;
 }
 
 .perfil-container li:nth-child(odd) {
-    background-color: #f7f7f7;
-    padding: 10px;
-    border-radius: 8px;
+    background-color: #f0f4f8;
 }
 
 .perfil-container li:nth-child(even) {
-    padding: 10px;
-    border-radius: 8px;
+    background-color: #eaf4ff;
 }
+
+/* Estilos para el botón "Editar perfil" */
+/* Estilos para el botón "Editar perfil" */
+.editar-perfil-btn {
+    display: flex; /* Utiliza flexbox para alinear el icono y el texto */
+    align-items: center; /* Centra verticalmente el icono y el texto */
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.editar-perfil-btn:hover {
+    background-color: #357ABD;
+}
+
+.editar-perfil-btn:active {
+    background-color: #285a8a;
+}
+
+/* Añadir margen derecho al icono */
+.editar-perfil-btn svg {
+    margin-right: 8px; /* Espacio entre el icono y el texto */
+}
+

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './styles/Perfil.css';
-import { FaUser, FaEnvelope, FaPhone, FaHome, FaKey, FaTag } from 'react-icons/fa'; // Añadir iconos
+
+import { FaUser, FaEnvelope, FaPhone, FaHome, FaKey, FaTag } from 'react-icons/fa';
+import { GiPencilRuler } from "react-icons/gi";
 
 const Perfil = () => {
     const [arbitro, setArbitro] = useState(null);
@@ -17,7 +19,7 @@ const Perfil = () => {
     }
 
     return (
-        <div className="main-content">
+        <div className="perfil-page">
             <div className="perfil-container">
                 <h1>Perfil de {arbitro.nombre}</h1>
                 <div className="perfil-content">
@@ -53,6 +55,7 @@ const Perfil = () => {
                     </div>
                 </div>
             </div>
+            <button className="editar-perfil-btn"><GiPencilRuler />Editar perfil</button>
         </div>
     );
 };
