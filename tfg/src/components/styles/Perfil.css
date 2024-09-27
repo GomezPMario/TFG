@@ -226,3 +226,53 @@
     background-color: #285a8a;
 }
 
+.boton-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Espacio entre los botones */
+    margin-top: 10px; /* Reduce el margen superior */
+}
+
+.aceptar-btn {
+    display: flex;
+    align-items: center;
+    background-color: #28a745; /* Verde */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.cancelar-btn {
+    display: flex;
+    align-items: center;
+    background-color: #dc3545; /* Rojo */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.aceptar-btn:hover {
+    background-color: #218838; /* Verde más oscuro */
+}
+
+.cancelar-btn:hover {
+    background-color: #c82333; /* Rojo más oscuro */
+}
+
+.aceptar-btn:active {
+    background-color: #1e7e34; /* Verde aún más oscuro */
+}
+
+.cancelar-btn:active {
+    background-color: #bd2130; /* Rojo aún más oscuro */
+}
