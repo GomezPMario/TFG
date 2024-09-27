@@ -79,7 +79,7 @@ const Perfil = () => {
                                 <input type="text" name="alias" value={updatedData.alias} onChange={handleChange} />
                                 : arbitro.alias}
                             </li>
-                            <li><FaTag className="icon" /> <strong>Número de Colegiado:</strong> {isEditing && arbitro.permiso === '1' ?
+                            <li><FaTag className="icon" /> <strong>Nº de Colegiado:</strong> {isEditing && arbitro.permiso === '1' ?
                                 <input type="text" name="numero_colegiado" value={updatedData.numero_colegiado} onChange={handleChange} />
                                 : arbitro.numero_colegiado}
                             </li>

@@ -1,11 +1,11 @@
 .perfil-page {
     display: flex;
-    flex-direction: column; /* Para apilar el perfil y el botón verticalmente */
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Para asegurar que el contenedor y el botón estén siempre centrados verticalmente */
-    padding: 20px; /* Para asegurarnos de que no haya problemas en pantallas pequeñas */
-    background-color: #f5f7fa; /* Color de fondo suave */
+    height: 100vh;
+    padding: 20px;
+    background-color: #f5f7fa;
 }
 
 .perfil-container {
@@ -13,11 +13,11 @@
     background-color: #fff;
     border-radius: 16px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    max-width: 1200px;
+    max-width: 1050px;
     width: 100%;
-    margin-bottom: 20px; /* Añadimos espacio inferior para el botón */
+    margin-bottom: 20px;
     transition: all 0.3s ease;
-    text-align: center; /* Para alinear el contenido dentro del perfil */
+    text-align: center;
 }
 
 .perfil-content {
@@ -28,8 +28,10 @@
 
 .perfil-column {
     flex: 1;
-    border-radius: 12px;
+    min-width: 300px; /* Asegura un ancho mínimo */
+    max-width: 33.33%; /* Limita cada columna al 33.33% del contenedor */
     padding: 20px;
+    box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
 }
 
 .perfil-container h1 {
@@ -53,6 +55,7 @@
 .perfil-container ul {
     list-style: none;
     padding: 0;
+    width: 100%; /* Hace que los elementos de la lista tomen el 100% del ancho de la columna */
 }
 
 .perfil-container li {
@@ -67,7 +70,6 @@
     transition: background-color 0.3s ease;
     height: 50px; /* Altura fija para mantener consistencia */
     width: 100%; /* Asegura que el ancho sea siempre el mismo */
-    max-width: 800px; /* O cualquier valor que se ajuste a tu diseño */
     box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
 }
 
@@ -100,17 +102,16 @@
     background-color: #eaf4ff;
 }
 
-/* Estilos para los botones "Editar perfil" y "Cancelar" */
 .boton-container {
-    display: flex; /* Utiliza flexbox para alinear los botones */
-    justify-content: center; /* Centra horizontalmente los botones */
-    gap: 10px; /* Espacio entre los botones */
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
 .editar-perfil-btn,
 .cancelar-btn {
-    display: flex; /* Utiliza flexbox para alinear el icono y el texto */
-    align-items: center; /* Centra verticalmente el icono y el texto */
+    display: flex;
+    align-items: center;
     background-color: #4a90e2;
     color: white;
     border: none;
@@ -133,39 +134,37 @@
     background-color: #285a8a;
 }
 
-/* Añadir margen derecho al icono */
 .editar-perfil-btn svg,
 .cancelar-btn svg {
-    margin-right: 8px; /* Espacio entre el icono y el texto */
+    margin-right: 8px;
 }
 
-/* Sección de categoría */
 .categoria-container {
     display: flex;
-    align-items: center; /* Centra verticalmente */
+    align-items: center;
 }
 
 .categoria-container select {
-    margin-right: 10px; /* Espaciado entre los desplegables */
-    padding: 5px; /* Añadir un poco de padding para el diseño */
+    margin-right: 10px;
+    padding: 5px;
     border-radius: 8px;
-    border: 1px solid #ccc; /* Añadir borde */
-    font-size: 1rem; /* Ajustar tamaño de fuente */
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    flex: 1; /* Asegura que los selects ocupen el espacio disponible */
 }
 
-/* Modo de edición */
 .editable-mode li {
-    height: 50px; /* Mantiene la misma altura en modo de edición */
-    width: 100%; /* Asegura que el ancho sea siempre el mismo en modo de edición */
-    max-width: 800px; /* O el mismo valor que en el modo normal */
-    box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+    height: 50px;
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box;
 }
 
 .editable-mode input,
 .editable-mode select {
-    width: 100%; /* Ajusta el ancho para que sea el mismo en ambos modos */
-    height: 28px; /* Ajustar la altura de los campos de entrada */
-    margin-left: 10px; /* Espaciado para alineación */
-    padding: 5px; /* Añadir un poco de padding para un mejor diseño */
-    box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+    width: 100%;
+    height: 28px;
+    margin-left: 10px;
+    padding: 5px;
+    box-sizing: border-box;
 }
