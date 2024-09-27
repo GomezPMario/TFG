@@ -168,3 +168,28 @@
     padding: 5px;
     box-sizing: border-box;
 }
+
+
+/* Permitir scroll horizontal solo en la sección de correo electrónico */
+/* Sección de correo electrónico con scroll horizontal oculto */
+/* Sección de correo electrónico con scroll horizontal oculto y sin estilos adicionales */
+.email-section {
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    overflow-x: auto; /* Activa el scroll horizontal */
+    max-width: 100%; /* Limita el ancho del contenedor */
+    
+    /* Quita cualquier estilo adicional */
+    background-color: transparent; /* Fondo transparente */
+    border: none; /* Sin bordes */
+    padding: 0; /* Sin padding */
+    cursor: text; /* Cambia el cursor al pasar por el correo */
+    
+    /* Oculta la barra de desplazamiento en todos los navegadores */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.email-section::-webkit-scrollbar {
+    display: none; /* Oculta la barra de desplazamiento en Chrome, Safari y Opera */
+}
+
