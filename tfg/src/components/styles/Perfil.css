@@ -141,16 +141,17 @@
 
 .categoria-container {
     display: flex;
-    align-items: center;
+    align-items: center; /* Centra verticalmente */
+    gap: 10px; /* Espacio entre los selectores */
+    width: 100%; /* Asegura que el contenedor use el ancho completo */
 }
 
 .categoria-container select {
-    margin-right: 10px;
-    padding: 5px;
+    flex: 1; /* Asegura que cada selector ocupe el mismo espacio */
+    padding: 5px; /* Añadir un poco de padding para el diseño */
     border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-    flex: 1; /* Asegura que los selects ocupen el espacio disponible */
+    border: 1px solid #ccc; /* Añadir borde */
+    font-size: 1rem; /* Ajustar tamaño de fuente */
 }
 
 .editable-mode li {

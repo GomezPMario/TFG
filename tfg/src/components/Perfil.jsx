@@ -54,7 +54,6 @@ const Perfil = () => {
         if (arbitro.permiso === '1') {
             return true; // Admin puede editar todo
         } else if (arbitro.permiso === '2' || arbitro.permiso === '3') {
-            // Permisos 2 y 3 pueden editar ciertos campos
             return !['username', 'alias', 'categoria', 'subcategoria'].includes(field);
         }
         return false; // Otros casos no deberían editar
@@ -99,20 +98,10 @@ const Perfil = () => {
                                 <input type="text" name="apellido" value={updatedData.apellido} onChange={handleChange} />
                                 : arbitro.apellido}
                             </li>
-                            <li><FaEnvelope className="icon" />
-                                <strong>Email:</strong>
-                                {isEditing && isEditable('email') ? (
-                                    <input
-                                        type="text"
-                                        name="email"
-                                        value={updatedData.email}
-                                        onChange={handleChange}
-                                    />
-                                ) : (
-                                    <div className="email-section">{arbitro.email}</div>
-                                )}
+                            <li><FaEnvelope className="icon" /> <strong>Email:</strong> {isEditing && isEditable('email') ?
+                                <div className="email-container">{updatedData.email}</div>
+                                : arbitro.email}
                             </li>
-
                             <li><FaHome className="icon" /> <strong>Domicilio:</strong> {isEditing && isEditable('domicilio') ?
                                 <input type="text" name="domicilio" value={updatedData.domicilio} onChange={handleChange} />
                                 : arbitro.domicilio}
@@ -142,24 +131,27 @@ const Perfil = () => {
                                 <FaTag className="icon" />
                                 <strong>Categoría:</strong>
                                 {isEditing && arbitro.permiso === '1' ? (
-                                    <div className="categoria-container">
-                                        <select name="categoria" value={updatedData.categoria} onChange={handleChange}>
-                                            {categorias.map(categoria => (
-                                                <option key={categoria} value={categoria}>{categoria}</option>
-                                            ))}
-                                        </select>
-                                        <select name="subcategoria" value={updatedData.subcategoria} onChange={handleChange}>
-                                            {subcategorias.map(subcategoria => (
-                                                <option key={subcategoria} value={subcategoria}>{subcategoria}</option>
-                                            ))}
-                                        </select>
-                                    </div>
+                                    <select name="categoria" value={updatedData.categoria} onChange={handleChange}>
+                                        {categorias.map(categoria => (
+                                            <option key={categoria} value={categoria}>{categoria}</option>
+                                        ))}
+                                    </select>
                                 ) : (
-                                    <>
-                                        {arbitro.categoria || 'N/A'} - {arbitro.subcategoria || 'N/A'}
-                                    </>
+                                    <span>{arbitro.categoria} - {arbitro.subcategoria}</span>
                                 )}
                             </li>
+                            {/* Campo para la subcategoría */}
+                            {isEditing && arbitro.permiso === '1' && (
+                                <li>
+                                    <FaTag className="icon" />
+                                    <strong>Subcategoría:</strong>
+                                    <select name="subcategoria" value={updatedData.subcategoria} onChange={handleChange}>
+                                        {subcategorias.map(subcategoria => (
+                                            <option key={subcategoria} value={subcategoria}>{subcategoria}</option>
+                                        ))}
+                                    </select>
+                                </li>
+                            )}
                         </ul>
                     </div>
                 </div>
