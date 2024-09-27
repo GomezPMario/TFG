@@ -96,9 +96,15 @@
     background-color: #eaf4ff;
 }
 
-/* Estilos para el botón "Editar perfil" */
-/* Estilos para el botón "Editar perfil" */
-.editar-perfil-btn {
+/* Estilos para los botones "Editar perfil" y "Cancelar" */
+.boton-container {
+    display: flex; /* Utiliza flexbox para alinear los botones */
+    justify-content: center; /* Centra horizontalmente los botones */
+    gap: 10px; /* Espacio entre los botones */
+}
+
+.editar-perfil-btn,
+.cancelar-btn {
     display: flex; /* Utiliza flexbox para alinear el icono y el texto */
     align-items: center; /* Centra verticalmente el icono y el texto */
     background-color: #4a90e2;
@@ -110,18 +116,22 @@
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
+    height: 48px; /* Asegura la misma altura para ambos botones */
 }
 
-.editar-perfil-btn:hover {
+.editar-perfil-btn:hover,
+.cancelar-btn:hover {
     background-color: #357ABD;
 }
 
-.editar-perfil-btn:active {
+.editar-perfil-btn:active,
+.cancelar-btn:active {
     background-color: #285a8a;
 }
 
 /* Añadir margen derecho al icono */
-.editar-perfil-btn svg {
+.editar-perfil-btn svg,
+.cancelar-btn svg {
     margin-right: 8px; /* Espacio entre el icono y el texto */
 }
 
@@ -133,4 +143,8 @@
 
 .categoria-container select {
     margin-right: 10px; /* Espaciado entre los desplegables */
+    padding: 8px; /* Añadir un poco de padding para el diseño */
+    border-radius: 8px;
+    border: 1px solid #ccc; /* Añadir borde */
+    font-size: 1rem; /* Ajustar tamaño de fuente */
 }

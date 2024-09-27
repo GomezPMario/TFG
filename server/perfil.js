@@ -5,7 +5,7 @@ const router = express.Router();
 // Endpoint para actualizar el perfil del árbitro
 router.put('/updatePerfil/:id', async (req, res) => {
     const { id } = req.params; // Obtener el ID del árbitro de la URL
-    const { nombre, apellido, domicilio, telefono, email, cuenta, username, password, permiso, categoria, subcategoria } = req.body; // Campos que se pueden actualizar
+    const { nombre, apellido, domicilio, telefono, email, cuenta, username, password, permiso, categoria, subcategoria, numeroColegiado } = req.body; // Campos que se pueden actualizar
 
     try {
         // Consulta para obtener los datos del árbitro y su permiso
@@ -21,8 +21,8 @@ router.put('/updatePerfil/:id', async (req, res) => {
         if (currentPermiso === '1') {
             // Si es admin, puede actualizar todos los campos
             await db.query(
-                `UPDATE arbitros SET username = ?, password = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria = ?, subcategoria = ? WHERE id = ?`,
-                [username, password, nombre, apellido, domicilio, telefono, email, cuenta, permiso, categoria, subcategoria, id]
+                `UPDATE arbitros SET username = ?, password = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria = ?, subcategoria = ?, numeroColegiado = ? WHERE id = ?`,
+                [username, password, nombre, apellido, domicilio, telefono, email, cuenta, permiso, categoria, subcategoria, numeroColegiado, id]
             );
         } else if (currentPermiso === '2' || currentPermiso === '3') {
             // Si es técnico o árbitro, no puede actualizar ciertos campos
@@ -30,6 +30,14 @@ router.put('/updatePerfil/:id', async (req, res) => {
                 `UPDATE arbitros SET nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ? WHERE id = ?`,
                 [nombre, apellido, domicilio, telefono, email, id]
             );
+
+            // Si tiene permiso 2 o 3, permite actualizar el número de colegiado
+            if (currentPermiso === '3') {
+                await db.query(
+                    `UPDATE arbitros SET numeroColegiado = ? WHERE id = ?`,
+                    [numeroColegiado, id]
+                );
+            }
         } else {
             return res.status(403).json({ success: false, message: 'No tienes permiso para realizar esta acción' });
         }

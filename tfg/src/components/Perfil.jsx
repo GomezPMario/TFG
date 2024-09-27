@@ -50,6 +50,16 @@ const Perfil = () => {
         setIsEditing(!isEditing);
     };
 
+    const isEditable = (field) => {
+        if (arbitro.permiso === '1') {
+            return true; // Admin puede editar todo
+        } else if (arbitro.permiso === '2' || arbitro.permiso === '3') {
+            // Permisos 2 y 3 pueden editar ciertos campos
+            return !['username', 'alias', 'categoria', 'subcategoria'].includes(field);
+        }
+        return false; // Otros casos no deberían editar
+    };
+
     return (
         <div className="perfil-page">
             <div className="perfil-container">
@@ -57,23 +67,23 @@ const Perfil = () => {
                 <div className="perfil-content">
                     <div className="perfil-column">
                         <ul>
-                            <li><FaUser className="icon" /> <strong>Usuario:</strong> {isEditing ?
+                            <li><FaUser className="icon" /> <strong>Usuario:</strong> {isEditing && isEditable('username') ?
                                 <input type="text" name="username" value={updatedData.username} onChange={handleChange} />
                                 : arbitro.username}
                             </li>
-                            <li><FaKey className="icon" /> <strong>Contraseña:</strong> {isEditing ?
+                            <li><FaKey className="icon" /> <strong>Contraseña:</strong> {isEditing && isEditable('password') ?
                                 <input type="text" name="password" value={updatedData.password} onChange={handleChange} />
                                 : arbitro.password}
                             </li>
-                            <li><FaTag className="icon" /> <strong>Alias:</strong> {isEditing ?
+                            <li><FaTag className="icon" /> <strong>Alias:</strong> {isEditing && isEditable('alias') ?
                                 <input type="text" name="alias" value={updatedData.alias} onChange={handleChange} />
                                 : arbitro.alias}
                             </li>
-                            <li><FaTag className="icon" /> <strong>Número de Colegiado:</strong> {isEditing ?
+                            <li><FaTag className="icon" /> <strong>Número de Colegiado:</strong> {isEditing && arbitro.permiso === '1' ?
                                 <input type="text" name="numero_colegiado" value={updatedData.numero_colegiado} onChange={handleChange} />
                                 : arbitro.numero_colegiado}
                             </li>
-                            <li><FaPhone className="icon" /> <strong>Teléfono:</strong> {isEditing ?
+                            <li><FaPhone className="icon" /> <strong>Teléfono:</strong> {isEditing && isEditable('telefono') ?
                                 <input type="text" name="telefono" value={updatedData.telefono} onChange={handleChange} />
                                 : arbitro.telefono}
                             </li>
@@ -81,23 +91,23 @@ const Perfil = () => {
                     </div>
                     <div className="perfil-column">
                         <ul>
-                            <li><FaUser className="icon" /> <strong>Nombre:</strong> {isEditing ?
+                            <li><FaUser className="icon" /> <strong>Nombre:</strong> {isEditing && isEditable('nombre') ?
                                 <input type="text" name="nombre" value={updatedData.nombre} onChange={handleChange} />
                                 : arbitro.nombre}
                             </li>
-                            <li><FaUser className="icon" /> <strong>Apellido:</strong> {isEditing ?
+                            <li><FaUser className="icon" /> <strong>Apellido:</strong> {isEditing && isEditable('apellido') ?
                                 <input type="text" name="apellido" value={updatedData.apellido} onChange={handleChange} />
                                 : arbitro.apellido}
                             </li>
-                            <li><FaEnvelope className="icon" /> <strong>Email:</strong> {isEditing ?
+                            <li><FaEnvelope className="icon" /> <strong>Email:</strong> {isEditing && isEditable('email') ?
                                 <input type="text" name="email" value={updatedData.email} onChange={handleChange} />
                                 : arbitro.email}
                             </li>
-                            <li><FaHome className="icon" /> <strong>Domicilio:</strong> {isEditing ?
+                            <li><FaHome className="icon" /> <strong>Domicilio:</strong> {isEditing && isEditable('domicilio') ?
                                 <input type="text" name="domicilio" value={updatedData.domicilio} onChange={handleChange} />
                                 : arbitro.domicilio}
                             </li>
-                            <li><FaUser className="icon" /> <strong>Cuenta:</strong> {isEditing ?
+                            <li><FaUser className="icon" /> <strong>Cuenta:</strong> {isEditing && isEditable('cuenta') ?
                                 <input type="text" name="cuenta" value={updatedData.cuenta} onChange={handleChange} />
                                 : arbitro.cuenta}
                             </li>
@@ -121,7 +131,7 @@ const Perfil = () => {
                             <li>
                                 <FaTag className="icon" />
                                 <strong>Categoría:</strong>
-                                {isEditing ?
+                                {isEditing && arbitro.permiso === '1' ? (
                                     <div className="categoria-container">
                                         <select name="categoria" value={updatedData.categoria} onChange={handleChange}>
                                             {categorias.map(categoria => (
@@ -134,13 +144,12 @@ const Perfil = () => {
                                             ))}
                                         </select>
                                     </div>
-                                    :
+                                ) : (
                                     <>
                                         {arbitro.categoria || 'N/A'} - {arbitro.subcategoria || 'N/A'}
                                     </>
-                                }
+                                )}
                             </li>
-
                         </ul>
                     </div>
                 </div>
