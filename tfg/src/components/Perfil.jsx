@@ -98,9 +98,18 @@ const Perfil = () => {
                                 <input type="text" name="apellido" value={updatedData.apellido} onChange={handleChange} />
                                 : arbitro.apellido}
                             </li>
-                            <li><FaEnvelope className="icon" /> <strong>Email:</strong> {isEditing && isEditable('email') ?
-                                <div className="email-container">{updatedData.email}</div>
-                                : arbitro.email}
+                            <li><FaEnvelope className="icon" />
+                                <strong>Email:</strong>
+                                {isEditing && isEditable('email') ? (
+                                    <input
+                                        type="text"
+                                        name="email"
+                                        value={updatedData.email}
+                                        onChange={handleChange}
+                                    />
+                                ) : (
+                                    <div className="email-section">{arbitro.email}</div>
+                                )}
                             </li>
                             <li><FaHome className="icon" /> <strong>Domicilio:</strong> {isEditing && isEditable('domicilio') ?
                                 <input type="text" name="domicilio" value={updatedData.domicilio} onChange={handleChange} />
