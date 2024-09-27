@@ -134,14 +134,8 @@ const Perfil = () => {
                             <li>
                                 <FaTag className="icon" />
                                 <strong>Permiso:</strong>
-                                {isEditing && arbitro.permiso === '1' ?
-                                    <select name="permiso" value={updatedData.permiso} onChange={handleChange}>
-                                        <option value="1">Admin</option>
-                                        <option value="2">Técnico</option>
-                                        <option value="3">Árbitro - Oficial</option>
-                                    </select>
-                                    : arbitro.permiso === '1' ? 'Admin' :
-                                        arbitro.permiso === '2' ? 'Técnico' : 'Árbitro - Oficial'
+                                {arbitro.permiso === '1' ? 'Admin' :
+                                    arbitro.permiso === '2' ? 'Técnico' : 'Árbitro - Oficial'
                                 }
                             </li>
                             <li>
