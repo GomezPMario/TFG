@@ -6,22 +6,19 @@ router.get('/', async (req, res) => {
     let sql = 'SELECT * FROM arbitros WHERE 1=1'; // Consulta base
     const { orderBy, orderType, search, permission } = req.query;
 
-    // Reiniciar filtros si se selecciona un filtro específico
-    // Si se selecciona `Cargo`, no se aplica `Permiso`, y viceversa
+    // Filtrar por búsqueda (aplicable solo si no se está filtrando por permiso)
     if (orderBy !== 'permiso') {
-        // Filtrar por búsqueda (pero solo si no se selecciona el filtro de `permiso`)
         if (search) {
             sql += ` AND (username LIKE ? OR nombre LIKE ? OR apellido LIKE ? OR alias LIKE ? OR numero_colegiado LIKE ?)`;
         }
     }
 
-    // Filtrar por `permiso` si está seleccionado y resetear otros filtros
+    // Filtrar por permiso si se selecciona
     if (orderBy === 'permiso') {
         if (permission) {
             sql += ` AND permiso = ?`;
         }
     } else {
-        // Si no se selecciona un permiso, aplicar otros filtros
         // Filtrar por tipo de cargo
         if (orderBy === 'tipo_cargo' && orderType) {
             if (orderType === 'arbitro') {
@@ -32,16 +29,9 @@ router.get('/', async (req, res) => {
         }
     }
 
-    // Añadir ordenamiento dinámico
-    if (orderBy) {
-        if (['numero_colegiado', 'cargo', 'categoria', 'permiso'].includes(orderBy)) {
-            const orderDirection = orderType === 'desc' ? 'DESC' : 'ASC';
-            sql += ` ORDER BY ${orderBy} ${orderDirection}`;
-        }
-    } else {
-        // Si no se selecciona ningún filtro específico, ordenamos por número colegiado ascendente
-        sql += ' ORDER BY numero_colegiado ASC';
-    }
+    // Añadir ordenamiento dinámico por numero_colegiado
+    const orderDirection = orderType === 'desc' ? 'DESC' : 'ASC';
+    sql += ` ORDER BY numero_colegiado ${orderDirection}`;
 
     try {
         // Parametros de búsqueda
