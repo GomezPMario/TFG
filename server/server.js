@@ -4,6 +4,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const db = require('./db_setup');
 const perfilRoutes = require('./perfil');
+const arbitrosRoutes = require('./arbitros');
 
 dotenv.config();
 
@@ -23,18 +24,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use('/api', perfilRoutes);
-
-// Endpoint para obtener todos los árbitros
-app.get('/allarbitros', async (req, res) => {
-    const sql = 'SELECT * FROM arbitros';
-    try {
-        const [result] = await db.query(sql); // Usa db aquí
-        res.json(result);
-    } catch (err) {
-        console.error('Error querying the database:', err);
-        return res.status(500).send(err);
-    }
-});
+app.use('/arbitros', arbitrosRoutes);
 
 // Endpoint para iniciar sesión
 app.post('/login', async (req, res) => {

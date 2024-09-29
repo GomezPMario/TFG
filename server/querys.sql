@@ -19,6 +19,9 @@ CREATE TABLE IF NOT EXISTS arbitros (
     FOREIGN KEY (categoria_id) REFERENCES escala(id)
 );
 
+ALTER TABLE arbitros
+ADD COLUMN cargo ENUM('1', '2') NOT NULL;
+
 -- Inserta todas las combinaciones de categorías y subcategorías
 INSERT INTO escala (categoria, subcategoria) VALUES
 ('A1', 'Principal'),

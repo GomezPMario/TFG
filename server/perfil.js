@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('./db_setup'); // Asegúrate de tener la conexión a la base de datos
+const pool = require('./db_setup'); 
 
-// Función para obtener el ID de la categoría
 // Función para obtener el ID de la categoría
 const obtenerCategoriaId = async (categoria, subcategoria) => {
     const [rows] = await pool.query(
