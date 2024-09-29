@@ -16,6 +16,9 @@ CREATE TABLE IF NOT EXISTS arbitros (
     numero_colegiado INT NOT NULL,
     permiso ENUM('1', '2', '3') NOT NULL,
     categoria_id INT NOT NULL,
+    telefono VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    cargo ENUM('1', '2') NOT NULL,
     FOREIGN KEY (categoria_id) REFERENCES escala(id)
 );
 
@@ -57,3 +60,8 @@ VALUES
 ('arbitro2', 'password2', 'Pedro', 'Gómez', 'Avenida 456', 'cuenta2', 'arbitro2_alias', 1002, 2, 3),
 ('mario', 'mario', 'Mario', 'Gómez', 'Federación', 'cuenta3', 'arbitro3_alias', 1003, 3, 2),
 ('arbitro3', 'password3', 'Luis', 'Ramírez', 'Plaza 789', 'cuenta3', 'arbitro3_alias', 1003, 3, 2); 
+
+INSERT INTO arbitros (username, password, nombre, apellido, domicilio, cuenta, alias, numero_colegiado, telefono, email, permiso, categoria_id, cargo)
+VALUES ('arbitro4', 'password4', 'Carlos', 'Sánchez', 'Calle 101', 'cuenta4', 'arbitro4_alias', 1004, '123456789', 'carlos@example.com', 2, 4, 2),
+    ('arbitro5', 'password5', 'Ana', 'Martínez', 'Calle 202', 'cuenta5', 'arbitro5_alias', 1005, '987654321', 'ana@example.com', 1, 5, 2);
+

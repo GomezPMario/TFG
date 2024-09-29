@@ -57,6 +57,7 @@ app.post('/login', async (req, res) => {
                     alias: arbitro.alias,
                     numero_colegiado: arbitro.numero_colegiado,
                     permiso: arbitro.permiso,
+                    cargo: arbitro.cargo,
                     categoria_id: arbitro.categoria_id,
                     categoria: arbitro.categoria,        
                     subcategoria: arbitro.subcategoria
