@@ -7,18 +7,18 @@ const Arbitros = () => {
     const [search, setSearch] = useState('');
     const [orderBy, setOrderBy] = useState('');
     const [orderType, setOrderType] = useState('asc');
-    const [permission, setPermission] = useState(''); // Estado para permisos
+    const [permission, setPermission] = useState('');
 
+    // Al cambiar el filtro, resetear los otros filtros
     useEffect(() => {
         const fetchArbitros = async () => {
             try {
-                // Si no hay orderBy seleccionado, por defecto ordena por numero_colegiado ascendente
+                // Consulta dinámica, filtrando sólo por lo seleccionado
                 const response = await fetch(`${baseURL}/arbitros?orderBy=${orderBy || 'numero_colegiado'}&orderType=${orderBy ? orderType : 'asc'}&search=${search}&permission=${permission}`);
                 if (!response.ok) {
                     throw new Error('Error en la respuesta de la API');
                 }
                 const data = await response.json();
-                console.log('Datos recibidos:', data);
                 setArbitros(data);
             } catch (error) {
                 console.error('Error fetching arbitros:', error);
@@ -26,12 +26,19 @@ const Arbitros = () => {
         };
 
         fetchArbitros();
-    }, [orderBy, orderType, search, permission]); // Llama a la API cuando cambien los filtros
+    }, [orderBy, orderType, search, permission]);
 
-    // Resetea el orden tipo cuando cambia el filtro
     const handleOrderByChange = (value) => {
         setOrderBy(value);
-        setOrderType('asc'); // Resetea a ascendente por defecto
+        setOrderType('asc');
+        // Reseteamos el permiso si se cambia el filtro
+        if (value !== 'permiso') {
+            setPermission('');
+        }
+        // Reseteamos el search si se cambia el filtro
+        if (value !== 'tipo_cargo') {
+            setSearch('');
+        }
     };
 
     return (
@@ -39,7 +46,6 @@ const Arbitros = () => {
             <h1 className="title">Listado de Árbitros-Oficiales</h1>
             <button className="button" onClick={() => console.log('Añadir nuevo árbitro')}>Añadir nuevo árbitro</button>
 
-            {/* Contenedor de filtro y búsqueda */}
             <div className="filter-search-container">
                 <div className="filter-container">
                     <select onChange={e => handleOrderByChange(e.target.value)} value={orderBy}>
@@ -50,7 +56,6 @@ const Arbitros = () => {
                         <option value="permiso">Permiso</option>
                     </select>
 
-                    {/* Desplegable para tipo de orden si se selecciona Número Colegiado */}
                     {orderBy === 'numero_colegiado' && (
                         <select onChange={e => setOrderType(e.target.value)} value={orderType}>
                             <option value="asc">Ascendente</option>
@@ -58,7 +63,6 @@ const Arbitros = () => {
                         </select>
                     )}
 
-                    {/* Desplegable para tipo de cargo si se selecciona Cargo */}
                     {orderBy === 'tipo_cargo' && (
                         <select onChange={e => setOrderType(e.target.value)} value={orderType}>
                             <option value="">Selecciona cargo</option>
@@ -67,7 +71,6 @@ const Arbitros = () => {
                         </select>
                     )}
 
-                    {/* Desplegable para tipo de orden si se selecciona Categoría */}
                     {orderBy === 'categoria' && (
                         <select onChange={e => setOrderType(e.target.value)} value={orderType}>
                             <option value="asc">Ascendente</option>
@@ -75,7 +78,6 @@ const Arbitros = () => {
                         </select>
                     )}
 
-                    {/* Desplegable para permisos */}
                     {orderBy === 'permiso' && (
                         <select onChange={e => setPermission(e.target.value)} value={permission}>
                             <option value="">Seleccionar permiso</option>
@@ -98,9 +100,9 @@ const Arbitros = () => {
             <table className="table">
                 <thead>
                     <tr>
-                        <th id="col-num">Número Colegiado</th>
-                        <th id="col-alias">Alias</th>
-                        <th id="col-name">Nombre Completo</th>
+                        <th>Número Colegiado</th>
+                        <th>Alias</th>
+                        <th>Nombre Completo</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
