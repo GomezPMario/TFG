@@ -47,6 +47,10 @@
     flex: 1;
 }
 
+.filter-container select {
+    margin-right: 20px; /* Añade espacio entre los desplegables */
+}
+
 /* Barra de búsqueda alineada a la derecha */
 .search-container {
     text-align: right;
