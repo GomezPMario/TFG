@@ -32,7 +32,7 @@ app.post('/login', async (req, res) => {
 
     try {
         const [rows] = await db.query(
-            `SELECT arbitros.*, escala.categoria, escala.subcategoria 
+            `SELECT arbitros.*, escala.categoria, escala.nivel 
             FROM arbitros 
             JOIN escala ON arbitros.categoria_id = escala.id 
             WHERE username = ? AND password = ?`,
@@ -59,8 +59,8 @@ app.post('/login', async (req, res) => {
                     permiso: arbitro.permiso,
                     cargo: arbitro.cargo,
                     categoria_id: arbitro.categoria_id,
-                    categoria: arbitro.categoria,        
-                    subcategoria: arbitro.subcategoria
+                    categoria: arbitro.categoria,
+                    nivel: arbitro.nivel
                 }
             });
         } else {

@@ -1,24 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('./db_setup'); 
+const pool = require('./db_setup');
 
 // Función para obtener el ID de la categoría
-const obtenerCategoriaId = async (categoria, subcategoria) => {
+const obtenerCategoriaId = async (categoria, nivel) => {
     const [rows] = await pool.query(
-        'SELECT id FROM escala WHERE categoria = ? AND subcategoria = ?',
-        [categoria, subcategoria]
+        'SELECT id FROM escala WHERE categoria = ? AND nivel = ?',
+        [categoria, nivel]
     );
     return rows.length > 0 ? rows[0].id : null;
 };
 
 // Ruta para actualizar el perfil
-router.put('/updatePerfil/:id', async (req, res) => {
+router.put('/arbitro/:id', async (req, res) => {
     const id = req.params.id;
     const updatedData = req.body;
 
     try {
         // Obtener el ID de la categoría correspondiente
-        const categoriaId = await obtenerCategoriaId(updatedData.categoria, updatedData.subcategoria);
+        const categoriaId = await obtenerCategoriaId(updatedData.categoria, updatedData.nivel);
         if (!categoriaId) {
             return res.status(404).json({ success: false, message: 'Categoría o subcategoría no encontrada' });
         }

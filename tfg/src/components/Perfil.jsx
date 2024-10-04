@@ -9,8 +9,10 @@ const Perfil = () => {
     const [arbitro, setArbitro] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [updatedData, setUpdatedData] = useState({});
-    const categorias = ['A1', 'A2', 'A3', 'A4', 'P1', 'P2', 'P3', 'Escuela'];
-    const subcategorias = ['Principal', 'Auxiliar', 'Comodín'];
+
+    // Listas de categorías según cargo
+    const categoriasCargo1 = ['ACB', '1 FEB', '2 FEB', '3 FEB', 'A1', 'A2', 'A3', 'A4', 'P1', 'P2', 'P3', 'Escuela'];
+    const categoriasCargo2 = ['ACB', 'LF', '3 FEB', '1 DIV', 'P1', 'P2', 'P3'];
 
     useEffect(() => {
         const storedArbitro = localStorage.getItem('arbitro');
@@ -33,7 +35,7 @@ const Perfil = () => {
     const actualizarPerfil = async (id) => {
         console.log('ID del árbitro:', id);
         try {
-            const response = await axios.put(`${baseURL}/api/updatePerfil/${id}`, updatedData, {
+            const response = await axios.put(`${baseURL}/api/arbitro/${id}`, updatedData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -46,8 +48,6 @@ const Perfil = () => {
             console.error('Error al actualizar el perfil:', error.response ? error.response.data : error.message);
         }
     };
-
-
 
     const toggleEditing = () => {
         setIsEditing(!isEditing);
@@ -62,10 +62,13 @@ const Perfil = () => {
         if (arbitro.permiso === '1') {
             return true; // Admin puede editar todo
         } else if (arbitro.permiso === '2' || arbitro.permiso === '3') {
-            return !['username', 'alias', 'categoria', 'subcategoria'].includes(field);
+            return !['username', 'alias', 'categoria', 'nivel'].includes(field);
         }
         return false; // Otros casos no deberían editar
     };
+
+    // Seleccionar las categorías según el cargo del árbitro
+    const categorias = arbitro.cargo === '1' ? categoriasCargo1 : categoriasCargo2;
 
     return (
         <div className="perfil-page">
@@ -148,27 +151,14 @@ const Perfil = () => {
                                         ))}
                                     </select>
                                 ) : (
-                                    <span>{arbitro.categoria} - {arbitro.subcategoria}</span>
+                                    <span>{arbitro.categoria} - {arbitro.nivel}</span>
                                 )}
                             </li>
-                            {/* Campo para la subcategoría */}
-                            {isEditing && arbitro.permiso === '1' && (
-                                <li>
-                                    <FaTag className="icon" />
-                                    <strong>Subcategoría:</strong>
-                                    <select name="subcategoria" value={updatedData.subcategoria} onChange={handleChange}>
-                                        {subcategorias.map(subcategoria => (
-                                            <option key={subcategoria} value={subcategoria}>{subcategoria}</option>
-                                        ))}
-                                    </select>
-                                </li>
-                            )}
                         </ul>
                     </div>
                 </div>
             </div>
 
-            {/* Botones Aceptar y Cancelar fuera del perfil-container */}
             <div className="boton-container">
                 {isEditing ? (
                     <>
