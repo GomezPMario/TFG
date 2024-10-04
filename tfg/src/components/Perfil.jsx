@@ -87,7 +87,7 @@ const Perfil = () => {
 
     const actualizarPerfil = async (id) => {
         try {
-            const response = await axios.put(`${baseURL}/api/arbitro/${id}`, updatedData, {
+            await axios.put(`${baseURL}/api/arbitro/${id}`, updatedData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
