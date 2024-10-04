@@ -12,16 +12,60 @@ const Perfil = () => {
 
     // Listas de categorías según cargo
     const categoriasCargo1 = ['ACB', '1 FEB', '2 FEB', '3 FEB', 'A1', 'A2', 'A3', 'A4', 'P1', 'P2', 'P3', 'Escuela'];
-    const categoriasCargo2 = ['ACB', 'LF', '3 FEB', '1 DIV', 'P1', 'P2', 'P3'];
+    const categoriasCargo2 = ['ACB', 'LF', 'EBA', '1 DIV', 'P1', 'P2', 'P3'];
+
+    // Función para obtener los niveles basados en categoría y cargo
+    const getNivelesByCategoria = (categoria, cargo) => {
+        if (cargo === '1') {
+            switch (categoria) {
+                case 'ACB':
+                case '1 FEB':
+                case '2 FEB':
+                    return ['1'];
+                case '3 FEB':
+                    return ['1', '2'];
+                case 'A1':
+                case 'A2':
+                case 'A3':
+                case 'A4':
+                case 'P1':
+                case 'P2':
+                case 'P3':
+                case 'Escuela':
+                    return ['1', '2', '3'];
+                default:
+                    return [];
+            }
+        } else if (cargo === '2') {
+            switch (categoria) {
+                case 'ACB':
+                case 'LF':
+                    return ['1', '2'];
+                case '3FEB':
+                case '1 DIV':
+                case 'P1':
+                case 'P2':
+                    return ['1', '2', '3'];
+                case 'P3':
+                    return ['1', '2'];
+                default:
+                    return [];
+            }
+        }
+    };
 
     useEffect(() => {
         const storedArbitro = localStorage.getItem('arbitro');
         if (storedArbitro) {
             const parsedArbitro = JSON.parse(storedArbitro);
             setArbitro(parsedArbitro);
-            setUpdatedData(parsedArbitro); // Inicializa el estado de los datos actualizados
+            setUpdatedData({
+                ...parsedArbitro,
+                nivel: getNivelesByCategoria(parsedArbitro.categoria, parsedArbitro.cargo)[0] || parsedArbitro.nivel
+            });
         }
     }, []);
+
 
     if (!arbitro) {
         return <p>Loading...</p>;
@@ -29,7 +73,19 @@ const Perfil = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        // Actualiza el valor del campo en el estado
         setUpdatedData(prevData => ({ ...prevData, [name]: value }));
+
+        // Si se cambia la categoría, actualizamos también el nivel
+        if (name === 'categoria') {
+            const nuevosNiveles = getNivelesByCategoria(value, arbitro.cargo);
+            setUpdatedData(prevData => ({
+                ...prevData,
+                categoria: value, // Asegura que se actualice la categoría correctamente
+                nivel: nuevosNiveles[0] || '' // Establece el primer nivel disponible
+            }));
+        }
     };
 
     const actualizarPerfil = async (id) => {
@@ -69,6 +125,9 @@ const Perfil = () => {
 
     // Seleccionar las categorías según el cargo del árbitro
     const categorias = arbitro.cargo === '1' ? categoriasCargo1 : categoriasCargo2;
+
+    // Obtener los niveles basados en la categoría actual y el cargo del árbitro
+    const niveles = getNivelesByCategoria(updatedData.categoria, arbitro.cargo);
 
     return (
         <div className="perfil-page">
@@ -155,6 +214,17 @@ const Perfil = () => {
                                 )}
                             </li>
                         </ul>
+                        {isEditing && arbitro.permiso === '1' && (
+                            <li>
+                                <FaTag className="icon" />
+                                <strong>Nivel:</strong>
+                                <select name="nivel" value={updatedData.nivel} onChange={handleChange}>
+                                    {niveles.map(nivel => (
+                                        <option key={nivel} value={nivel}>{nivel}</option>
+                                    ))}
+                                </select>
+                            </li>
+                        )}
                     </div>
                 </div>
             </div>
