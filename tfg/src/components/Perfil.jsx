@@ -10,11 +10,9 @@ const Perfil = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [updatedData, setUpdatedData] = useState({});
 
-    // Listas de categorías según cargo
     const categoriasCargo1 = ['ACB', '1 FEB', '2 FEB', '3 FEB', 'A1', 'A2', 'A3', 'A4', 'P1', 'P2', 'P3', 'Escuela'];
     const categoriasCargo2 = ['ACB', 'LF', 'EBA', '1 DIV', 'P1', 'P2', 'P3'];
 
-    // Función para obtener los niveles basados en categoría y cargo
     const getNivelesByCategoria = (categoria, cargo) => {
         if (cargo === '1') {
             switch (categoria) {
@@ -41,7 +39,6 @@ const Perfil = () => {
                 case 'ACB':
                 case 'LF':
                     return ['1', '2'];
-                case '3FEB':
                 case '1 DIV':
                 case 'P1':
                 case 'P2':
@@ -61,11 +58,11 @@ const Perfil = () => {
             setArbitro(parsedArbitro);
             setUpdatedData({
                 ...parsedArbitro,
-                nivel: getNivelesByCategoria(parsedArbitro.categoria, parsedArbitro.cargo)[0] || parsedArbitro.nivel
+                // Mantener el nivel actual del arbitro
+                nivel: parsedArbitro.nivel
             });
         }
     }, []);
-
 
     if (!arbitro) {
         return <p>Loading...</p>;
@@ -82,24 +79,22 @@ const Perfil = () => {
             const nuevosNiveles = getNivelesByCategoria(value, arbitro.cargo);
             setUpdatedData(prevData => ({
                 ...prevData,
-                categoria: value, // Asegura que se actualice la categoría correctamente
-                nivel: nuevosNiveles[0] || '' // Establece el primer nivel disponible
+                categoria: value,
+                nivel: nuevosNiveles.includes(prevData.nivel) ? prevData.nivel : nuevosNiveles[0] // Mantiene el nivel si es válido
             }));
         }
     };
 
     const actualizarPerfil = async (id) => {
-        console.log('ID del árbitro:', id);
         try {
             const response = await axios.put(`${baseURL}/api/arbitro/${id}`, updatedData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log(response.data);
-            setIsEditing(false); // Desactiva el modo de edición
-            setArbitro(updatedData); // Actualiza el árbitro con los nuevos datos
-            localStorage.setItem('arbitro', JSON.stringify(updatedData)); // Guarda en localStorage
+            setIsEditing(false);
+            setArbitro(updatedData);
+            localStorage.setItem('arbitro', JSON.stringify(updatedData));
         } catch (error) {
             console.error('Error al actualizar el perfil:', error.response ? error.response.data : error.message);
         }
@@ -111,22 +106,19 @@ const Perfil = () => {
 
     const cancelEdit = () => {
         setIsEditing(false);
-        setUpdatedData(arbitro); // Reestablecer los datos originales
+        setUpdatedData(arbitro);
     };
 
     const isEditable = (field) => {
         if (arbitro.permiso === '1') {
-            return true; // Admin puede editar todo
+            return true;
         } else if (arbitro.permiso === '2' || arbitro.permiso === '3') {
             return !['username', 'alias', 'categoria', 'nivel'].includes(field);
         }
-        return false; // Otros casos no deberían editar
+        return false;
     };
 
-    // Seleccionar las categorías según el cargo del árbitro
     const categorias = arbitro.cargo === '1' ? categoriasCargo1 : categoriasCargo2;
-
-    // Obtener los niveles basados en la categoría actual y el cargo del árbitro
     const niveles = getNivelesByCategoria(updatedData.categoria, arbitro.cargo);
 
     return (
