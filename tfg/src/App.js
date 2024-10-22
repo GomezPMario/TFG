@@ -10,6 +10,7 @@ import Informes from './components/Informes';
 import Disponibilidad from './components/Disponibilidad';
 import Designacion from './components/Designacion';
 import Arbitros from './components/Arbitros';
+import NuevoArbitro from './components/NuevoArbitro';
 import Campos from './components/Campos';
 import Categorias from './components/Categorias';
 import Equipos from './components/Equipos';
@@ -49,6 +50,7 @@ function App() {
       {!isAuthenticated ? (
         <Routes>
           <Route path="/" element={<Login onLogin={handleLogin} />} />
+          <Route path="/nuevoarbitro" element={<NuevoArbitro isPublic={true} onClose={() => {}} />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       ) : (
