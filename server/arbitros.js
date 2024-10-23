@@ -187,30 +187,4 @@ router.post('/nuevoarbitro', async (req, res) => {
     }
 });
 
-
-// Ruta para obtener el categoria_id
-router.post('/categoria-id', async (req, res) => {
-    const { categoria, nivel } = req.body;
-
-    try {
-        // Consulta para obtener el categoria_id basado en la categoría y nivel
-        const [result] = await db.query(`
-            SELECT id FROM escala 
-            WHERE categoria = ? AND nivel = ? 
-            LIMIT 1
-        `, [categoria, nivel]);
-
-        if (result.length === 0) {
-            return res.status(404).json({ message: 'Categoría no encontrada' });
-        }
-
-        console.log('Categoria encontrada, id:', result[0].id);
-        res.json({ categoria_id: result[0].id });  // Retorna el categoria_id obtenido
-    } catch (err) {
-        console.error('Error al obtener categoria_id:', err.message);
-        res.status(500).json({ message: 'Error interno del servidor', error: err.message });
-    }
-});
-
-
 module.exports = router;
