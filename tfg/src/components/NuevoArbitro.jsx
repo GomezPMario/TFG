@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles/NuevoArbitro.css';
 import { baseURL } from './Login';
 
@@ -7,40 +7,113 @@ const NuevoArbitro = ({ onClose = null, isPublic = false }) => {
     const [primerApellido, setPrimerApellido] = useState('');
     const [segundoApellido, setSegundoApellido] = useState('');
     const [dni, setDni] = useState('');
-    const [correoElectronico, setCorreoElectronico] = useState(''); // Estado para correo electrónico
+    const [correoElectronico, setCorreoElectronico] = useState('');
     const [fechaNacimiento, setFechaNacimiento] = useState('');
     const [telefono, setTelefono] = useState('');
     const [domicilio, setDomicilio] = useState('');
     const [cuentaBancaria, setCuentaBancaria] = useState('');
     const [cargo, setCargo] = useState('arbitro');
-    const [coche, setCoche] = useState(false); // Estado para coche
-    const [moto, setMoto] = useState(false); // Estado para moto
-    const [categoria, setCategoria] = useState('');
+    const [coche, setCoche] = useState(false);
+    const [moto, setMoto] = useState(false);
+    const [categoria, setCategoria] = useState('ACB');  // Valor por defecto
+    const [nivel, setNivel] = useState('1');
     const [permiso, setPermiso] = useState('3');
+
+    // Listas de categorías según el cargo
+    const categoriasCargo1 = ['ACB', '1 FEB', '2 FEB', '3 FEB', 'A1', 'A2', 'A3', 'A4', 'P1', 'P2', 'P3', 'Escuela'];
+    const categoriasCargo2 = ['ACB', 'LF', 'EBA', '1 DIV', 'P1', 'P2', 'P3'];
+
+    // Obtener niveles según la categoría seleccionada
+    const getNivelesByCategoria = (categoria, cargo) => {
+        if (cargo === 'arbitro') {
+            switch (categoria) {
+                case 'ACB':
+                case '1 FEB':
+                case '2 FEB':
+                    return ['1'];
+                case '3 FEB':
+                    return ['1', '2'];
+                case 'A1':
+                case 'A2':
+                case 'A3':
+                case 'A4':
+                case 'P1':
+                case 'P2':
+                case 'P3':
+                case 'Escuela':
+                    return ['1', '2', '3'];
+                default:
+                    return [];
+            }
+        } else if (cargo === 'oficial') {
+            switch (categoria) {
+                case 'ACB':
+                case 'LF':
+                    return ['1', '2'];
+                case '1 DIV':
+                case 'P1':
+                case 'P2':
+                    return ['1', '2', '3'];
+                case 'P3':
+                    return ['1', '2'];
+                default:
+                    return [];
+            }
+        }
+    };
+
+    // Actualiza la lista de niveles cuando se cambia la categoría o el cargo
+    useEffect(() => {
+        const nuevosNiveles = getNivelesByCategoria(categoria, cargo);
+        setNivel(nuevosNiveles[0]);  // Selecciona el primer nivel por defecto
+    }, [categoria, cargo]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const arbitroData = {
-            nombre,
-            primerApellido,
-            segundoApellido,
-            dni,
-            correo_electronico: correoElectronico, // Añadimos el correo electrónico
-            fecha_nacimiento: fechaNacimiento,
-            telefono,
-            domicilio,
-            cuenta_bancaria: cuentaBancaria,
-            cargo,
-            coche,
-            moto, // Añadir si el árbitro tiene coche o moto
-        };
-
-        if (!isPublic) {
-            arbitroData.categoria = categoria;
-            arbitroData.permiso = permiso;
-        }
 
         try {
+            // 1. Obtener el categoria_id basado en la categoría y nivel seleccionados
+            const categoriaResponse = await fetch(`${baseURL}/arbitros/categoria-id`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ categoria, nivel }),  // Enviamos categoría y nivel seleccionados
+            });
+
+            if (!categoriaResponse.ok) {
+                throw new Error('Error al obtener el categoria_id');
+            }
+
+            const { categoria_id } = await categoriaResponse.json();
+
+            // Depuración: Verificar qué valor estamos obteniendo como categoria_id
+            console.log('Valor de categoria_id obtenido:', categoria_id);
+
+            // Si no se recibe un categoria_id válido, lanzar un error o manejar un valor por defecto
+            if (!categoria_id) {
+                throw new Error('No se pudo obtener el categoria_id correspondiente');
+            }
+
+            // 2. Preparar los datos del nuevo árbitro con el categoria_id obtenido
+            const arbitroData = {
+                nombre,
+                primerApellido,
+                segundoApellido,
+                dni,
+                correo_electronico: correoElectronico,
+                fecha_nacimiento: fechaNacimiento,
+                telefono,
+                domicilio,
+                cuenta_bancaria: cuentaBancaria,
+                cargo,
+                coche,
+                moto,
+                categoria_id,  // Usar el categoria_id obtenido
+                permiso,
+            };
+
+            // 3. Registrar el árbitro
             const response = await fetch(`${baseURL}/arbitros/nuevoarbitro`, {
                 method: 'POST',
                 headers: {
@@ -50,11 +123,10 @@ const NuevoArbitro = ({ onClose = null, isPublic = false }) => {
             });
 
             if (response.ok) {
-                const data = await response.json();  // Solo si el backend retorna JSON
+                const data = await response.json();
                 alert(data.message || 'Árbitro registrado exitosamente');
-                onClose(); // Cierra el formulario después de registrar
+                onClose && onClose();
             } else {
-                // Si la respuesta no es ok, lanza un error
                 const errorMessage = await response.text();
                 throw new Error(errorMessage || 'Error al registrar el árbitro');
             }
@@ -64,6 +136,8 @@ const NuevoArbitro = ({ onClose = null, isPublic = false }) => {
         }
     };
 
+    const categorias = cargo === 'arbitro' ? categoriasCargo1 : categoriasCargo2;
+    const niveles = getNivelesByCategoria(categoria, cargo);
 
     return (
         <div className="nuevo-arbitro-container">
@@ -110,7 +184,7 @@ const NuevoArbitro = ({ onClose = null, isPublic = false }) => {
                     />
                 </div>
                 <div>
-                    <label>Correo Electrónico:</label> {/* Nuevo campo de correo */}
+                    <label>Correo Electrónico:</label>
                     <input
                         type="email"
                         value={correoElectronico}
@@ -145,7 +219,6 @@ const NuevoArbitro = ({ onClose = null, isPublic = false }) => {
                         required
                     />
                 </div>
-
                 <div>
                     <label>Cuenta Bancaria:</label>
                     <input
@@ -190,18 +263,27 @@ const NuevoArbitro = ({ onClose = null, isPublic = false }) => {
                     </select>
                 </div>
 
-                {/* Solo muestra los campos de categoría y permiso si no es público */}
+                {/* Solo se muestran los campos de categoría, nivel y permiso si no es público */}
                 {!isPublic && (
                     <>
                         <div>
                             <label>Categoría:</label>
-                            <input
-                                type="text"
-                                value={categoria}
-                                onChange={(e) => setCategoria(e.target.value)}
-                                required
-                            />
+                            <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
+                                {categorias.map(categoria => (
+                                    <option key={categoria} value={categoria}>{categoria}</option>
+                                ))}
+                            </select>
                         </div>
+
+                        <div>
+                            <label>Nivel:</label>
+                            <select value={nivel} onChange={(e) => setNivel(e.target.value)}>
+                                {niveles.map(nivel => (
+                                    <option key={nivel} value={nivel}>{nivel}</option>
+                                ))}
+                            </select>
+                        </div>
+
                         <div>
                             <label>Permiso:</label>
                             <select value={permiso} onChange={(e) => setPermiso(e.target.value)}>

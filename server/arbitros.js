@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db_setup');
-const bcrypt = require('bcrypt');
+const { hash } = require('bcrypt');
 
 router.get('/', async (req, res) => {
     let sql = 'SELECT * FROM arbitros WHERE 1=1'; // Consulta base
@@ -57,6 +57,30 @@ const combinarApellidos = (primerApellido, segundoApellido) => {
     return `${primerApellido} ${segundoApellido}`;
 };
 
+// Nueva ruta para obtener el categoria_id
+router.post('/categoria-id', async (req, res) => {
+    const { categoria, nivel } = req.body;
+
+    try {
+        // Consulta para obtener el categoria_id basado en la categoría y nivel
+        const [result] = await db.query(`
+            SELECT id FROM escala 
+            WHERE categoria = ? AND nivel = ? 
+            LIMIT 1
+        `, [categoria, nivel]);
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'Categoría no encontrada' });
+        }
+
+        res.json({ categoria_id: result[0].id });
+    } catch (err) {
+        console.error('Error al obtener categoria_id:', err.message);
+        res.status(500).json({ message: 'Error interno del servidor', error: err.message });
+    }
+});
+
+// Actualización de la ruta para insertar nuevo árbitro
 router.post('/nuevoarbitro', async (req, res) => {
     const {
         nombre,
@@ -70,10 +94,10 @@ router.post('/nuevoarbitro', async (req, res) => {
         cuenta_bancaria,
         coche,
         moto,
-        cargo  // Se recibe el valor de "cargo" desde el frontend
+        cargo,
+        permiso,
+        categoria_id  // Recibimos el categoria_id desde el frontend
     } = req.body;
-
-    console.log('Datos recibidos del frontend:', req.body); // Depuración inicial
 
     try {
         // 1. Obtener el primer numero_colegiado disponible
@@ -109,9 +133,7 @@ router.post('/nuevoarbitro', async (req, res) => {
         const apellidoCompleto = combinarApellidos(primerApellido, segundoApellido);
         console.log('Apellidos combinados:', apellidoCompleto); // Depuración de apellidos
 
-        // 5. Cifrar la contraseña (12345) por defecto
-        const hashedPassword = await bcrypt.hash('12345', 10);
-        console.log('Contraseña cifrada:', hashedPassword); // Depuración de la contraseña cifrada
+        // 5. Cifrar la contraseña (opcional, no implementado en este ejemplo)
 
         // 6. Determinar el estado del campo "vehiculo"
         let vehiculo = '0'; // Valor por defecto para el campo enum
@@ -125,10 +147,10 @@ router.post('/nuevoarbitro', async (req, res) => {
         console.log('Estado del vehículo:', vehiculo); // Depuración de vehículo
 
         // 7. Determinar el valor de "cargo" (1 = Árbitro, 2 = Oficial)
-        let cargoValue = cargo === 'arbitro' ? '1' : '2'; // Convertir el valor a cadena para cumplir con el tipo enum
+        let cargoValue = cargo === 'arbitro' ? '1' : '2';
         console.log('Valor de cargo:', cargoValue); // Depuración de cargo
 
-        // 8. Guardar los datos en la base de datos
+        // 8. Guardar los datos en la base de datos con el categoria_id correcto
         const sql = `
             INSERT INTO arbitros 
             (nombre, apellido, alias, username, password, email, fecha_nacimiento, telefono, domicilio, cuenta, vehiculo, permiso, categoria_id, numero_colegiado, cargo) 
@@ -136,31 +158,56 @@ router.post('/nuevoarbitro', async (req, res) => {
         `;
 
         const values = [
-            nombre,                      // Nombre
-            apellidoCompleto,            // Apellido
-            alias,                       // Alias
-            dni,                         // Username (DNI)
-            hashedPassword,              // Contraseña cifrada
-            correo_electronico,           // Correo electrónico
-            fecha_nacimiento,            // Fecha de nacimiento
-            telefono,                    // Teléfono
-            domicilio,                   // Domicilio
-            cuenta_bancaria,             // Cuenta bancaria
-            vehiculo,                    // Vehículo (cadena '0', '1', '2', '3')
-            '3',                         // Permiso por defecto (cadena '3' para el enum)
-            35,                          // Categoría por defecto (id 35)
-            numeroColegiado,             // Número colegiado
-            cargoValue                   // Cargo (cadena '1' para Árbitro o '2' para Oficial)
+            nombre,
+            apellidoCompleto,
+            alias,
+            dni,
+            12345,  // Contraseña predeterminada
+            correo_electronico,
+            fecha_nacimiento,
+            telefono,
+            domicilio,
+            cuenta_bancaria,
+            vehiculo,
+            permiso || '3',  // Permiso por defecto '3' si no se proporciona
+            categoria_id,  // Aquí usamos el categoria_id que nos llegó del frontend
+            numeroColegiado,
+            cargoValue
         ];
 
-        console.log('Valores a insertar en la base de datos:', values); // Depuración de los valores antes de la inserción
+        console.log('Valores a insertar:', values); // Depuración final antes de la inserción
 
         await db.query(sql, values);
 
-        console.log('Inserción exitosa en la base de datos'); // Confirmación de inserción
-        res.status(201).json({ message: 'Árbitro registrado exitosamente' }); // Asegúrate de que estás enviando un JSON válido
+        console.log('Inserción exitosa en la base de datos');
+        res.status(201).json({ message: 'Árbitro registrado exitosamente' });
     } catch (err) {
-        console.error('Error al registrar el árbitro:', err.message); // Mostrar el mensaje exacto de error
+        console.error('Error al registrar el árbitro:', err.message);
+        res.status(500).json({ message: 'Error interno del servidor', error: err.message });
+    }
+});
+
+
+// Ruta para obtener el categoria_id
+router.post('/categoria-id', async (req, res) => {
+    const { categoria, nivel } = req.body;
+
+    try {
+        // Consulta para obtener el categoria_id basado en la categoría y nivel
+        const [result] = await db.query(`
+            SELECT id FROM escala 
+            WHERE categoria = ? AND nivel = ? 
+            LIMIT 1
+        `, [categoria, nivel]);
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'Categoría no encontrada' });
+        }
+
+        console.log('Categoria encontrada, id:', result[0].id);
+        res.json({ categoria_id: result[0].id });  // Retorna el categoria_id obtenido
+    } catch (err) {
+        console.error('Error al obtener categoria_id:', err.message);
         res.status(500).json({ message: 'Error interno del servidor', error: err.message });
     }
 });
