@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/TFG/static/css/main.2552d3f6.css",
-    "main.js": "/TFG/static/js/main.5bf9e14c.js",
+    "main.css": "/TFG/static/css/main.7c913cff.css",
+    "main.js": "/TFG/static/js/main.77543151.js",
     "static/js/453.3c9de2ab.chunk.js": "/TFG/static/js/453.3c9de2ab.chunk.js",
     "static/media/LoginWallpaper.jpeg": "/TFG/static/media/LoginWallpaper.0d429ebd4ce696420d8b.jpeg",
     "static/media/LogoCAAB.png": "/TFG/static/media/LogoCAAB.b98001116c66cf4b3e29.png",
     "index.html": "/TFG/index.html",
-    "main.2552d3f6.css.map": "/TFG/static/css/main.2552d3f6.css.map",
-    "main.5bf9e14c.js.map": "/TFG/static/js/main.5bf9e14c.js.map",
+    "main.7c913cff.css.map": "/TFG/static/css/main.7c913cff.css.map",
+    "main.77543151.js.map": "/TFG/static/js/main.77543151.js.map",
     "453.3c9de2ab.chunk.js.map": "/TFG/static/js/453.3c9de2ab.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.2552d3f6.css",
-    "static/js/main.5bf9e14c.js"
+    "static/css/main.7c913cff.css",
+    "static/js/main.77543151.js"
   ]
 }
