@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db_setup');
-const { hash } = require('bcrypt');
+// const { hash } = require('bcrypt');
 
 router.get('/', async (req, res) => {
     let sql = 'SELECT * FROM arbitros WHERE 1=1'; // Consulta base
