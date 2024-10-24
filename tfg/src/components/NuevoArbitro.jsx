@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './styles/NuevoArbitro.css';
 import { baseURL } from './Login';
 
-const NuevoArbitro = ({ onClose = null, isPublic = false }) => {
+const NuevoArbitro = ({ onClose = null, isPublic = false, isManual = false }) => {
     const [nombre, setNombre] = useState('');
     const [primerApellido, setPrimerApellido] = useState('');
     const [segundoApellido, setSegundoApellido] = useState('');
@@ -72,30 +72,30 @@ const NuevoArbitro = ({ onClose = null, isPublic = false }) => {
         e.preventDefault();
 
         try {
-            // 1. Obtener el categoria_id basado en la categoría y nivel seleccionados
-            const categoriaResponse = await fetch(`${baseURL}/arbitros/categoria-id`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ categoria, nivel }),  // Enviamos categoría y nivel seleccionados
-            });
+            let categoria_id;
 
-            if (!categoriaResponse.ok) {
-                throw new Error('Error al obtener el categoria_id');
+            if (isManual) {
+                // Caso manual (el usuario selecciona la categoría y nivel)
+                const categoriaResponse = await fetch(`${baseURL}/arbitros/categoria-id`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ categoria, nivel }),  // Enviamos categoría y nivel seleccionados
+                });
+
+                if (!categoriaResponse.ok) {
+                    throw new Error('Error al obtener el categoria_id');
+                }
+
+                const data = await categoriaResponse.json();
+                categoria_id = data.categoria_id;
+            } else {
+                // Si no es manual, asignar categoria_id a 35 automáticamente
+                categoria_id = 35;
             }
 
-            const { categoria_id } = await categoriaResponse.json();
-
-            // Depuración: Verificar qué valor estamos obteniendo como categoria_id
-            console.log('Valor de categoria_id obtenido:', categoria_id);
-
-            // Si no se recibe un categoria_id válido, lanzar un error o manejar un valor por defecto
-            if (!categoria_id) {
-                throw new Error('No se pudo obtener el categoria_id correspondiente');
-            }
-
-            // 2. Preparar los datos del nuevo árbitro con el categoria_id obtenido
+            // Ahora, seguir con el proceso de registro usando el `categoria_id` obtenido o asignado
             const arbitroData = {
                 nombre,
                 primerApellido,
@@ -109,11 +109,10 @@ const NuevoArbitro = ({ onClose = null, isPublic = false }) => {
                 cargo,
                 coche,
                 moto,
-                categoria_id,  // Usar el categoria_id obtenido
+                categoria_id,  // Usamos el categoria_id aquí
                 permiso,
             };
 
-            // 3. Registrar el árbitro
             const response = await fetch(`${baseURL}/arbitros/nuevoarbitro`, {
                 method: 'POST',
                 headers: {

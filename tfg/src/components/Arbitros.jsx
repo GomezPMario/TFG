@@ -45,7 +45,11 @@ const Arbitros = () => {
             <button className="button" onClick={() => setShowNuevoArbitro(true)}>Añadir nuevo árbitro</button>
 
             {showNuevoArbitro && (
-                <NuevoArbitro onClose={() => setShowNuevoArbitro(false)} />
+                // <NuevoArbitro onClose={() => setShowNuevoArbitro(false)} />
+                <NuevoArbitro
+                    onClose={() => setShowNuevoArbitro(false)}
+                    isManual={true}  // Aquí estamos indicando que el registro es manual
+                />
             )}
 
             {!showNuevoArbitro && (
