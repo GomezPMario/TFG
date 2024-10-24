@@ -2,53 +2,37 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './styles/Perfil.css';
 import { baseURL } from './Login';
-import { FaUser, FaEnvelope, FaPhone, FaHome, FaKey, FaTag } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaPhone, FaHome, FaKey, FaTag, FaCarSide } from 'react-icons/fa';
+import { RiMotorbikeFill } from "react-icons/ri";
+import { LiaBirthdayCakeSolid } from "react-icons/lia";
 import { GiPencilRuler } from "react-icons/gi";
 
 const Perfil = () => {
     const [arbitro, setArbitro] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [updatedData, setUpdatedData] = useState({});
+    const [coche, setCoche] = useState(false);
+    const [moto, setMoto] = useState(false);
+    const [fechaNacimiento, setFechaNacimiento] = useState('');
 
-    const categoriasCargo1 = ['ACB', '1 FEB', '2 FEB', '3 FEB', 'A1', 'A2', 'A3', 'A4', 'P1', 'P2', 'P3', 'Escuela'];
-    const categoriasCargo2 = ['ACB', 'LF', 'EBA', '1 DIV', 'P1', 'P2', 'P3'];
+    // Función para convertir la fecha a formato yyyy-mm-dd
+    const formatToISODate = (isoString) => {
+        if (!isoString) return '';
+        const date = new Date(isoString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
-    const getNivelesByCategoria = (categoria, cargo) => {
-        if (cargo === '1') {
-            switch (categoria) {
-                case 'ACB':
-                case '1 FEB':
-                case '2 FEB':
-                    return ['1'];
-                case '3 FEB':
-                    return ['1', '2'];
-                case 'A1':
-                case 'A2':
-                case 'A3':
-                case 'A4':
-                case 'P1':
-                case 'P2':
-                case 'P3':
-                case 'Escuela':
-                    return ['1', '2', '3'];
-                default:
-                    return [];
-            }
-        } else if (cargo === '2') {
-            switch (categoria) {
-                case 'ACB':
-                case 'LF':
-                    return ['1', '2'];
-                case '1 DIV':
-                case 'P1':
-                case 'P2':
-                    return ['1', '2', '3'];
-                case 'P3':
-                    return ['1', '2'];
-                default:
-                    return [];
-            }
-        }
+    // Función para convertir la fecha de 'yyyy-mm-ddTHH:MM:SSZ' a 'dd/mm/yyyy'
+    const formatDate = (isoString) => {
+        if (!isoString) return '';
+        const date = new Date(isoString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
     };
 
     useEffect(() => {
@@ -56,11 +40,26 @@ const Perfil = () => {
         if (storedArbitro) {
             const parsedArbitro = JSON.parse(storedArbitro);
             setArbitro(parsedArbitro);
-            setUpdatedData({
-                ...parsedArbitro,
-                // Mantener el nivel actual del arbitro
-                nivel: parsedArbitro.nivel
-            });
+            setUpdatedData(parsedArbitro);
+
+            // Inicializar sliders según el valor de vehiculo
+            const vehiculo = parsedArbitro.vehiculo;
+            if (vehiculo === '0') {
+                setCoche(false);
+                setMoto(false);
+            } else if (vehiculo === '1') {
+                setCoche(true);
+                setMoto(false);
+            } else if (vehiculo === '2') {
+                setCoche(false);
+                setMoto(true);
+            } else if (vehiculo === '3') {
+                setCoche(true);
+                setMoto(true);
+            }
+
+            // Inicializar la fecha de nacimiento en formato yyyy-mm-dd
+            setFechaNacimiento(formatToISODate(parsedArbitro.fecha_nacimiento));
         }
     }, []);
 
@@ -70,31 +69,43 @@ const Perfil = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
-        // Actualiza el valor del campo en el estado
         setUpdatedData(prevData => ({ ...prevData, [name]: value }));
 
-        // Si se cambia la categoría, actualizamos también el nivel
-        if (name === 'categoria') {
-            const nuevosNiveles = getNivelesByCategoria(value, arbitro.cargo);
-            setUpdatedData(prevData => ({
-                ...prevData,
-                categoria: value,
-                nivel: nuevosNiveles.includes(prevData.nivel) ? prevData.nivel : nuevosNiveles[0] // Mantiene el nivel si es válido
-            }));
+        if (name === 'fecha_nacimiento') {
+            setFechaNacimiento(value);
+            setUpdatedData(prevData => ({ ...prevData, fecha_nacimiento: value }));
+        }
+    };
+
+    const handleVehiculoChange = (vehiculo) => {
+        if (vehiculo === 'coche') {
+            const newCocheState = !coche;
+            setCoche(newCocheState);
+            const newVehiculoValue = newCocheState && moto ? '3' : newCocheState ? '1' : moto ? '2' : '0';
+            setUpdatedData(prevData => ({ ...prevData, vehiculo: newVehiculoValue }));
+        } else if (vehiculo === 'moto') {
+            const newMotoState = !moto;
+            setMoto(newMotoState);
+            const newVehiculoValue = coche && newMotoState ? '3' : coche ? '1' : newMotoState ? '2' : '0';
+            setUpdatedData(prevData => ({ ...prevData, vehiculo: newVehiculoValue }));
         }
     };
 
     const actualizarPerfil = async (id) => {
         try {
-            await axios.put(`${baseURL}/api/arbitro/${id}`, updatedData, {
+            const dataToSend = {
+                ...updatedData,
+                fecha_nacimiento: fechaNacimiento  // Aseguramos enviar la fecha correcta en formato yyyy-mm-dd
+            };
+
+            await axios.put(`${baseURL}/api/arbitro/${id}`, dataToSend, {
                 headers: {
-                    'Content-Type': 'application/json'
-                }
+                    'Content-Type': 'application/json',
+                },
             });
             setIsEditing(false);
-            setArbitro(updatedData);
-            localStorage.setItem('arbitro', JSON.stringify(updatedData));
+            setArbitro(dataToSend);  // Actualizamos el estado local con la data enviada
+            localStorage.setItem('arbitro', JSON.stringify(dataToSend));
         } catch (error) {
             console.error('Error al actualizar el perfil:', error.response ? error.response.data : error.message);
         }
@@ -107,6 +118,23 @@ const Perfil = () => {
     const cancelEdit = () => {
         setIsEditing(false);
         setUpdatedData(arbitro);
+        setFechaNacimiento(formatToISODate(arbitro.fecha_nacimiento)); // Restaurar la fecha de nacimiento original
+
+        // Restaurar el estado inicial de los sliders
+        const vehiculo = arbitro.vehiculo;
+        if (vehiculo === '0') {
+            setCoche(false);
+            setMoto(false);
+        } else if (vehiculo === '1') {
+            setCoche(true);
+            setMoto(false);
+        } else if (vehiculo === '2') {
+            setCoche(false);
+            setMoto(true);
+        } else if (vehiculo === '3') {
+            setCoche(true);
+            setMoto(true);
+        }
     };
 
     const isEditable = (field) => {
@@ -118,8 +146,8 @@ const Perfil = () => {
         return false;
     };
 
-    const categorias = arbitro.cargo === '1' ? categoriasCargo1 : categoriasCargo2;
-    const niveles = getNivelesByCategoria(updatedData.categoria, arbitro.cargo);
+    const categorias = arbitro.cargo === '1' ? ['ACB', '1 FEB', '2 FEB', '3 FEB', 'A1', 'A2', 'A3', 'A4', 'P1', 'P2', 'P3', 'Escuela'] : ['ACB', 'LF', 'EBA', '1 DIV', 'P1', 'P2', 'P3'];
+    const niveles = arbitro.cargo === '1' ? ['1', '2', '3'] : ['1', '2'];
 
     return (
         <div className="perfil-page">
@@ -160,18 +188,9 @@ const Perfil = () => {
                                 <input type="text" name="apellido" value={updatedData.apellido} onChange={handleChange} />
                                 : arbitro.apellido}
                             </li>
-                            <li><FaEnvelope className="icon" />
-                                <strong>Email:</strong>
-                                {isEditing && isEditable('email') ? (
-                                    <input
-                                        type="text"
-                                        name="email"
-                                        value={updatedData.email}
-                                        onChange={handleChange}
-                                    />
-                                ) : (
-                                    <div className="email-section">{arbitro.email}</div>
-                                )}
+                            <li><FaEnvelope className="icon" /> <strong>Email:</strong> {isEditing && isEditable('email') ?
+                                <input type="text" name="email" value={updatedData.email} onChange={handleChange} />
+                                : arbitro.email}
                             </li>
                             <li><FaHome className="icon" /> <strong>Domicilio:</strong> {isEditing && isEditable('domicilio') ?
                                 <input type="text" name="domicilio" value={updatedData.domicilio} onChange={handleChange} />
@@ -186,11 +205,50 @@ const Perfil = () => {
                     <div className="perfil-column">
                         <ul>
                             <li>
+                                <LiaBirthdayCakeSolid className="icon" />
+                                {isEditing ? (
+                                    <input
+                                        type="date"
+                                        name="fecha_nacimiento"
+                                        value={fechaNacimiento}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                ) : (
+                                    <span>{formatDate(arbitro.fecha_nacimiento)}</span>
+                                )}
+                            </li>
+                            <li>
+                                <FaCarSide className="icon" />
+                                <strong>Coche:</strong>
+                                <label className="switch">
+                                    <input
+                                        type="checkbox"
+                                        checked={coche}
+                                        onChange={() => handleVehiculoChange('coche')}
+                                        disabled={!isEditing}
+                                    />
+                                    <span className="slider"></span>
+                                </label>
+                            </li>
+                            <li>
+                                <RiMotorbikeFill className="icon" />
+                                <strong>Moto:</strong>
+                                <label className="switch">
+                                    <input
+                                        type="checkbox"
+                                        checked={moto}
+                                        onChange={() => handleVehiculoChange('moto')}
+                                        disabled={!isEditing}
+                                    />
+                                    <span className="slider"></span>
+                                </label>
+                            </li>
+                            <li>
                                 <FaTag className="icon" />
                                 <strong>Permiso:</strong>
                                 {arbitro.permiso === '1' ? 'Admin' :
-                                    arbitro.permiso === '2' ? 'Técnico' : 'Árbitro - Oficial'
-                                }
+                                    arbitro.permiso === '2' ? 'Técnico' : 'Árbitro - Oficial'}
                             </li>
                             <li>
                                 <FaTag className="icon" />
@@ -205,18 +263,18 @@ const Perfil = () => {
                                     <span>{arbitro.categoria} - {arbitro.nivel}</span>
                                 )}
                             </li>
+                            {isEditing && arbitro.permiso === '1' && (
+                                <li>
+                                    <FaTag className="icon" />
+                                    <strong>Nivel:</strong>
+                                    <select name="nivel" value={updatedData.nivel} onChange={handleChange}>
+                                        {niveles.map(nivel => (
+                                            <option key={nivel} value={nivel}>{nivel}</option>
+                                        ))}
+                                    </select>
+                                </li>
+                            )}
                         </ul>
-                        {isEditing && arbitro.permiso === '1' && (
-                            <li>
-                                <FaTag className="icon" />
-                                <strong>Nivel:</strong>
-                                <select name="nivel" value={updatedData.nivel} onChange={handleChange}>
-                                    {niveles.map(nivel => (
-                                        <option key={nivel} value={nivel}>{nivel}</option>
-                                    ))}
-                                </select>
-                            </li>
-                        )}
                     </div>
                 </div>
             </div>

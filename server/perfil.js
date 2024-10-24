@@ -25,7 +25,7 @@ router.put('/arbitro/:id', async (req, res) => {
 
         // Actualizar el perfil en la base de datos
         await pool.query(
-            'UPDATE arbitros SET username = ?, password = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria_id = ?, numero_colegiado = ?, alias = ? WHERE id = ?',
+            'UPDATE arbitros SET username = ?, password = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria_id = ?, numero_colegiado = ?, alias = ?, fecha_nacimiento = ?, vehiculo = ? WHERE id = ?',
             [
                 updatedData.username,
                 updatedData.password,
@@ -39,6 +39,8 @@ router.put('/arbitro/:id', async (req, res) => {
                 categoriaId,
                 updatedData.numero_colegiado,  // Asegúrate de incluir esto
                 updatedData.alias,               // Aquí se añade el alias
+                updatedData.fecha_nacimiento,    // Asegúrate de actualizar la fecha de nacimiento
+                updatedData.vehiculo,            // Asegúrate de actualizar el campo vehiculo
                 id
             ]
         );

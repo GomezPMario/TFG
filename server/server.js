@@ -60,7 +60,9 @@ app.post('/login', async (req, res) => {
                     cargo: arbitro.cargo,
                     categoria_id: arbitro.categoria_id,
                     categoria: arbitro.categoria,
-                    nivel: arbitro.nivel
+                    nivel: arbitro.nivel,
+                    vehiculo: arbitro.vehiculo,
+                    fecha_nacimiento: arbitro.fecha_nacimiento,
                 }
             });
         } else {
