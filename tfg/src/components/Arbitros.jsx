@@ -3,6 +3,7 @@ import './styles/Arbitros.css';
 import { baseURL } from './Login';
 import NuevoArbitro from './NuevoArbitro';
 import Licencias from './Licencias';
+import Exportar from './Exportar';
 
 const Arbitros = () => {
     const [arbitros, setArbitros] = useState([]);
@@ -12,6 +13,7 @@ const Arbitros = () => {
     const [permission, setPermission] = useState('');
     const [showNuevoArbitro, setShowNuevoArbitro] = useState(false);
     const [showLicencias, setShowLicencias] = useState(false);
+    const [showExportar, setShowExportar] = useState(false);
 
     useEffect(() => {
         const fetchArbitros = async () => {
@@ -46,7 +48,7 @@ const Arbitros = () => {
             <h1 className="title">Listado de Árbitros-Oficiales</h1>
             <button className="button" onClick={() => setShowLicencias(true)}>Gestionar licencias</button>
             <button className="button" onClick={() => setShowNuevoArbitro(true)}>Añadir nuevo árbitro</button>
-            <button className="button" onClick={() => setShowNuevoArbitro(true)}>Exportar datos</button>
+            <button className="button" onClick={() => setShowExportar(true)}>Exportar datos</button>
             
             {showLicencias && (
                 <Licencias onClose={() => setShowLicencias(false)} />
@@ -58,6 +60,10 @@ const Arbitros = () => {
                     onClose={() => setShowNuevoArbitro(false)}
                     isManual={true}  // Aquí estamos indicando que el registro es manual
                 />
+            )}
+
+            {showExportar && (
+                <Exportar onClose={() => setShowExportar(false)} />
             )}
 
             {!showNuevoArbitro && (
