@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './styles/Arbitros.css';
 import { baseURL } from './Login';
-import NuevoArbitro from './NuevoArbitro'; // Importar el nuevo componente
+import NuevoArbitro from './NuevoArbitro';
+import Licencias from './Licencias';
 
 const Arbitros = () => {
     const [arbitros, setArbitros] = useState([]);
@@ -9,7 +10,8 @@ const Arbitros = () => {
     const [orderBy, setOrderBy] = useState('');
     const [orderType, setOrderType] = useState('asc');
     const [permission, setPermission] = useState('');
-    const [showNuevoArbitro, setShowNuevoArbitro] = useState(false); // Nuevo estado para mostrar el formulario
+    const [showNuevoArbitro, setShowNuevoArbitro] = useState(false);
+    const [showLicencias, setShowLicencias] = useState(false);
 
     useEffect(() => {
         const fetchArbitros = async () => {
@@ -42,7 +44,13 @@ const Arbitros = () => {
     return (
         <div className="container">
             <h1 className="title">Listado de Árbitros-Oficiales</h1>
+            <button className="button" onClick={() => setShowLicencias(true)}>Gestionar licencias</button>
             <button className="button" onClick={() => setShowNuevoArbitro(true)}>Añadir nuevo árbitro</button>
+            <button className="button" onClick={() => setShowNuevoArbitro(true)}>Exportar datos</button>
+            
+            {showLicencias && (
+                <Licencias onClose={() => setShowLicencias(false)} />
+            )}
 
             {showNuevoArbitro && (
                 // <NuevoArbitro onClose={() => setShowNuevoArbitro(false)} />

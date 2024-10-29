@@ -3,7 +3,7 @@ const mysql = require('mysql2/promise');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const db = require('./db_setup');
-const perfilRoutes = require('./perfil');
+// const perfilRoutes = require('./arbitros');
 const arbitrosRoutes = require('./arbitros');
 
 dotenv.config();
@@ -23,8 +23,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
-app.use('/api', perfilRoutes);
+// app.use('/api', perfilRoutes);
 app.use('/arbitros', arbitrosRoutes);
+
 
 // Endpoint para iniciar sesión
 app.post('/login', async (req, res) => {

@@ -7,20 +7,17 @@ router.get('/', async (req, res) => {
     let sql = 'SELECT * FROM arbitros WHERE 1=1'; // Consulta base
     const { orderBy, orderType, search, permission } = req.query;
 
-    // Filtrar por búsqueda (aplicable solo si no se está filtrando por permiso)
     if (orderBy !== 'permiso') {
         if (search) {
             sql += ` AND (username LIKE ? OR nombre LIKE ? OR apellido LIKE ? OR alias LIKE ? OR numero_colegiado LIKE ?)`;
         }
     }
 
-    // Filtrar por permiso si se selecciona
     if (orderBy === 'permiso') {
         if (permission) {
             sql += ` AND permiso = ?`;
         }
     } else {
-        // Filtrar por tipo de cargo
         if (orderBy === 'tipo_cargo' && orderType) {
             if (orderType === 'arbitro') {
                 sql += ' AND cargo = 1';
@@ -30,12 +27,10 @@ router.get('/', async (req, res) => {
         }
     }
 
-    // Añadir ordenamiento dinámico por numero_colegiado
     const orderDirection = orderType === 'desc' ? 'DESC' : 'ASC';
     sql += ` ORDER BY numero_colegiado ${orderDirection}`;
 
     try {
-        // Parametros de búsqueda
         let params = [];
         if (search && orderBy !== 'permiso') {
             params = Array(5).fill(`%${search}%`);
@@ -57,12 +52,10 @@ const combinarApellidos = (primerApellido, segundoApellido) => {
     return `${primerApellido} ${segundoApellido}`;
 };
 
-// Nueva ruta para obtener el categoria_id
 router.post('/categoria-id', async (req, res) => {
     const { categoria, nivel } = req.body;
 
     try {
-        // Consulta para obtener el categoria_id basado en la categoría y nivel
         const [result] = await db.query(`
             SELECT id FROM escala 
             WHERE categoria = ? AND nivel = ? 
@@ -80,7 +73,6 @@ router.post('/categoria-id', async (req, res) => {
     }
 });
 
-// Actualización de la ruta para insertar nuevo árbitro
 router.post('/nuevoarbitro', async (req, res) => {
     const {
         nombre,
@@ -96,7 +88,7 @@ router.post('/nuevoarbitro', async (req, res) => {
         moto,
         cargo,
         permiso,
-        categoria_id  // Recibimos el categoria_id desde el frontend
+        categoria_id  
     } = req.body;
 
     try {
@@ -184,6 +176,95 @@ router.post('/nuevoarbitro', async (req, res) => {
     } catch (err) {
         console.error('Error al registrar el árbitro:', err.message);
         res.status(500).json({ message: 'Error interno del servidor', error: err.message });
+    }
+});
+
+router.get('/licencia', async (req, res) => {
+    try {
+        const [licencias] = await db.query('SELECT numero_colegiado FROM numeros_colegiado ORDER BY numero_colegiado ASC');
+        res.json(licencias);
+    } catch (error) {
+        console.error('Error al obtener los números de colegiado:', error.message);
+        res.status(500).json({ message: 'Error al obtener los números de colegiado' });
+    }
+});
+
+router.post('/licencia', async (req, res) => {
+    const { numero_colegiado } = req.body;
+
+    try {
+        await db.query('INSERT INTO numeros_colegiado (numero_colegiado) VALUES (?)', [numero_colegiado]);
+        res.status(200).json({ message: 'Licencia añadida correctamente' });
+    } catch (error) {
+        console.error('Error al añadir licencia:', error);
+        res.status(500).json({ message: 'Error en el servidor' });
+    }
+});
+
+router.delete('/licencia/:numero_colegiado', async (req, res) => {
+    const { numero_colegiado } = req.params;
+
+    try {
+        const [result] = await db.query('DELETE FROM numeros_colegiado WHERE numero_colegiado = ?', [numero_colegiado]);
+
+        if (result.affectedRows > 0) {
+            // Si se eliminó una fila, responde con éxito
+            res.status(200).json({ message: 'Licencia eliminada correctamente' });
+        } else {
+            // Si no se eliminó ninguna fila, responde con error
+            res.status(404).json({ message: 'Licencia no encontrada' });
+        }
+    } catch (error) {
+        console.error('Error al eliminar licencia:', error);
+        res.status(500).json({ message: 'Error en el servidor' });
+    }
+});
+
+
+const obtenerCategoriaId = async (categoria, nivel) => {
+    const [rows] = await pool.query(
+        'SELECT id FROM escala WHERE categoria = ? AND nivel = ?',
+        [categoria, nivel]
+    );
+    return rows.length > 0 ? rows[0].id : null;
+};
+
+// Ruta para actualizar el perfil
+router.put('/arbitro/:id', async (req, res) => {
+    const id = req.params.id;
+    const updatedData = req.body;
+
+    try {
+        const categoriaId = await obtenerCategoriaId(updatedData.categoria, updatedData.nivel);
+        if (!categoriaId) {
+            return res.status(404).json({ success: false, message: 'Categoría o subcategoría no encontrada' });
+        }
+
+        await pool.query(
+            'UPDATE arbitros SET username = ?, password = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria_id = ?, numero_colegiado = ?, alias = ?, fecha_nacimiento = ?, vehiculo = ? WHERE id = ?',
+            [
+                updatedData.username,
+                updatedData.password,
+                updatedData.nombre,
+                updatedData.apellido,
+                updatedData.domicilio,
+                updatedData.telefono,
+                updatedData.email,
+                updatedData.cuenta,
+                updatedData.permiso,
+                categoriaId,
+                updatedData.numero_colegiado,
+                updatedData.alias,
+                updatedData.fecha_nacimiento,
+                updatedData.vehiculo,
+                id
+            ]
+        );
+
+        res.json({ success: true, message: 'Perfil actualizado correctamente' });
+    } catch (error) {
+        console.error('Error al actualizar el perfil:', error);
+        res.status(500).json({ success: false, message: 'Error al actualizar el perfil' });
     }
 });
 

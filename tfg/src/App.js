@@ -10,6 +10,7 @@ import Informes from './components/Informes';
 import Disponibilidad from './components/Disponibilidad';
 import Designacion from './components/Designacion';
 import Arbitros from './components/Arbitros';
+// import Licencias from './components/Licencias';
 import NuevoArbitro from './components/NuevoArbitro';
 import Campos from './components/Campos';
 import Categorias from './components/Categorias';
@@ -65,6 +66,7 @@ function App() {
               <Route path="/disponibilidad" element={<Disponibilidad />} />
               <Route path="/designacion" element={<Designacion />} />
               <Route path="/arbitros" element={<Arbitros />} />
+              {/* <Route path="/licencia" component={Licencias} /> */}
               <Route path="/campos" element={<Campos />} />
               <Route path="/categorias" element={<Categorias />} />
               <Route path="/equipos" element={<Equipos />} />

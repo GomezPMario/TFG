@@ -1,0 +1,107 @@
+/* Licencias.css */
+.licencias-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.licencias-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 500px;
+    max-width: 90%;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.licencias-table-container {
+    max-height: 300px; /* Altura fija para mostrar las primeras 10 filas aproximadamente */
+    overflow-y: auto;  /* Habilitar scroll */
+    margin-top: 10px;
+}
+
+.licencias-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.licencias-table th, .licencias-table td {
+    padding: 12px;
+    text-align: center; /* Centrar contenido */
+    border-bottom: 1px solid #ddd;
+}
+
+.licencias-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+/* Estilo del botón de eliminación con ícono más grande */
+.licencias-table td .delete-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none; /* Sin fondo */
+    cursor: pointer; /* Cambia el cursor para que parezca un botón */
+    transition: transform 0.2s;
+    font-size: 20px; /* Aumenta el tamaño del ícono */
+}
+
+.close-button {
+    margin-top: 20px;
+    padding: 8px 16px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.close-button:hover {
+    background-color: #d32f2f;
+}
+
+.add-licencia-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.input-new-licencia {
+    height: auto;
+    width: 300px; /* Ajuste de la anchura */
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+    margin-right: 8px;
+}
+
+.button-send {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #333;
+}
+
+.button-send:hover {
+    color: #007bff;
+}
+
+.message {
+    color: green;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-align: center;
+}
