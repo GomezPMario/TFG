@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db_setup');
 // const { hash } = require('bcrypt');
+const XLSX = require('xlsx');
 
 router.get('/', async (req, res) => {
     let sql = 'SELECT * FROM arbitros WHERE 1=1'; // Consulta base
@@ -220,6 +221,9 @@ router.delete('/licencia/:numero_colegiado', async (req, res) => {
     }
 });
 
+router.post('/export', async (req, res) => {
+
+});
 
 const obtenerCategoriaId = async (categoria, nivel) => {
     const [rows] = await pool.query(

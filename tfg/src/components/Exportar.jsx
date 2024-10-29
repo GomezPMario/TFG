@@ -1,53 +1,61 @@
-// Exportar.jsx
 import React, { useState } from 'react';
 import './styles/Exportar.css';
 
 const Exportar = ({ onClose }) => {
     const fields = [
-        'Usuario', 'Contraseña', 'Nombre', 'Apellidos', 'Domicilio',
-        'Teléfono', 'Email', 'Cuenta Bancaria', 'Alias', 'Número de Colegiado', 'Permiso',
-        'Cargo', 'Categoría', 'Nivel', 'Vehículo', 'Fecha de Nacimiento'
+        { label: 'Usuario', value: 'username' },
+        { label: 'Contraseña', value: 'password' },
+        { label: 'Nombre', value: 'nombre' },
+        { label: 'Apellidos', value: 'apellido' },
+        { label: 'Domicilio', value: 'domicilio' },
+        { label: 'Teléfono', value: 'telefono' },
+        { label: 'Email', value: 'email' },
+        { label: 'Cuenta Bancaria', value: 'cuenta' },
+        { label: 'Alias', value: 'alias' },
+        { label: 'Número de Colegiado', value: 'numero_colegiado' },
+        { label: 'Permiso', value: 'permiso' },
+        { label: 'Cargo', value: 'cargo' },
+        { label: 'Categoría', value: 'categoria' },
+        { label: 'Nivel', value: 'nivel' },
+        { label: 'Vehículo', value: 'vehiculo' },
+        { label: 'Fecha de Nacimiento', value: 'fecha_nacimiento' }
     ];
 
     const [selectedFields, setSelectedFields] = useState([]);
 
-    const handleCheckboxChange = (field) => {
+    // Manejar la selección de checkboxes
+    const handleCheckboxChange = (fieldValue) => {
         setSelectedFields((prevSelectedFields) =>
-            prevSelectedFields.includes(field)
-                ? prevSelectedFields.filter((f) => f !== field)
-                : [...prevSelectedFields, field]
+            prevSelectedFields.includes(fieldValue)
+                ? prevSelectedFields.filter((f) => f !== fieldValue)
+                : [...prevSelectedFields, fieldValue]
         );
     };
 
-    const handleExport = () => {
-        if (selectedFields.length === 0) {
-            alert('Por favor, selecciona al menos un campo para exportar.');
-            return;
-        }
+    // Manejar la exportación de datos seleccionados a XML
+    const handleExportXML = async () => {
 
-        console.log('Exportando los campos seleccionados:', selectedFields);
-        onClose();
     };
 
+
     return (
-        <div className="exportar-modal">
+        <div className="exportar-modal" onClick={(e) => e.target.classList.contains('exportar-modal') && onClose()}>
             <div className="exportar-content">
                 <h2>Exportar Datos</h2>
                 <div className="exportar-checkboxes">
-                    {fields.map((field) => (
-                        <label key={field} className="checkbox-label">
+                    {fields.map(({ label, value }) => (
+                        <label key={value} className="checkbox-label">
                             <input
                                 type="checkbox"
-                                checked={selectedFields.includes(field)}
-                                onChange={() => handleCheckboxChange(field)}
+                                checked={selectedFields.includes(value)}
+                                onChange={() => handleCheckboxChange(value)}
                             />
-                            {field}
+                            {label}
                         </label>
                     ))}
                 </div>
                 <div className="exportar-buttons">
-                    <button className="button-exportar" onClick={handleExport}>Exportar</button>
-                    <button className="button-close" onClick={onClose}>Cerrar</button>
+                    <button className="button-exportar" onClick={handleExportXML}>Exportar a XML</button>
                 </div>
             </div>
         </div>
