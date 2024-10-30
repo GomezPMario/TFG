@@ -98,6 +98,13 @@ const Exportar = ({ onClose }) => {
 
             const newRow = worksheet.addRow(rowData);
 
+            // Aplicar borde inferior negro y fino en cada celda de la fila
+            newRow.eachCell((cell) => {
+                cell.border = {
+                    bottom: { style: 'thin', color: { argb: 'E0E0E0' } } // Línea fina negra
+                };
+            });
+
             // Aplicar formato de fecha solo a la columna de "Fecha de Nacimiento"
             if (selectedFields.includes('fecha_nacimiento')) {
                 const dateColumnIndex = selectedFields.indexOf('fecha_nacimiento') + 1;
