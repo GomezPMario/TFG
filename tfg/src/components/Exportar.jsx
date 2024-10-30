@@ -24,7 +24,6 @@ const Exportar = ({ onClose }) => {
 
     const [selectedFields, setSelectedFields] = useState([]);
 
-    // Manejar la selección de checkboxes
     const handleCheckboxChange = (fieldValue) => {
         setSelectedFields((prevSelectedFields) =>
             prevSelectedFields.includes(fieldValue)
@@ -33,8 +32,7 @@ const Exportar = ({ onClose }) => {
         );
     };
 
-    // Manejar la exportación de datos seleccionados a XML
-    const handleExportXML = async () => {
+    const handleExport = async () => {
         try {
             const response = await fetch(`${baseURL}/arbitros/export`, {
                 method: 'POST',
@@ -46,13 +44,43 @@ const Exportar = ({ onClose }) => {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Datos exportados:', data);
+                exportToCSV(data); // Llama a la función de exportación CSV
             } else {
                 console.error('Error en la exportación');
             }
         } catch (error) {
             console.error('Error:', error);
         }
+    };
+
+    // Función para convertir JSON a CSV y descargarlo
+    const exportToCSV = (data) => {
+        if (data.length === 0) return;
+
+        // Mapeo de los valores a sus labels para el encabezado
+        const headers = selectedFields.map(field => {
+            const fieldObj = fields.find(f => f.value === field);
+            return fieldObj ? fieldObj.label : field;
+        }).join(',');
+
+        // Crear las filas usando los valores correspondientes a cada campo
+        const rows = data.map(row =>
+            selectedFields.map(field => row[field] || '').join(',')
+        );
+
+        // Crear el contenido CSV uniendo los encabezados y las filas
+        const csvContent = [headers, ...rows].join('\n');
+
+        // Añadir BOM al principio para UTF-8
+        const bom = "\uFEFF";
+        const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'exported_data.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     return (
@@ -72,7 +100,7 @@ const Exportar = ({ onClose }) => {
                     ))}
                 </div>
                 <div className="exportar-buttons">
-                    <button className="button-exportar" onClick={handleExportXML}>Exportar a XML</button>
+                    <button className="button-exportar" onClick={handleExport}>Exportar a CSV</button>
                 </div>
             </div>
         </div>
