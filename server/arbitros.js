@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db_setup');
 // const { hash } = require('bcrypt');
-const XLSX = require('xlsx');
 
 router.get('/', async (req, res) => {
     let sql = 'SELECT * FROM arbitros WHERE 1=1'; // Consulta base
@@ -222,7 +221,37 @@ router.delete('/licencia/:numero_colegiado', async (req, res) => {
 });
 
 router.post('/export', async (req, res) => {
+    const { fields } = req.body;
 
+    if (!fields || fields.length === 0) {
+        return res.status(400).json({ error: 'No se seleccionaron campos para exportar.' });
+    }
+
+    try {
+        // Genera la lista de columnas seleccionadas según los checkboxes
+        let columns = fields.join(', ');
+
+        // Incluye 'categoria' o 'nivel' en la consulta si han sido seleccionados individualmente
+        if (fields.includes('categoria')) {
+            columns += ', e.categoria';
+        }
+        if (fields.includes('nivel')) {
+            columns += ', e.nivel';
+        }
+
+        // Ejecuta el JOIN solo si 'categoria' o 'nivel' están seleccionados
+        const query = `
+            SELECT ${columns}
+            FROM arbitros a
+            ${fields.includes('categoria') || fields.includes('nivel') ? 'JOIN escala e ON a.categoria_id = e.id' : ''}
+        `;
+
+        const [results] = await db.query(query);
+        res.json(results);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al exportar los datos.' });
+    }
 });
 
 const obtenerCategoriaId = async (categoria, nivel) => {

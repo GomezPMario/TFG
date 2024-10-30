@@ -18,10 +18,10 @@ console.log('Database user:', process.env.DB_USER);
 console.log('Database port:', process.env.DB_PORT);
 
 app.options('*', cors());
+app.use(express.json());
 app.use(cors({
     origin: ['http://localhost:3000', 'https://gomezpmario.github.io'], // Añade el origen de GitHub Pages
 }));
-app.use(express.json());
 
 // app.use('/api', perfilRoutes);
 app.use('/arbitros', arbitrosRoutes);

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { baseURL } from './Login';
 import './styles/Exportar.css';
 
 const Exportar = ({ onClose }) => {
@@ -34,9 +35,25 @@ const Exportar = ({ onClose }) => {
 
     // Manejar la exportación de datos seleccionados a XML
     const handleExportXML = async () => {
+        try {
+            const response = await fetch(`${baseURL}/arbitros/export`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ fields: selectedFields }),
+            });
 
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Datos exportados:', data);
+            } else {
+                console.error('Error en la exportación');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
-
 
     return (
         <div className="exportar-modal" onClick={(e) => e.target.classList.contains('exportar-modal') && onClose()}>
