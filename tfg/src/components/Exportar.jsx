@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { baseURL } from './Login';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import './styles/Exportar.css';
 
 const Exportar = ({ onClose }) => {
@@ -32,9 +33,9 @@ const Exportar = ({ onClose }) => {
         );
     };
 
-    const handleExport = async () => {
+    const handleExportXLSX = async () => {
         try {
-            const response = await fetch(`${baseURL}/arbitros/export`, {
+            const response = await fetch('http://localhost:5000/arbitros/export', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -44,7 +45,7 @@ const Exportar = ({ onClose }) => {
 
             if (response.ok) {
                 const data = await response.json();
-                exportToCSV(data); // Llama a la función de exportación CSV
+                exportToXLSX(data);
             } else {
                 console.error('Error en la exportación');
             }
@@ -53,34 +54,65 @@ const Exportar = ({ onClose }) => {
         }
     };
 
-    // Función para convertir JSON a CSV y descargarlo
-    const exportToCSV = (data) => {
+    // Función para convertir JSON a XLSX con estilos y descargarlo
+    const exportToXLSX = async (data) => {
         if (data.length === 0) return;
 
-        // Mapeo de los valores a sus labels para el encabezado
-        const headers = selectedFields.map(field => {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Datos Exportados');
+
+        // Mapeo de valores
+        const permisoMap = { 1: 'Admin', 2: 'Técnico', 3: 'Árbitro-Oficial' };
+        const cargoMap = { 1: 'Árbitro', 2: 'Oficial' };
+        const vehiculoMap = { 0: 'Ninguno', 1: 'Coche', 2: 'Moto', 3: 'Ambos' };
+
+        // Agregar encabezados con estilo
+        const headerRow = worksheet.addRow(selectedFields.map(field => {
             const fieldObj = fields.find(f => f.value === field);
             return fieldObj ? fieldObj.label : field;
-        }).join(',');
+        }));
 
-        // Crear las filas usando los valores correspondientes a cada campo
-        const rows = data.map(row =>
-            selectedFields.map(field => row[field] || '').join(',')
-        );
+        headerRow.eachCell((cell) => {
+            cell.font = { bold: true, color: { argb: 'FF000000' } };
+            cell.alignment = { vertical: 'middle', horizontal: 'center' };
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FFFF96C5' }
+            };
+        });
 
-        // Crear el contenido CSV uniendo los encabezados y las filas
-        const csvContent = [headers, ...rows].join('\n');
+        // Agregar datos con sustituciones
+        data.forEach(row => {
+            const rowData = selectedFields.map(field => {
+                if (field === 'permiso') {
+                    return permisoMap[row[field]] || row[field];
+                } else if (field === 'cargo') {
+                    return cargoMap[row[field]] || row[field];
+                } else if (field === 'vehiculo') {
+                    return vehiculoMap[row[field]] || row[field];
+                }
+                return row[field] || '';
+            });
+            worksheet.addRow(rowData);
+        });
 
-        // Añadir BOM al principio para UTF-8
-        const bom = "\uFEFF";
-        const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'exported_data.csv');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // Ancho automático de columnas
+        worksheet.columns.forEach(column => {
+            let maxLength = 0;
+            column.eachCell({ includeEmpty: true }, (cell) => {
+                const cellLength = cell.value ? cell.value.toString().length : 10;
+                if (cellLength > maxLength) {
+                    maxLength = cellLength;
+                }
+            });
+            column.width = maxLength < 10 ? 10 : maxLength;
+        });
+
+        // Generar y descargar el archivo
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        saveAs(blob, 'exported_data.xlsx');
     };
 
     return (
@@ -100,7 +132,7 @@ const Exportar = ({ onClose }) => {
                     ))}
                 </div>
                 <div className="exportar-buttons">
-                    <button className="button-exportar" onClick={handleExport}>Exportar a CSV</button>
+                    <button className="button-exportar" onClick={handleExportXLSX}>Exportar a XLSX</button>
                 </div>
             </div>
         </div>
