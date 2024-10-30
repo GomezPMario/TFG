@@ -61,12 +61,10 @@ const Exportar = ({ onClose }) => {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Datos Exportados');
 
-        // Mapeo de valores
         const permisoMap = { 1: 'Admin', 2: 'Técnico', 3: 'Árbitro-Oficial' };
         const cargoMap = { 1: 'Árbitro', 2: 'Oficial' };
         const vehiculoMap = { 0: 'Ninguno', 1: 'Coche', 2: 'Moto', 3: 'Ambos' };
 
-        // Agregar encabezados con estilo
         const headerRow = worksheet.addRow(selectedFields.map(field => {
             const fieldObj = fields.find(f => f.value === field);
             return fieldObj ? fieldObj.label : field;
@@ -82,7 +80,6 @@ const Exportar = ({ onClose }) => {
             };
         });
 
-        // Agregar datos con sustituciones
         data.forEach(row => {
             const rowData = selectedFields.map(field => {
                 if (field === 'permiso') {
@@ -91,13 +88,23 @@ const Exportar = ({ onClose }) => {
                     return cargoMap[row[field]] || row[field];
                 } else if (field === 'vehiculo') {
                     return vehiculoMap[row[field]] || row[field];
+                } else if (field === 'fecha_nacimiento') {
+                    const originalDate = new Date(row[field]);
+                    const modifiedDate = new Date(originalDate.getTime() + 24 * 60 * 60 * 1000); // Sumar un día
+                    return modifiedDate;
                 }
                 return row[field] || '';
             });
-            worksheet.addRow(rowData);
+
+            const newRow = worksheet.addRow(rowData);
+
+            // Aplicar formato de fecha solo a la columna de "Fecha de Nacimiento"
+            if (selectedFields.includes('fecha_nacimiento')) {
+                const dateColumnIndex = selectedFields.indexOf('fecha_nacimiento') + 1;
+                newRow.getCell(dateColumnIndex).numFmt = 'dd/mm/yyyy';
+            }
         });
 
-        // Ancho automático de columnas
         worksheet.columns.forEach(column => {
             let maxLength = 0;
             column.eachCell({ includeEmpty: true }, (cell) => {
@@ -109,7 +116,6 @@ const Exportar = ({ onClose }) => {
             column.width = maxLength < 10 ? 10 : maxLength;
         });
 
-        // Generar y descargar el archivo
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         saveAs(blob, 'exported_data.xlsx');
