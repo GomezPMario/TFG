@@ -62,6 +62,9 @@ const Exportar = ({ onClose }) => {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Datos CAAB');
 
+        // Desactivar líneas de cuadrícula
+        worksheet.views = [{ showGridLines: false }];
+
         const permisoMap = { 1: 'Admin', 2: 'Técnico', 3: 'Árbitro-Oficial' };
         const cargoMap = { 1: 'Árbitro', 2: 'Oficial' };
         const vehiculoMap = { 0: 'Ninguno', 1: 'Coche', 2: 'Moto', 3: 'Ambos' };
