@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
+import { baseURL } from './Login';
 import './styles/Exportar.css';
 
 const Exportar = ({ onClose }) => {
@@ -35,7 +36,7 @@ const Exportar = ({ onClose }) => {
 
     const handleExportXLSX = async () => {
         try {
-            const response = await fetch('http://localhost:5000/arbitros/export', {
+            const response = await fetch(`${baseURL}/arbitros/export`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -59,7 +60,7 @@ const Exportar = ({ onClose }) => {
         if (data.length === 0) return;
 
         const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('Datos Exportados');
+        const worksheet = workbook.addWorksheet('Datos CAAB');
 
         const permisoMap = { 1: 'Admin', 2: 'Técnico', 3: 'Árbitro-Oficial' };
         const cargoMap = { 1: 'Árbitro', 2: 'Oficial' };
@@ -98,10 +99,10 @@ const Exportar = ({ onClose }) => {
 
             const newRow = worksheet.addRow(rowData);
 
-            // Aplicar borde inferior negro y fino en cada celda de la fila
+            // Aplicar borde inferior gris claro y fino en cada celda de la fila
             newRow.eachCell((cell) => {
                 cell.border = {
-                    bottom: { style: 'thin', color: { argb: 'E0E0E0' } } // Línea fina negra
+                    bottom: { style: 'thin', color: { argb: 'FFD3D3D3' } } // Línea fina gris claro
                 };
             });
 
@@ -112,20 +113,15 @@ const Exportar = ({ onClose }) => {
             }
         });
 
-        worksheet.columns.forEach(column => {
-            let maxLength = 0;
-            column.eachCell({ includeEmpty: true }, (cell) => {
-                const cellLength = cell.value ? cell.value.toString().length : 10;
-                if (cellLength > maxLength) {
-                    maxLength = cellLength;
-                }
-            });
-            column.width = maxLength < 10 ? 10 : maxLength;
-        });
+        // Establecer un ancho fijo 
+        worksheet.columns = selectedFields.map(() => ({ width: 220 / 8 })); // Dividir entre 8 para ajustar unidades ExcelJS
 
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        saveAs(blob, 'exported_data.xlsx');
+
+        const today = new Date();
+        const formattedDate = `${today.getDate().toString().padStart(2, '0')}${(today.getMonth() + 1).toString().padStart(2, '0')}${today.getFullYear()}`;
+        saveAs(blob, `exported_data_${formattedDate}.xlsx`);
     };
 
     return (
