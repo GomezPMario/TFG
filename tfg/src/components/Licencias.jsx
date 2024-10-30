@@ -92,8 +92,14 @@ const Licencias = ({ onClose }) => {
         }
     };
 
+    const handleClickOutside = (e) => {
+        if (e.target.classList.contains('licencias-modal')) {
+            onClose();
+        }
+    };
+
     return (
-        <div className="licencias-modal">
+        <div className="licencias-modal" onClick={handleClickOutside}>
             <div className="licencias-content">
                 <h2>Licencias Disponibles</h2>
 
@@ -144,7 +150,6 @@ const Licencias = ({ onClose }) => {
                         </tbody>
                     </table>
                 </div>
-                <button className="close-button" onClick={onClose}>Cerrar</button>
             </div>
         </div>
     );
