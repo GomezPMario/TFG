@@ -276,3 +276,114 @@ INSERT INTO numeros_colegiado (numero_colegiado) VALUES
 (285),
 (286),
 (287);
+
+CREATE TABLE categorias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL
+);
+
+ALTER TABLE categorias
+ADD COLUMN escolar boolean DEFAULT false;
+
+INSERT INTO categorias (nombre) VALUES 
+    ('2ª Aragonesa Masculina'),
+    ('ACB'),
+    ('1ª Femenina A1');
+
+CREATE TABLE equipos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    categoria_id INT NOT NULL,
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+);
+
+ALTER TABLE equipos
+ADD COLUMN ubicacion VARCHAR(255) DEFAULT 'Por determinar';
+
+-- Equipos para 2ª Aragonesa Masculina (id categoría = 1)
+INSERT INTO equipos (nombre, categoria_id) VALUES 
+    ('OLD SCHOOL', 1),
+    ('REINO DE ARAGÓN', 1),
+    ('BASKET LA ALMUNIA', 1),
+    ('ALIERTA AUGUSTO SALAS A', 1),
+    ('DOCTOR AZÚA', 1),
+    ('CBA-VILLAMAYOR BODEGAS SOMMOS', 1);
+
+-- Equipos para ACB (id categoría = 2)
+INSERT INTO equipos (nombre, categoria_id) VALUES 
+    ('CASADEMONT ZARAGOZA', 2),
+    ('FC BARCELONA', 2),
+    ('REAL MADRID', 2),
+    ('UCAM MURCIA', 2),
+    ('JUVENTUT', 2),
+    ('BÀSQUET GIRONA', 2);
+
+-- Equipos para 1ª Femenina A1 (id categoría = 3)
+INSERT INTO equipos (nombre, categoria_id) VALUES 
+    ('CASADEMONT ZARAGOZA', 3),
+    ('AD ALIERTA AUGUSTO SALAS', 3),
+    ('EM EL OLIVAR', 3),
+    ('CN HELIOS', 3),
+    ('MARIANISTAS', 3),
+    ('STADIUM VENECIA', 3);
+
+CREATE TABLE funciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL
+);
+
+INSERT INTO funciones (nombre) VALUES 
+    ('Principal'),
+    ('Auxiliar 1'),
+    ('Auxiliar 2'),
+    ('Anotador'),
+    ('Cronometrador'),
+    ('24 segundos'),
+    ('Ayudante de Anotador');
+
+CREATE TABLE partidos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    dia DATE NOT NULL,
+    hora TIME NOT NULL,
+    funcion_id INT NOT NULL,
+    categoria_id INT NOT NULL,
+    equipo_a_id INT NOT NULL,
+    equipo_b_id INT NOT NULL,
+    ubicacion VARCHAR(255) NOT NULL,
+    autobus TEXT,
+    anotaciones TEXT,
+    FOREIGN KEY (funcion_id) REFERENCES funciones(id),
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id),
+    FOREIGN KEY (equipo_a_id) REFERENCES equipos(id),
+    FOREIGN KEY (equipo_b_id) REFERENCES equipos(id)
+);
+
+CREATE TABLE partidos_arbitros (
+    partido_id INT,
+    arbitro_id INT,
+    PRIMARY KEY (partido_id, arbitro_id),
+    FOREIGN KEY (partido_id) REFERENCES partidos(id),
+    FOREIGN KEY (arbitro_id) REFERENCES arbitros(id)
+);
+
+-- Partido 1: 2ª Aragonesa Masculina entre OLD SCHOOL y REINO DE ARAGÓN
+INSERT INTO partidos (dia, hora, funcion_id, categoria_id, equipo_a_id, equipo_b_id, ubicacion, autobus, anotaciones)
+VALUES 
+    ('2024-11-15', '18:30:00', 1, 1, 1, 2, 'Polideportivo Municipal', 'Líneas 21, 42', 'Partido amistoso');
+
+-- Partido 2: ACB entre CASADEMONT ZARAGOZA y REAL MADRID
+INSERT INTO partidos (dia, hora, funcion_id, categoria_id, equipo_a_id, equipo_b_id, ubicacion, autobus, anotaciones)
+VALUES 
+    ('2024-11-16', '20:00:00', 1, 2, 7, 9, 'Pabellón Príncipe Felipe', 'Líneas 25, 51', 'Partido de liga');
+
+-- Partido 1: Árbitro 3 (cargo 1) y Árbitro 2 (cargo 2)
+INSERT INTO partidos_arbitros (partido_id, arbitro_id)
+VALUES 
+    (1, 3),
+    (1, 2);
+
+-- Partido 2: Árbitro 56 (cargo 1) y Árbitro 6 (cargo 2)
+INSERT INTO partidos_arbitros (partido_id, arbitro_id)
+VALUES 
+    (2, 56),
+    (2, 6);

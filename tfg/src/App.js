@@ -20,17 +20,29 @@ import Miscelaneo from './components/Miscelaneo';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    // Verifica si hay un token en localStorage
     return localStorage.getItem('token') ? true : false;
+  });
+
+  const [arbitroId, setArbitroId] = useState(() => {
+    const arbitro = JSON.parse(localStorage.getItem('arbitro'));
+    return arbitro ? arbitro.id : null;
   });
 
   const handleLogin = () => {
     setIsAuthenticated(true);
+
+    // Cargar el arbitroId desde localStorage después de iniciar sesión
+    const arbitro = JSON.parse(localStorage.getItem('arbitro'));
+    if (arbitro) {
+      setArbitroId(arbitro.id);
+    }
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token'); // Elimina el token
+    localStorage.removeItem('arbitro'); // Elimina el arbitro
     setIsAuthenticated(false);
+    setArbitroId(null);
   };
 
   useEffect(() => {
@@ -50,15 +62,15 @@ function App() {
       {!isAuthenticated ? (
         <Routes>
           <Route path="/" element={<Login onLogin={handleLogin} />} />
-          <Route path="/nuevoarbitro" element={<NuevoArbitro isPublic={true} onClose={() => {}} />} />
+          <Route path="/nuevoarbitro" element={<NuevoArbitro isPublic={true} onClose={() => { }} />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       ) : (
-        <div className="app-container"> {/* Contenedor principal con flexbox */}
+        <div className="app-container">
           <Sidebar onLogout={handleLogout} />
-          <div className="content"> {/* Contenedor del contenido de las rutas */}
+          <div className="content">
             <Routes>
-              <Route path="/consultas" element={<Consultas />} />
+              <Route path="/consultas" element={<Consultas arbitroId={arbitroId} />} />
               <Route path="/perfil" element={<Perfil />} />
               <Route path="/nominas" element={<Nominas />} />
               <Route path="/informes" element={<Informes />} />

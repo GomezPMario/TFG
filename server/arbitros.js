@@ -193,6 +193,15 @@ router.post('/licencia', async (req, res) => {
     const { numero_colegiado } = req.body;
 
     try {
+        // Verificar si el número de colegiado ya existe en la tabla de arbitros
+        const [rows] = await db.query('SELECT numero_colegiado FROM arbitros WHERE numero_colegiado = ?', [numero_colegiado]);
+
+        if (rows.length > 0) {
+            // Si el número ya existe, responder con un error 400
+            return res.status(400).json({ message: 'El número de colegiado ya existe' });
+        }
+
+        // Insertar el nuevo número de colegiado en la tabla de numeros_colegiado
         await db.query('INSERT INTO numeros_colegiado (numero_colegiado) VALUES (?)', [numero_colegiado]);
         res.status(200).json({ message: 'Licencia añadida correctamente' });
     } catch (error) {
@@ -200,6 +209,7 @@ router.post('/licencia', async (req, res) => {
         res.status(500).json({ message: 'Error en el servidor' });
     }
 });
+
 
 router.delete('/licencia/:numero_colegiado', async (req, res) => {
     const { numero_colegiado } = req.params;

@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const db = require('./db_setup');
 // const perfilRoutes = require('./arbitros');
 const arbitrosRoutes = require('./arbitros');
+const partidos = require('./partidos');
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(cors({
 
 // app.use('/api', perfilRoutes);
 app.use('/arbitros', arbitrosRoutes);
+app.use('/', partidos);
 
 
 // Endpoint para iniciar sesión
@@ -74,7 +76,6 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error del servidor' });
     }
 });
-
 
 // Escuchando en el puerto configurado
 app.listen(port, () => {

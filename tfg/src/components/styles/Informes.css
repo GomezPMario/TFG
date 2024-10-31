@@ -1,0 +1,41 @@
+/* Contenedor principal de Informes */
+.informes-container {
+    margin: 20px;
+    text-align: center;
+}
+
+/* Título */
+.informes-title {
+    margin-bottom: 30px;
+}
+
+/* Tabla con ancho del 90% */
+.informes-table {
+    width: 90%;  /* Ahora tiene el mismo ancho que la tabla de Arbitros */
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+/* Celdas de la tabla */
+.informes-table th,
+.informes-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+/* Botón de acción */
+.action-button {
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.action-button:hover {
+    background-color: #45a049;
+}

@@ -4,6 +4,9 @@ import { baseURL } from './Login';
 import NuevoArbitro from './NuevoArbitro';
 import Licencias from './Licencias';
 import Exportar from './Exportar';
+import { MdManageHistory, MdGroupAdd } from 'react-icons/md';
+import { PiShareBold } from 'react-icons/pi';
+
 
 const Arbitros = () => {
     const [arbitros, setArbitros] = useState([]);
@@ -46,9 +49,19 @@ const Arbitros = () => {
     return (
         <div className="container">
             <h1 className="title">Listado de Árbitros-Oficiales</h1>
-            <button className="button" onClick={() => setShowLicencias(true)}>Gestionar licencias</button>
-            <button className="button" onClick={() => setShowNuevoArbitro(true)}>Añadir nuevo árbitro</button>
-            <button className="button" onClick={() => setShowExportar(true)}>Exportar datos</button>
+
+            <button className="button" onClick={() => setShowLicencias(true)}>
+                <MdManageHistory style={{ marginRight: '8px' }} />
+                Gestionar licencias
+            </button>
+            <button className="button" onClick={() => setShowNuevoArbitro(true)}>
+                <MdGroupAdd style={{ marginRight: '8px' }} />
+                Añadir nuevo árbitro
+            </button>
+            <button className="button" onClick={() => setShowExportar(true)}>
+                <PiShareBold style={{ marginRight: '8px' }} />
+                Exportar datos
+            </button>
             
             {showLicencias && (
                 <Licencias onClose={() => setShowLicencias(false)} />
@@ -112,7 +125,7 @@ const Arbitros = () => {
                         <div className="search-container">
                             <input
                                 type="text"
-                                placeholder="Buscar por nombre, usuario, etc."
+                                placeholder="Buscar por nombre, alias, etc."
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
                             />

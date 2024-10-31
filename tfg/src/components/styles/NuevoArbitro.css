@@ -51,6 +51,7 @@
 
 .nuevo-arbitro-container button[type="button"] {
     background-color: #f44336;
+    margin-left: 20px;
 }
 
 .nuevo-arbitro-container button:hover {
