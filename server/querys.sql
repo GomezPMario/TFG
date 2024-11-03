@@ -369,14 +369,14 @@ CREATE TABLE partidos_arbitros (
 );
 
 -- Partido 1: 2ª Aragonesa Masculina entre OLD SCHOOL y REINO DE ARAGÓN
-INSERT INTO partidos (dia, hora, funcion_id, categoria_id, equipo_a_id, equipo_b_id, ubicacion, autobus, anotaciones)
+INSERT INTO partidos (dia, hora, categoria_id, equipo_a_id, equipo_b_id, ubicacion, autobus, anotaciones)
 VALUES 
-    ('2024-11-15', '18:30:00', 1, 1, 1, 2, 'Polideportivo Municipal', 'Líneas 21, 42', 'Partido amistoso');
+    ('2024-11-15', '18:30:00', 1, 1, 2, 'Polideportivo Municipal', 'Líneas 21, 42', 'Partido amistoso');
 
 -- Partido 2: ACB entre CASADEMONT ZARAGOZA y REAL MADRID
-INSERT INTO partidos (dia, hora, funcion_id, categoria_id, equipo_a_id, equipo_b_id, ubicacion, autobus, anotaciones)
+INSERT INTO partidos (dia, hora, categoria_id, equipo_a_id, equipo_b_id, ubicacion, autobus, anotaciones)
 VALUES 
-    ('2024-11-16', '20:00:00', 1, 2, 7, 9, 'Pabellón Príncipe Felipe', 'Líneas 25, 51', 'Partido de liga');
+    ('2024-11-16', '20:00:00', 2, 7, 9, 'Pabellón Príncipe Felipe', 'Líneas 25, 51', 'Partido de liga');
 
 -- Partido 1: Árbitro 3 (funcion_id 1) y Árbitro 2 (funcion_id 4)
 INSERT INTO partidos_arbitros (partido_id, arbitro_id, funcion_id)
