@@ -72,7 +72,7 @@ function App() {
             <Routes>
               <Route path="/consultas" element={<Consultas arbitroId={arbitroId} />} />
               <Route path="/perfil" element={<Perfil />} />
-              <Route path="/nominas" element={<Nominas />} />
+              <Route path="/nominas" element={<Nominas arbitroId={arbitroId} />} />
               <Route path="/informes" element={<Informes />} />
               <Route path="/disponibilidad" element={<Disponibilidad />} />
               <Route path="/designacion" element={<Designacion />} />

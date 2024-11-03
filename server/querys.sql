@@ -361,9 +361,11 @@ CREATE TABLE partidos (
 CREATE TABLE partidos_arbitros (
     partido_id INT,
     arbitro_id INT,
+    funcion_id INT,
     PRIMARY KEY (partido_id, arbitro_id),
     FOREIGN KEY (partido_id) REFERENCES partidos(id),
-    FOREIGN KEY (arbitro_id) REFERENCES arbitros(id)
+    FOREIGN KEY (arbitro_id) REFERENCES arbitros(id),
+    FOREIGN KEY (funcion_id) REFERENCES funciones(id)
 );
 
 -- Partido 1: 2ª Aragonesa Masculina entre OLD SCHOOL y REINO DE ARAGÓN
@@ -376,14 +378,15 @@ INSERT INTO partidos (dia, hora, funcion_id, categoria_id, equipo_a_id, equipo_b
 VALUES 
     ('2024-11-16', '20:00:00', 1, 2, 7, 9, 'Pabellón Príncipe Felipe', 'Líneas 25, 51', 'Partido de liga');
 
--- Partido 1: Árbitro 3 (cargo 1) y Árbitro 2 (cargo 2)
-INSERT INTO partidos_arbitros (partido_id, arbitro_id)
+-- Partido 1: Árbitro 3 (funcion_id 1) y Árbitro 2 (funcion_id 4)
+INSERT INTO partidos_arbitros (partido_id, arbitro_id, funcion_id)
 VALUES 
-    (1, 3),
-    (1, 2);
+    (1, 3, 1),
+    (1, 2, 4);
 
--- Partido 2: Árbitro 56 (cargo 1) y Árbitro 6 (cargo 2)
-INSERT INTO partidos_arbitros (partido_id, arbitro_id)
+-- Partido 2: Árbitro 56 (funcion_id 1) y Árbitro 6 (funcion_id 5)
+INSERT INTO partidos_arbitros (partido_id, arbitro_id, funcion_id)
 VALUES 
-    (2, 56),
-    (2, 6);
+    (2, 56, 1),
+    (2, 6, 5);
+

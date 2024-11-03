@@ -1,0 +1,34 @@
+/* Contenedor principal */
+.consultas-container {
+    padding: 20px;
+}
+
+/* Título */
+.consultas-title {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Estilos para cada tarjeta de partido */
+.partido-card {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Estilos para la tabla */
+.partido-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Estilos para las celdas */
+.partido-table td {
+    padding: 5px;
+}
+
+/* Estilo para los compañeros */
+.companero-info {
+    margin-top: 10px;
+}
