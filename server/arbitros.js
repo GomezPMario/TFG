@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('./db_setup');
+const pool = require('./db_setup');
 // const { hash } = require('bcrypt');
 
 router.get('/', async (req, res) => {
@@ -273,7 +273,7 @@ const obtenerCategoriaId = async (categoria, nivel) => {
 };
 
 // Ruta para actualizar el perfil
-router.put('/arbitro/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     const id = req.params.id;
     const updatedData = req.body;
 

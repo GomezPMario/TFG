@@ -74,7 +74,6 @@ function App() {
               <Route path="/perfil" element={<Perfil />} />
               <Route path="/nominas" element={<Nominas arbitroId={arbitroId} />} />
               <Route path="/informes" element={<Informes />} />
-              <Route path="/disponibilidad" element={<Disponibilidad />} />
               <Route path="/designacion" element={<Designacion />} />
               <Route path="/arbitros" element={<Arbitros />} />
               <Route path="/campos" element={<Campos />} />

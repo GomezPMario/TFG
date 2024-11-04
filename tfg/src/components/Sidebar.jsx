@@ -55,9 +55,6 @@ const Sidebar = ({ onLogout }) => {
                     <li className={location.pathname === '/informes' ? 'active' : ''}>
                         <Link to="/informes"><IoDocumentsOutline />Informes</Link>
                     </li>
-                    <li className={location.pathname === '/disponibilidad' ? 'active' : ''}>
-                        <Link to="/disponibilidad"><IoMdAlarm />Disponibilidad</Link>
-                    </li>
 
                     {permiso === '1' && (
                         <>

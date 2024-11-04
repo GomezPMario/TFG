@@ -98,7 +98,7 @@ const Perfil = () => {
                 fecha_nacimiento: fechaNacimiento  // Aseguramos enviar la fecha correcta en formato yyyy-mm-dd
             };
 
-            await axios.put(`${baseURL}/api/arbitro/${id}`, dataToSend, {
+            await axios.put(`${baseURL}/arbitros/${id}`, dataToSend, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
