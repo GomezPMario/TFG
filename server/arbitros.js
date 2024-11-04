@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('./db_setup');
+const db = require('./db_setup');
 // const { hash } = require('bcrypt');
 
 router.get('/', async (req, res) => {
@@ -265,7 +265,7 @@ router.post('/export', async (req, res) => {
 });
 
 const obtenerCategoriaId = async (categoria, nivel) => {
-    const [rows] = await pool.query(
+    const [rows] = await db.query(
         'SELECT id FROM escala WHERE categoria = ? AND nivel = ?',
         [categoria, nivel]
     );
@@ -283,7 +283,7 @@ router.put('/:id', async (req, res) => {
             return res.status(404).json({ success: false, message: 'Categoría o subcategoría no encontrada' });
         }
 
-        await pool.query(
+        await db.query(
             'UPDATE arbitros SET username = ?, password = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria_id = ?, numero_colegiado = ?, alias = ?, fecha_nacimiento = ?, vehiculo = ? WHERE id = ?',
             [
                 updatedData.username,
