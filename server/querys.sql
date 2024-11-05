@@ -34,6 +34,13 @@ ADD COLUMN fecha_nacimiento DATE;
 -- 2 moto, no coche
 -- 3 ambas
 
+CREATE TABLE foto_arbitros (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    arbitro_id INT NOT NULL,
+    foto LONGBLOB,
+    FOREIGN KEY (arbitro_id) REFERENCES arbitros(id) ON DELETE CASCADE
+);
+
 -- Inserta todas las combinaciones de categorías y subcategorías
 INSERT INTO escala (categoria, nivel) VALUES
 ('ACB', '1'),

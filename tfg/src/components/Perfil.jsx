@@ -34,7 +34,7 @@ const Perfil = () => {
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
     };
-
+    
     useEffect(() => {
         const storedArbitro = localStorage.getItem('arbitro');
         if (storedArbitro) {
@@ -42,23 +42,10 @@ const Perfil = () => {
             setArbitro(parsedArbitro);
             setUpdatedData(parsedArbitro);
 
-            // Inicializar sliders según el valor de vehiculo
             const vehiculo = parsedArbitro.vehiculo;
-            if (vehiculo === '0') {
-                setCoche(false);
-                setMoto(false);
-            } else if (vehiculo === '1') {
-                setCoche(true);
-                setMoto(false);
-            } else if (vehiculo === '2') {
-                setCoche(false);
-                setMoto(true);
-            } else if (vehiculo === '3') {
-                setCoche(true);
-                setMoto(true);
-            }
+            setCoche(vehiculo === '1' || vehiculo === '3');
+            setMoto(vehiculo === '2' || vehiculo === '3');
 
-            // Inicializar la fecha de nacimiento en formato yyyy-mm-dd
             setFechaNacimiento(formatToISODate(parsedArbitro.fecha_nacimiento));
         }
     }, []);
@@ -67,10 +54,29 @@ const Perfil = () => {
         return <p>Loading...</p>;
     }
 
+    const handlePhotoChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                const base64Image = reader.result.split(',')[1];
+                try {
+                    await axios.put(`${baseURL}/arbitros/${arbitro.id}/foto`, { foto: base64Image }, {
+                        headers: { 'Content-Type': 'application/json' },
+                    });
+                    setArbitro(prev => ({ ...prev, foto: base64Image }));
+                    localStorage.setItem('arbitro', JSON.stringify({ ...arbitro, foto: base64Image }));
+                } catch (error) {
+                    console.error('Error al actualizar la foto de perfil:', error);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setUpdatedData(prevData => ({ ...prevData, [name]: value }));
-
         if (name === 'fecha_nacimiento') {
             setFechaNacimiento(value);
             setUpdatedData(prevData => ({ ...prevData, fecha_nacimiento: value }));
@@ -93,18 +99,12 @@ const Perfil = () => {
 
     const actualizarPerfil = async (id) => {
         try {
-            const dataToSend = {
-                ...updatedData,
-                fecha_nacimiento: fechaNacimiento  // Aseguramos enviar la fecha correcta en formato yyyy-mm-dd
-            };
-
+            const dataToSend = { ...updatedData, fecha_nacimiento: fechaNacimiento };
             await axios.put(`${baseURL}/arbitros/${id}`, dataToSend, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
             });
             setIsEditing(false);
-            setArbitro(dataToSend);  // Actualizamos el estado local con la data enviada
+            setArbitro(dataToSend);
             localStorage.setItem('arbitro', JSON.stringify(dataToSend));
         } catch (error) {
             console.error('Error al actualizar el perfil:', error.response ? error.response.data : error.message);
@@ -118,23 +118,10 @@ const Perfil = () => {
     const cancelEdit = () => {
         setIsEditing(false);
         setUpdatedData(arbitro);
-        setFechaNacimiento(formatToISODate(arbitro.fecha_nacimiento)); // Restaurar la fecha de nacimiento original
-
-        // Restaurar el estado inicial de los sliders
+        setFechaNacimiento(formatToISODate(arbitro.fecha_nacimiento));
         const vehiculo = arbitro.vehiculo;
-        if (vehiculo === '0') {
-            setCoche(false);
-            setMoto(false);
-        } else if (vehiculo === '1') {
-            setCoche(true);
-            setMoto(false);
-        } else if (vehiculo === '2') {
-            setCoche(false);
-            setMoto(true);
-        } else if (vehiculo === '3') {
-            setCoche(true);
-            setMoto(true);
-        }
+        setCoche(vehiculo === '1' || vehiculo === '3');
+        setMoto(vehiculo === '2' || vehiculo === '3');
     };
 
     const isEditable = (field) => {
@@ -152,7 +139,29 @@ const Perfil = () => {
     return (
         <div className="perfil-page">
             <div className="perfil-container">
-                <h1>Perfil de {arbitro.nombre}</h1>
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    style={{ display: 'none' }}
+                    id="fileInput"
+                />
+
+                {arbitro.foto ? (
+                    <img
+                        src={`data:image/jpeg;base64,${arbitro.foto}`}
+                        alt="Foto de perfil"
+                        className="perfil-foto"
+                        onClick={() => document.getElementById('fileInput').click()}
+                    />
+                ) : (
+                    <div
+                        className="perfil-foto-placeholder"
+                        onClick={() => document.getElementById('fileInput').click()}
+                    >
+                        <p>+</p>
+                    </div>
+                )}
                 <div className="perfil-content">
                     <div className="perfil-column">
                         <ul>

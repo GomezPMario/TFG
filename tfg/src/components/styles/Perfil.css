@@ -276,3 +276,38 @@
 .cancelar-btn:active {
     background-color: #bd2130; /* Rojo aún más oscuro */
 }
+
+
+
+
+
+
+
+
+
+/* FOTO DE PERFIL */
+.perfil-foto {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    cursor: pointer;
+    object-fit: cover;
+}
+
+.perfil-foto-placeholder {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: #888;
+    cursor: pointer;
+    border: 2px dashed #bbb;
+}
+
+.perfil-foto:hover {
+    opacity: 0.8;
+}
