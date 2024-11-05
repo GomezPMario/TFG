@@ -27,6 +27,17 @@ const Perfil = () => {
         return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
     };
 
+    const calcularEdad = (isoString) => {
+        const birthDate = new Date(isoString);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    };
+
     useEffect(() => {
         const storedArbitro = localStorage.getItem('arbitro');
         if (storedArbitro) {
@@ -218,7 +229,9 @@ const Perfil = () => {
                                         required
                                     />
                                 ) : (
-                                    <span>{formatDate(arbitro.fecha_nacimiento)}</span>
+                                    <span>
+                                        {formatDate(arbitro.fecha_nacimiento)} - {calcularEdad(arbitro.fecha_nacimiento)} años
+                                    </span>
                                 )}
                             </li>
                             <li>

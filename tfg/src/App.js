@@ -7,7 +7,6 @@ import Perfil from './components/Perfil';
 import Consultas from './components/Consultas';
 import Nominas from './components/Nominas';
 import Informes from './components/Informes';
-import Disponibilidad from './components/Disponibilidad';
 import Designacion from './components/Designacion';
 import Arbitros from './components/Arbitros';
 import NuevoArbitro from './components/NuevoArbitro';
@@ -73,7 +72,7 @@ function App() {
               <Route path="/consultas" element={<Consultas arbitroId={arbitroId} />} />
               <Route path="/perfil" element={<Perfil />} />
               <Route path="/nominas" element={<Nominas arbitroId={arbitroId} />} />
-              <Route path="/informes" element={<Informes />} />
+              <Route path="/informes" element={<Informes arbitroId={arbitroId} />} />
               <Route path="/designacion" element={<Designacion />} />
               <Route path="/arbitros" element={<Arbitros />} />
               <Route path="/campos" element={<Campos />} />

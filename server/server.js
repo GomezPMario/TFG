@@ -6,6 +6,7 @@ const db = require('./db_setup');
 // const perfilRoutes = require('./arbitros');
 const arbitrosRoutes = require('./arbitros');
 const partidos = require('./partidos');
+const informes = require('./informes');
 
 // dotenv.config();
 
@@ -53,6 +54,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 // Rutas de la aplicación
 app.use('/arbitros', arbitrosRoutes);
 app.use('/', partidos);
+app.use('/api/informes', informes);
 
 
 // Endpoint para iniciar sesión

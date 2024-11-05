@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom'; // Importa useLocation
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import './styles/Sidebar.css';
 import LogoCAAB from './images/LogoCAAB.png';
 
@@ -8,7 +8,6 @@ import { FaUserGear } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
 import { GiPriceTag } from "react-icons/gi";
 import { IoDocumentsOutline } from "react-icons/io5";
-import { IoMdAlarm } from "react-icons/io";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { GiWhistle } from "react-icons/gi";
 import { PiCourtBasketballDuotone } from "react-icons/pi";
@@ -21,7 +20,7 @@ import { BsMotherboard } from "react-icons/bs";
 const Sidebar = ({ onLogout }) => {
     const [permiso, setPermiso] = useState(null);
     const navigate = useNavigate();
-    const location = useLocation(); // Obtiene la ubicación actual
+    const location = useLocation();
 
     useEffect(() => {
         const userPermiso = localStorage.getItem('permiso');
@@ -83,6 +82,12 @@ const Sidebar = ({ onLogout }) => {
                                 <Link to="/miscelaneo"><BsMotherboard />Misceláneo</Link>
                             </li>
                         </>
+                    )}
+
+                    {(permiso === '2') && (
+                        <li className={location.pathname === '/partidos' ? 'active' : ''}>
+                            <Link to="/partidos"><PiRankingDuotone />Listado de partidos</Link>
+                        </li>
                     )}
                 </ul>
 

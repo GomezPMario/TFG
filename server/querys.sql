@@ -397,3 +397,189 @@ VALUES
     (2, 56, 1),
     (2, 6, 5);
 
+
+
+
+-- ***********************************************************************************************************************
+-- Tabla de "imagen"
+CREATE TABLE imagen (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    notas TEXT,
+    condicion_fisica ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    uniformidad ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    señalizacion ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL
+);
+
+-- Tabla de "arbitro_cola"
+CREATE TABLE arbitro_cola (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    notas TEXT,
+    colocacion ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    transiciones ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    rebotes ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    zonas_responsabilidad ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    control_juego_sin_balon ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    control_lanzamiento_exterior ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL
+);
+
+-- Tabla de "arbitro_cabeza"
+CREATE TABLE arbitro_cabeza (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    notas TEXT,
+    colocacion ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    transiciones ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    rebotes ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    zonas_responsabilidad ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    control_juego_sin_balon ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    control_lanzamiento_exterior ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL
+);
+
+-- Tabla de "faltas_defensor"
+CREATE TABLE faltas_defensor (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    notas TEXT,
+    uso_ilegal_manos_brazos_codos ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    empujones ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    verticalidades ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    posicion_legal_defensa ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    accion_continua_accion_tiro ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    simulaciones ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    f_antideportivas ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    intuiciones ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    ventaja_desventaja ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL
+);
+
+-- Tabla de "faltas_atacante"
+CREATE TABLE faltas_atacante (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    notas TEXT,
+    uso_ilegal_manos_brazos_codos ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    empujones ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    cargas ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    pantallas ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL
+);
+
+-- Tabla de "violaciones"
+CREATE TABLE violaciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    notas TEXT,
+    pasos ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    doble_regate ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    temporales ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    fueras_banda_fondo ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    campo_atras ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    interferencias_interposiciones ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    tiros_libres ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    pies ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    saques_banda ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    intuiciones ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL
+);
+
+-- Tabla de "criterio_general"
+CREATE TABLE criterio_general (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    notas TEXT,
+    coherencia ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    consistencia ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    estabilidad_emocional ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL
+);
+
+-- Tabla de "control_partido"
+CREATE TABLE control_partido (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    notas TEXT,
+    f_tecnicas ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    f_descalificantes ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    control_jugadores ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    control_entrenadores ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL,
+    trabajo_equipo ENUM('Muy Bien', 'Bien', 'Suficiente', 'Deficiente', 'Insuficiente') NULL
+);
+
+-- Tabla de "valoracion_tecnico"
+CREATE TABLE valoracion_tecnico (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    notas TEXT
+);
+
+-- Tabla de "informes", relacionando las otras tablas y con referencia al árbitro y al partido
+-- Tabla de "informes" actualizada, incluyendo el árbitro evaluado y el evaluador
+CREATE TABLE informes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    partido_id INT NOT NULL,
+    arbitro_id INT NOT NULL,  -- El árbitro que está siendo evaluado
+    evaluador_id INT NOT NULL, -- El árbitro que realiza el informe
+    imagen_id INT,
+    arbitro_cola_id INT,
+    arbitro_cabeza_id INT,
+    faltas_defensor_id INT,
+    faltas_atacante_id INT,
+    violaciones_id INT,
+    criterio_general_id INT,
+    control_partido_id INT,
+    valoracion_tecnico_id INT,
+    FOREIGN KEY (partido_id) REFERENCES partidos(id),
+    FOREIGN KEY (arbitro_id) REFERENCES arbitros(id),  -- Relación con el árbitro evaluado
+    FOREIGN KEY (evaluador_id) REFERENCES arbitros(id),  -- Relación con el árbitro evaluador
+    FOREIGN KEY (imagen_id) REFERENCES imagen(id),
+    FOREIGN KEY (arbitro_cola_id) REFERENCES arbitro_cola(id),
+    FOREIGN KEY (arbitro_cabeza_id) REFERENCES arbitro_cabeza(id),
+    FOREIGN KEY (faltas_defensor_id) REFERENCES faltas_defensor(id),
+    FOREIGN KEY (faltas_atacante_id) REFERENCES faltas_atacante(id),
+    FOREIGN KEY (violaciones_id) REFERENCES violaciones(id),
+    FOREIGN KEY (criterio_general_id) REFERENCES criterio_general(id),
+    FOREIGN KEY (control_partido_id) REFERENCES control_partido(id),
+    FOREIGN KEY (valoracion_tecnico_id) REFERENCES valoracion_tecnico(id)
+);
+
+-- Inserta en la tabla imagen
+INSERT INTO imagen (notas, condicion_fisica, uniformidad, señalizacion)
+VALUES ('Buena presentación y actitud', 'Muy Bien', 'Bien', 'Suficiente');
+
+-- Inserta en la tabla arbitro_cola
+INSERT INTO arbitro_cola (notas, colocacion, transiciones, rebotes, zonas_responsabilidad, control_juego_sin_balon, control_lanzamiento_exterior)
+VALUES ('Sigue bien las jugadas', 'Bien', 'Muy Bien', 'Suficiente', 'Bien', 'Suficiente', 'Bien');
+
+-- Inserta en la tabla arbitro_cabeza
+INSERT INTO arbitro_cabeza (notas, colocacion, transiciones, rebotes, zonas_responsabilidad, control_juego_sin_balon, control_lanzamiento_exterior)
+VALUES ('Buena colocación en los momentos clave', 'Muy Bien', 'Suficiente', 'Bien', 'Muy Bien', 'Suficiente', 'Suficiente');
+
+-- Inserta en la tabla faltas_defensor
+INSERT INTO faltas_defensor (notas, uso_ilegal_manos_brazos_codos, empujones, verticalidades, posicion_legal_defensa, accion_continua_accion_tiro, simulaciones, f_antideportivas, intuiciones, ventaja_desventaja)
+VALUES ('Correcto criterio en faltas defensivas', 'Bien', 'Muy Bien', 'Suficiente', 'Bien', 'Suficiente', 'Bien', 'Suficiente', 'Suficiente', 'Bien');
+
+-- Inserta en la tabla faltas_atacante
+INSERT INTO faltas_atacante (notas, uso_ilegal_manos_brazos_codos, empujones, cargas, pantallas)
+VALUES ('Aplicación adecuada de faltas de ataque', 'Suficiente', 'Bien', 'Muy Bien', 'Suficiente');
+
+-- Inserta en la tabla violaciones
+INSERT INTO violaciones (notas, pasos, doble_regate, temporales, fueras_banda_fondo, campo_atras, interferencias_interposiciones, tiros_libres, pies, saques_banda, intuiciones)
+VALUES ('Control adecuado de las violaciones', 'Bien', 'Suficiente', 'Muy Bien', 'Bien', 'Suficiente', 'Muy Bien', 'Bien', 'Suficiente', 'Suficiente', 'Bien');
+
+-- Inserta en la tabla criterio_general
+INSERT INTO criterio_general (notas, coherencia, consistencia, estabilidad_emocional)
+VALUES ('Buen manejo del partido en general', 'Muy Bien', 'Bien', 'Bien');
+
+-- Inserta en la tabla control_partido
+INSERT INTO control_partido (notas, f_tecnicas, f_descalificantes, control_jugadores, control_entrenadores, trabajo_equipo)
+VALUES ('Buen control de juego, buen trabajo en equipo', 'Bien', 'Suficiente', 'Muy Bien', 'Bien', 'Muy Bien');
+
+-- Inserta en la tabla valoracion_tecnico
+INSERT INTO valoracion_tecnico (notas)
+VALUES ('Evaluación positiva en términos generales.');
+
+-- Inserta el informe en la tabla informes, vinculando todas las entradas anteriores y los IDs de partido, árbitro y evaluador
+INSERT INTO informes (partido_id, arbitro_id, evaluador_id, imagen_id, arbitro_cola_id, arbitro_cabeza_id, faltas_defensor_id, faltas_atacante_id, violaciones_id, criterio_general_id, control_partido_id, valoracion_tecnico_id)
+VALUES (
+    2,  -- ID del partido
+    56, -- ID del árbitro evaluado
+    5,  -- ID del árbitro evaluador
+    LAST_INSERT_ID(), -- ID de imagen
+    LAST_INSERT_ID(), -- ID de arbitro_cola
+    LAST_INSERT_ID(), -- ID de arbitro_cabeza
+    LAST_INSERT_ID(), -- ID de faltas_defensor
+    LAST_INSERT_ID(), -- ID de faltas_atacante
+    LAST_INSERT_ID(), -- ID de violaciones
+    LAST_INSERT_ID(), -- ID de criterio_general
+    LAST_INSERT_ID(),     -- ID de control_partido
+    LAST_INSERT_ID()  -- ID de valoracion_tecnico
+);
