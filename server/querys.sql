@@ -365,6 +365,8 @@ CREATE TABLE partidos (
     FOREIGN KEY (equipo_b_id) REFERENCES equipos(id)
 );
 
+ALTER TABLE partidos DROP COLUMN ubicacion;
+
 CREATE TABLE partidos_arbitros (
     partido_id INT,
     arbitro_id INT,

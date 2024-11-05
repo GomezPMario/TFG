@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
                 c.nombre AS categoria,
                 ea.nombre AS equipo_local,
                 eb.nombre AS equipo_visitante,
-                p.ubicacion AS campo,
+                ea.ubicacion AS campo,  -- Ubicación basada en el equipo A
                 p.autobus AS transporte,
                 p.anotaciones AS notas,
                 a.alias AS tecnico
@@ -32,6 +32,7 @@ router.get('/', async (req, res) => {
             WHERE i.arbitro_id = ?`,
             [arbitroId]
         );
+
 
         res.json(rows);
     } catch (error) {

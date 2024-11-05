@@ -16,7 +16,7 @@ const Partidos = () => {
             </button>
             <button className="button">
                 <CgImport style={{ marginRight: '8px' }} />
-                Importar Partido
+                Importar Partidos
             </button>
             <button className="button">
                 <TbEyeCheck style={{ marginRight: '8px' }} />

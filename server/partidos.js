@@ -15,7 +15,7 @@ router.get('/partidos/:arbitroId', async (req, res) => {
                 c.nombre AS categoria,
                 ea.nombre AS equipoA,
                 eb.nombre AS equipoB,
-                p.ubicacion AS campo,
+                ea.ubicacion AS campo,
                 p.autobus AS autobus,
                 p.anotaciones AS notas,
                 f.nombre AS mi_funcion,           -- La función del árbitro principal
