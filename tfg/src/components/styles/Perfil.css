@@ -1,3 +1,4 @@
+/* Página del perfil */
 .perfil-page {
     display: flex;
     flex-direction: column;
@@ -8,7 +9,11 @@
     background-color: #f5f7fa;
 }
 
+/* Contenedor principal del perfil */
 .perfil-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 30px;
     background-color: #fff;
     border-radius: 16px;
@@ -18,20 +23,6 @@
     margin-bottom: 20px;
     transition: all 0.3s ease;
     text-align: center;
-}
-
-.perfil-content {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-}
-
-.perfil-column {
-    flex: 1;
-    min-width: 300px; /* Asegura un ancho mínimo */
-    max-width: 33.33%; /* Limita cada columna al 33.33% del contenedor */
-    padding: 20px;
-    box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
 }
 
 .perfil-container h1 {
@@ -52,10 +43,55 @@
     margin: 8px auto 0;
 }
 
+/* Foto de perfil y marcador de posición */
+.perfil-foto, .perfil-foto-placeholder {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    cursor: pointer;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+}
+
+.perfil-foto {
+    cursor: pointer;
+}
+
+.perfil-foto:hover {
+    opacity: 0.8;
+}
+
+.perfil-foto-placeholder {
+    background-color: #e0e0e0;
+    font-size: 48px;
+    color: #888;
+    border: 2px dashed #bbb;
+}
+
+/* Contenido del perfil */
+.perfil-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Columnas del perfil */
+.perfil-column {
+    flex: 1;
+    min-width: 300px;
+    max-width: 33.33%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
 .perfil-container ul {
     list-style: none;
     padding: 0;
-    width: 100%; /* Hace que los elementos de la lista tomen el 100% del ancho de la columna */
+    width: 100%;
 }
 
 .perfil-container li {
@@ -68,9 +104,9 @@
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     transition: background-color 0.3s ease;
-    height: 50px; /* Altura fija para mantener consistencia */
-    width: 100%; /* Asegura que el ancho sea siempre el mismo */
-    box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+    height: 50px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .perfil-container li:hover {
@@ -102,14 +138,17 @@
     background-color: #eaf4ff;
 }
 
+/* Botones */
 .boton-container {
     display: flex;
     justify-content: center;
     gap: 10px;
+    margin-top: 10px;
 }
 
-.editar-perfil-btn,
-.cancelar-btn {
+.aceptar-btn,
+.cancelar-btn,
+.editar-perfil-btn {
     display: flex;
     align-items: center;
     background-color: #4a90e2;
@@ -121,7 +160,31 @@
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
-    height: 48px; /* Asegura la misma altura para ambos botones */
+    height: 48px;
+}
+
+.aceptar-btn {
+    background-color: #28a745;
+}
+
+.cancelar-btn {
+    background-color: #dc3545;
+}
+
+.aceptar-btn:hover {
+    background-color: #218838;
+}
+
+.cancelar-btn:hover {
+    background-color: #c82333;
+}
+
+.aceptar-btn:active {
+    background-color: #1e7e34;
+}
+
+.cancelar-btn:active {
+    background-color: #bd2130;
 }
 
 .editar-perfil-btn:hover,
@@ -139,21 +202,23 @@
     margin-right: 8px;
 }
 
+/* Contenedor de categorías */
 .categoria-container {
     display: flex;
-    align-items: center; /* Centra verticalmente */
-    gap: 10px; /* Espacio entre los selectores */
-    width: 100%; /* Asegura que el contenedor use el ancho completo */
+    align-items: center;
+    gap: 10px;
+    width: 100%;
 }
 
 .categoria-container select {
-    flex: 1; /* Asegura que cada selector ocupe el mismo espacio */
-    padding: 5px; /* Añadir un poco de padding para el diseño */
+    flex: 1;
+    padding: 5px;
     border-radius: 8px;
-    border: 1px solid #ccc; /* Añadir borde */
-    font-size: 1rem; /* Ajustar tamaño de fuente */
+    border: 1px solid #ccc;
+    font-size: 1rem;
 }
 
+/* Modo editable */
 .editable-mode li {
     height: 50px;
     width: 100%;
@@ -170,144 +235,19 @@
     box-sizing: border-box;
 }
 
-
-/* Permitir scroll horizontal solo en la sección de correo electrónico */
 /* Sección de correo electrónico con scroll horizontal oculto */
-/* Sección de correo electrónico con scroll horizontal oculto y sin estilos adicionales */
 .email-section {
-    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
-    overflow-x: auto; /* Activa el scroll horizontal */
-    max-width: 100%; /* Limita el ancho del contenedor */
-    
-    /* Quita cualquier estilo adicional */
-    background-color: transparent; /* Fondo transparente */
-    border: none; /* Sin bordes */
-    padding: 0; /* Sin padding */
-    cursor: text; /* Cambia el cursor al pasar por el correo */
-    
-    /* Oculta la barra de desplazamiento en todos los navegadores */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    white-space: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    cursor: text;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .email-section::-webkit-scrollbar {
-    display: none; /* Oculta la barra de desplazamiento en Chrome, Safari y Opera */
-}
-
-.boton-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Espacio entre los botones */
-    margin-top: 10px; /* Reduce el margen superior */
-}
-
-.aceptar-btn,
-.cancelar-btn {
-    display: flex;
-    align-items: center;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-size: 1.1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
-}
-
-.aceptar-btn:hover,
-.cancelar-btn:hover {
-    background-color: #357ABD;
-}
-
-.aceptar-btn:active,
-.cancelar-btn:active {
-    background-color: #285a8a;
-}
-
-.boton-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Espacio entre los botones */
-    margin-top: 10px; /* Reduce el margen superior */
-}
-
-.aceptar-btn {
-    display: flex;
-    align-items: center;
-    background-color: #28a745; /* Verde */
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-size: 1.1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
-}
-
-.cancelar-btn {
-    display: flex;
-    align-items: center;
-    background-color: #dc3545; /* Rojo */
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-size: 1.1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
-}
-
-.aceptar-btn:hover {
-    background-color: #218838; /* Verde más oscuro */
-}
-
-.cancelar-btn:hover {
-    background-color: #c82333; /* Rojo más oscuro */
-}
-
-.aceptar-btn:active {
-    background-color: #1e7e34; /* Verde aún más oscuro */
-}
-
-.cancelar-btn:active {
-    background-color: #bd2130; /* Rojo aún más oscuro */
-}
-
-
-
-
-
-
-
-
-
-/* FOTO DE PERFIL */
-.perfil-foto {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    cursor: pointer;
-    object-fit: cover;
-}
-
-.perfil-foto-placeholder {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    background-color: #e0e0e0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 48px;
-    color: #888;
-    cursor: pointer;
-    border: 2px dashed #bbb;
-}
-
-.perfil-foto:hover {
-    opacity: 0.8;
+    display: none;
 }

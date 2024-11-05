@@ -15,26 +15,18 @@ const Perfil = () => {
     const [moto, setMoto] = useState(false);
     const [fechaNacimiento, setFechaNacimiento] = useState('');
 
-    // Función para convertir la fecha a formato yyyy-mm-dd
     const formatToISODate = (isoString) => {
         if (!isoString) return '';
         const date = new Date(isoString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     };
 
-    // Función para convertir la fecha de 'yyyy-mm-ddTHH:MM:SSZ' a 'dd/mm/yyyy'
     const formatDate = (isoString) => {
         if (!isoString) return '';
         const date = new Date(isoString);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
+        return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
     };
-    
+
     useEffect(() => {
         const storedArbitro = localStorage.getItem('arbitro');
         if (storedArbitro) {
@@ -55,22 +47,24 @@ const Perfil = () => {
     }
 
     const handlePhotoChange = async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = async () => {
-                const base64Image = reader.result.split(',')[1];
-                try {
-                    await axios.put(`${baseURL}/arbitros/${arbitro.id}/foto`, { foto: base64Image }, {
-                        headers: { 'Content-Type': 'application/json' },
-                    });
-                    setArbitro(prev => ({ ...prev, foto: base64Image }));
-                    localStorage.setItem('arbitro', JSON.stringify({ ...arbitro, foto: base64Image }));
-                } catch (error) {
-                    console.error('Error al actualizar la foto de perfil:', error);
-                }
-            };
-            reader.readAsDataURL(file);
+        if (!isEditing) { // Permitir cambiar la foto solo si no está en modo de edición
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    const base64Image = reader.result.split(',')[1];
+                    try {
+                        await axios.put(`${baseURL}/arbitros/${arbitro.id}/foto`, { foto: base64Image }, {
+                            headers: { 'Content-Type': 'application/json' },
+                        });
+                        setArbitro(prev => ({ ...prev, foto: base64Image }));
+                        localStorage.setItem('arbitro', JSON.stringify({ ...arbitro, foto: base64Image }));
+                    } catch (error) {
+                        console.error('Error al actualizar la foto de perfil:', error);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
         }
     };
 
@@ -152,12 +146,12 @@ const Perfil = () => {
                         src={`data:image/jpeg;base64,${arbitro.foto}`}
                         alt="Foto de perfil"
                         className="perfil-foto"
-                        onClick={() => document.getElementById('fileInput').click()}
+                        onClick={() => !isEditing && document.getElementById('fileInput').click()}
                     />
                 ) : (
                     <div
                         className="perfil-foto-placeholder"
-                        onClick={() => document.getElementById('fileInput').click()}
+                        onClick={() => !isEditing && document.getElementById('fileInput').click()}
                     >
                         <p>+</p>
                     </div>

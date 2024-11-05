@@ -278,6 +278,9 @@ router.put('/:id', async (req, res) => {
     const updatedData = req.body;
 
     try {
+        // Eliminar el campo "foto" de updatedData, si existe
+        delete updatedData.foto;
+
         const categoriaId = await obtenerCategoriaId(updatedData.categoria, updatedData.nivel);
         if (!categoriaId) {
             return res.status(404).json({ success: false, message: 'Categoría o subcategoría no encontrada' });
@@ -310,6 +313,7 @@ router.put('/:id', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error al actualizar el perfil' });
     }
 });
+
 
 // Ruta para actualizar la foto de perfil
 router.put('/:id/foto', async (req, res) => {
