@@ -53,4 +53,49 @@ router.get('/partidos/:arbitroId', async (req, res) => {
     }
 });
 
+const upload = multer({ dest: 'uploads/' });
+
+router.post('/importar', upload.single('file'), async (req, res) => {
+    try {
+        const filePath = req.file.path;
+        const workbook = xlsx.readFile(filePath);
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = xlsx.utils.sheet_to_json(sheet);
+
+        for (let row of rows) {
+            const { categoria, equipoLocal, equipoVisitante, dia, hora, autobus, anotaciones } = row;
+
+            // 1. Insertar categoría si no existe
+            const [catResult] = await db.query('SELECT id FROM categorias WHERE nombre = ?', [categoria]);
+            let categoriaId = catResult.length ? catResult[0].id : null;
+            if (!categoriaId) {
+                const [insertCat] = await db.query('INSERT INTO categorias (nombre) VALUES (?)', [categoria]);
+                categoriaId = insertCat.insertId;
+            }
+
+            // 2. Insertar equipos si no existen
+            const getOrInsertEquipo = async (equipoNombre) => {
+                const [equipoResult] = await db.query('SELECT id FROM equipos WHERE nombre = ?', [equipoNombre]);
+                if (equipoResult.length) return equipoResult[0].id;
+                const [insertEquipo] = await db.query('INSERT INTO equipos (nombre, categoria_id) VALUES (?, ?)', [equipoNombre, categoriaId]);
+                return insertEquipo.insertId;
+            };
+            const equipoAId = await getOrInsertEquipo(equipoLocal);
+            const equipoBId = await getOrInsertEquipo(equipoVisitante);
+
+            // 3. Insertar partido
+            await db.query(
+                'INSERT INTO partidos (dia, hora, categoria_id, equipo_a_id, equipo_b_id, autobus, anotaciones) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                [dia, hora, categoriaId, equipoAId, equipoBId, autobus, anotaciones]
+            );
+        }
+
+        res.json({ message: "Archivo importado exitosamente" });
+    } catch (error) {
+        console.error("Error al procesar el archivo:", error);
+        res.status(500).json({ error: "Error al procesar el archivo" });
+    }
+});
+
+
 module.exports = router;
