@@ -348,5 +348,29 @@ router.put('/:id/foto', async (req, res) => {
     }
 });
 
+// Ruta para obtener la foto de perfil de un árbitro específico
+router.get('/foto/:arbitroId', async (req, res) => {
+    const { arbitroId } = req.params;
+
+    try {
+        const [rows] = await db.query(
+            `SELECT foto FROM foto_arbitros WHERE arbitro_id = ? LIMIT 1`,
+            [arbitroId]
+        );
+
+        if (rows.length > 0 && rows[0].foto) {
+            const fotoBase64 = Buffer.from(rows[0].foto).toString('base64');
+            res.json({ foto: `data:image/jpeg;base64,${fotoBase64}` });
+        } else {
+            res.status(404).json({ error: 'Foto no encontrada' });
+        }
+    } catch (error) {
+        console.error("Error al obtener la foto:", error);
+        res.status(500).json({ error: 'Error al obtener la foto' });
+    }
+});
+
+
+
 
 module.exports = router;

@@ -3,7 +3,7 @@ import './styles/Partidos.css';
 
 import { IoCreateOutline } from "react-icons/io5";
 import { CgImport } from "react-icons/cg";
-import { TbEyeCheck } from "react-icons/tb";
+// import { TbEyeCheck } from "react-icons/tb";
 
 const Partidos = () => {
     return (
@@ -18,10 +18,10 @@ const Partidos = () => {
                 <CgImport style={{ marginRight: '8px' }} />
                 Importar Partidos
             </button>
-            <button className="button">
+            {/* <button className="button">
                 <TbEyeCheck style={{ marginRight: '8px' }} />
                 Crear Informe
-            </button>
+            </button> */}
         </div>
     );
 };

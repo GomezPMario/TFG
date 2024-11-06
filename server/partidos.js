@@ -21,6 +21,7 @@ router.get('/partidos/:arbitroId', async (req, res) => {
                 f.nombre AS mi_funcion,           -- La función del árbitro principal
                 GROUP_CONCAT(
                     JSON_OBJECT(
+                        'arbitro_id', ac.id,
                         'numero_colegiado', ac.numero_colegiado,
                         'nombre', ac.nombre,
                         'apellido', ac.apellido,
