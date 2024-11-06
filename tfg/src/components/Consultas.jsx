@@ -109,7 +109,7 @@ const Consultas = ({ arbitroId }) => {
                             </tr>
                             <tr>
                                 <td><strong>Compañeros</strong></td>
-                                <td colSpan="3">
+                                <td colSpan="3" className="companeros-td">
                                     {partido.companeros ? (
                                         (Array.isArray(JSON.parse(partido.companeros))
                                             ? JSON.parse(partido.companeros)
@@ -145,8 +145,8 @@ const Consultas = ({ arbitroId }) => {
                         </div>
                         <h2>{selectedCompanero.alias}</h2>
                         <p>{selectedCompanero.nombre} {selectedCompanero.apellido}</p>
-                        <p><strong>Nº Teléfono:</strong> {selectedCompanero.telefono}</p>
-                        <p><strong>Función:</strong> {selectedCompanero.funcion}</p>
+                        <p><strong>{selectedCompanero.telefono}</strong></p>
+                        <p>{selectedCompanero.funcion}</p>
                     </div>
                 </div>
             )}
