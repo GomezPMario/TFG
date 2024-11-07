@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoCreateOutline } from "react-icons/io5";
 import { CgImport } from "react-icons/cg";
+import { baseURL } from './Login';
 import './styles/Partidos.css';
 
 const Partidos = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [file, setFile] = useState(null);
+    const [partidos, setPartidos] = useState([]); // Estado para almacenar los datos de la tabla
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => {
@@ -34,6 +36,7 @@ const Partidos = () => {
                 });
                 if (response.ok) {
                     alert("Archivo importado con éxito");
+                    fetchPartidos(); // Refresca los datos de la tabla después de la importación
                 } else {
                     alert("Error al importar el archivo");
                 }
@@ -44,6 +47,42 @@ const Partidos = () => {
             closeModal();
         }
     };
+
+    const formatFecha = (fecha, incluirHora = false) => {
+        if (!fecha || fecha === '--') return '--'; // Manejo de valores vacíos o nulos
+        const fechaObj = new Date(fecha);
+        const dia = String(fechaObj.getDate()).padStart(2, '0');
+        const mes = String(fechaObj.getMonth() + 1).padStart(2, '0'); // Mes es base 0
+        const anio = fechaObj.getFullYear();
+
+        if (incluirHora) {
+            const horas = String(fechaObj.getHours()).padStart(2, '0');
+            const minutos = String(fechaObj.getMinutes()).padStart(2, '0');
+            return `${dia}/${mes}/${anio} ${horas}:${minutos}`;
+        }
+
+        return `${dia}/${mes}/${anio}`;
+    };
+
+    const fetchPartidos = async () => {
+        try {
+            const response = await fetch(`${baseURL}/api/partidos`);
+            console.log("Response status:", response.status); // Verifica el estado de la respuesta
+            if (response.ok) {
+                const data = await response.json();
+                setPartidos(data);
+            } else {
+                console.error("Error al obtener los datos de los partidos");
+            }
+        } catch (error) {
+            console.error("Error al conectar con la API:", error);
+        }
+    };
+
+
+    useEffect(() => {
+        fetchPartidos(); // Llama a la API cuando el componente se monta
+    }, []);
 
     return (
         <div className="partidos-container">
@@ -84,6 +123,48 @@ const Partidos = () => {
                     </div>
                 </div>
             )}
+
+            {/* Tabla de partidos */}
+            <table className="partidos-table">
+                <thead>
+                    <tr>
+                        <th>Técnico</th>
+                        <th>Árbitro(s)</th>
+                        <th>Categoría</th>
+                        <th>Equipos</th>
+                        <th>Fecha Partido</th>
+                        <th>Fecha Informe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {partidos.length > 0 ? (
+                        partidos.map((partido, index) => (
+                            <tr key={index}>
+                                <td>{partido.tecnico}</td>
+                                <td>
+                                    {partido.arbitros.split(',').map((arbitro, idx) => {
+                                        const [alias, nombre, apellido] = arbitro.trim().split(' ');
+                                        return (
+                                            <div key={idx}>
+                                                ({alias}) - {nombre} {apellido}
+                                            </div>
+                                        );
+                                    })}
+                                </td>
+
+                                <td>{partido.categoria}</td>
+                                <td>{partido.equipos}</td>
+                                <td>{formatFecha(partido.fecha_partido, true)}</td>
+                                <td>{formatFecha(partido.fecha_informe)}</td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="6">No hay partidos disponibles</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
         </div>
     );
 };

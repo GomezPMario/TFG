@@ -533,6 +533,9 @@ CREATE TABLE informes (
     FOREIGN KEY (valoracion_tecnico_id) REFERENCES valoracion_tecnico(id)
 );
 
+ALTER TABLE informes
+ADD COLUMN fecha DATE;
+
 -- Inserta en la tabla imagen
 INSERT INTO imagen (notas, condicion_fisica, uniformidad, señalizacion)
 VALUES ('Buena presentación y actitud', 'Muy Bien', 'Bien', 'Suficiente');

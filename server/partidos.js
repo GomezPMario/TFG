@@ -1,9 +1,51 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db_setup');
+const multer = require('multer');
 
-// Ruta para obtener los partidos por árbitro con compañeros
-router.get('/partidos/:arbitroId', async (req, res) => {
+router.get('/', async (req, res) => {
+    try {
+        const query = `
+            SELECT
+                p.id AS partido_id,
+                CONCAT(ea.nombre, ' - ', eb.nombre) AS equipos,
+                c.nombre AS categoria,
+                CONCAT(p.dia, ' ', p.hora) AS fecha_partido,
+                IFNULL(MAX(i.fecha), '--') AS fecha_informe,
+                IFNULL(MAX(ae.alias), '--') AS tecnico,
+                GROUP_CONCAT(DISTINCT CONCAT(ar.alias, ' ', ar.nombre, ' ', ar.apellido)) AS arbitros
+            FROM
+                partidos p
+            LEFT JOIN
+                equipos ea ON p.equipo_a_id = ea.id
+            LEFT JOIN
+                equipos eb ON p.equipo_b_id = eb.id
+            LEFT JOIN
+                categorias c ON p.categoria_id = c.id
+            LEFT JOIN
+                informes i ON p.id = i.partido_id
+            LEFT JOIN
+                arbitros ae ON i.evaluador_id = ae.id
+            LEFT JOIN
+                partidos_arbitros pa ON p.id = pa.partido_id
+            LEFT JOIN
+                arbitros ar ON pa.arbitro_id = ar.id AND ar.cargo = 1  -- Filtra árbitros con cargo 1
+            GROUP BY
+                p.id;
+
+
+        `;
+
+        const [results] = await db.query(query);
+        res.setHeader('Content-Type', 'application/json');
+        res.json(results);
+    } catch (error) {
+        console.error("Error al obtener los partidos:", error);  // Registro detallado del error en el servidor
+        res.status(500).json({ error: "Error al obtener los partidos" });
+    }
+});
+
+router.get('/:arbitroId', async (req, res) => {
     const arbitroId = req.params.arbitroId;
 
     try {
@@ -18,7 +60,7 @@ router.get('/partidos/:arbitroId', async (req, res) => {
                 ea.ubicacion AS campo,
                 p.autobus AS autobus,
                 p.anotaciones AS notas,
-                f.nombre AS mi_funcion,           -- La función del árbitro principal
+                f.nombre AS mi_funcion,
                 GROUP_CONCAT(
                     JSON_OBJECT(
                         'arbitro_id', ac.id,
@@ -27,7 +69,7 @@ router.get('/partidos/:arbitroId', async (req, res) => {
                         'apellido', ac.apellido,
                         'alias', ac.alias,
                         'telefono', ac.telefono,
-                        'funcion', cf.nombre         -- La función de cada compañero
+                        'funcion', cf.nombre
                     )
                 ) AS companeros
             FROM partidos p
@@ -43,7 +85,6 @@ router.get('/partidos/:arbitroId', async (req, res) => {
             GROUP BY p.id;
         `;
 
-        // const [results] = await db.query(query, [arbitroId, arbitroId]);
         const [results] = await db.query(query, [arbitroId]);
         console.log("Partidos obtenidos:", results);
         res.json(results);
@@ -52,50 +93,5 @@ router.get('/partidos/:arbitroId', async (req, res) => {
         res.status(500).json({ error: "Error al obtener los partidos" });
     }
 });
-
-const upload = multer({ dest: 'uploads/' });
-
-router.post('/importar', upload.single('file'), async (req, res) => {
-    try {
-        const filePath = req.file.path;
-        const workbook = xlsx.readFile(filePath);
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = xlsx.utils.sheet_to_json(sheet);
-
-        for (let row of rows) {
-            const { categoria, equipoLocal, equipoVisitante, dia, hora, autobus, anotaciones } = row;
-
-            // 1. Insertar categoría si no existe
-            const [catResult] = await db.query('SELECT id FROM categorias WHERE nombre = ?', [categoria]);
-            let categoriaId = catResult.length ? catResult[0].id : null;
-            if (!categoriaId) {
-                const [insertCat] = await db.query('INSERT INTO categorias (nombre) VALUES (?)', [categoria]);
-                categoriaId = insertCat.insertId;
-            }
-
-            // 2. Insertar equipos si no existen
-            const getOrInsertEquipo = async (equipoNombre) => {
-                const [equipoResult] = await db.query('SELECT id FROM equipos WHERE nombre = ?', [equipoNombre]);
-                if (equipoResult.length) return equipoResult[0].id;
-                const [insertEquipo] = await db.query('INSERT INTO equipos (nombre, categoria_id) VALUES (?, ?)', [equipoNombre, categoriaId]);
-                return insertEquipo.insertId;
-            };
-            const equipoAId = await getOrInsertEquipo(equipoLocal);
-            const equipoBId = await getOrInsertEquipo(equipoVisitante);
-
-            // 3. Insertar partido
-            await db.query(
-                'INSERT INTO partidos (dia, hora, categoria_id, equipo_a_id, equipo_b_id, autobus, anotaciones) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                [dia, hora, categoriaId, equipoAId, equipoBId, autobus, anotaciones]
-            );
-        }
-
-        res.json({ message: "Archivo importado exitosamente" });
-    } catch (error) {
-        console.error("Error al procesar el archivo:", error);
-        res.status(500).json({ error: "Error al procesar el archivo" });
-    }
-});
-
 
 module.exports = router;
