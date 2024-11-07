@@ -86,7 +86,7 @@ const Partidos = () => {
 
     return (
         <div className="partidos-container">
-            <h1 className="partidos-title">Listado de Partidos</h1>
+            <h1 className="partidos-title">Listado de Partidos-Informes</h1>
 
             <button className="button">
                 <IoCreateOutline style={{ marginRight: '8px' }} />
