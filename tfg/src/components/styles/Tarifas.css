@@ -1,34 +1,56 @@
-/* Estilos generales */
 .tarifas-container {
-    position: relative;
+    margin: 10px;
     text-align: center;
-    padding: 20px;
-    font-family: Arial, sans-serif;
 }
 
-/* Título */
-.title {
-    font-size: 24px;
+.tarifas-title {
+    margin-bottom: 10px;
+    text-align: center;
+
+}
+
+.button {
+    margin: 10px 15px 20px 5px;
+    padding: 4px 10px;
+    font-size: 14px; /* Reducir el tamaño de la fuente del botón */
     font-weight: bold;
-    margin-bottom: 20px;
-}
-
-/* Fondo de marca de agua */
-.watermark {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 300px; /* Ajusta el tamaño según necesites */
-    height: auto;
-    opacity: 0.1; /* Ajusta la opacidad para un efecto tenue */
-    transform: translate(-50%, -50%);
-    z-index: -1; /* Coloca el logo en el fondo */
-}
-
-/* Botón */
-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
+    border: none;
     cursor: pointer;
+    border-radius: 5px;
+    background-color: #ff5aa4;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #ff96c5;
+}
+
+.tarifas-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.85em; /* Reducir tamaño de fuente en la tabla para adaptarse mejor */
+}
+
+.tarifas-table th, .tarifas-table td {
+    padding: 2px 4px; /* Reducir padding para evitar salto de línea */
+    border: 1px solid #ddd;
+    text-align: center;
+    white-space: nowrap; /* Evita saltos de línea en el contenido */
+}
+
+.tarifas-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.tarifas-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tarifas-table tbody tr:hover {
+    background-color: #e0f7fa;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
