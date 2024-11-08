@@ -67,7 +67,7 @@ const Informes = () => {
                     </tbody>
                 </table>
             ) : (
-                <p>Ningún técnico todavía no le ha realizado ningún informe.</p>
+                    <p>Aún no ha sido evaluado por ningún técnico.</p>
             )}
         </div>
     );
