@@ -7,7 +7,7 @@ const db = require('./db_setup');
 router.get('/tarifas', async (req, res) => {
     const query = `
         SELECT 
-            c.nombre AS categoria,
+            nc.nombre AS categoria,
             MAX(CASE WHEN f.nombre = 'Principal' THEN t.importe ELSE NULL END) AS Principal,
             MAX(CASE WHEN f.nombre = 'Auxiliar 1' THEN t.importe ELSE NULL END) AS Auxiliar_1,
             MAX(CASE WHEN f.nombre = 'Auxiliar 2' THEN t.importe ELSE NULL END) AS Auxiliar_2,
@@ -26,10 +26,10 @@ router.get('/tarifas', async (req, res) => {
             COALESCE(MAX(CASE WHEN f.nombre = 'Ayudante de Anotador' THEN t.importe ELSE 0 END), 0) +
             COALESCE(MAX(CASE WHEN f.nombre = 'Canon FAB' THEN t.importe ELSE 0 END), 0) AS Total
         FROM tarifas t
-        JOIN categorias c ON t.categoria_id = c.id
+        JOIN categorias nc ON t.categoria_id = nc.id
         JOIN funciones f ON t.funcion_id = f.id
-        GROUP BY c.nombre
-        ORDER BY FIELD(c.nombre, 
+        GROUP BY nc.nombre
+        ORDER BY FIELD(nc.nombre, 
             'ACB',
             'LIGA FEM',
             '2ª FEB',

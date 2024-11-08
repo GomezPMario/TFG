@@ -67,6 +67,7 @@ const Tarifas = () => {
                     tarifa.categoria,
                     tarifa.Principal ? `${Number(tarifa.Principal).toFixed(2)} €` : '',
                     tarifa.Auxiliar_1 ? `${Number(tarifa.Auxiliar_1).toFixed(2)} €` : '',
+                    // tarifa.Auxiliar_2 ? `${Number(tarifa.Auxiliar_2).toFixed(2)} €` : '',
                     tarifa.Anotador ? `${Number(tarifa.Anotador).toFixed(2)} €` : '',
                     tarifa.Cronometrador ? `${Number(tarifa.Cronometrador).toFixed(2)} €` : '',
                     tarifa.Veinticuatro_Segundos ? `${Number(tarifa.Veinticuatro_Segundos).toFixed(2)} €` : '',
@@ -91,6 +92,7 @@ const Tarifas = () => {
                     0: { cellWidth: 'auto', halign: 'left', lineWidth: 0.1, lineColor: [0, 0, 0] }, // Categoría, alineada a la izquierda
                     1: { cellWidth: 'auto', lineWidth: 0.1, lineColor: [0, 0, 0] }, // Principal
                     2: { cellWidth: 'auto', lineWidth: 0.1, lineColor: [0, 0, 0] }, // Auxiliar 1
+                    // 3: { cellWidth: 'auto', lineWidth: 0.1, lineColor: [0, 0, 0] }, // Auxiliar 2
                     3: { cellWidth: 'auto', lineWidth: 0.1, lineColor: [0, 0, 0] }, // Anotador
                     4: { cellWidth: 'auto', lineWidth: 0.1, lineColor: [0, 0, 0] }, // Crono
                     5: { cellWidth: 'auto', lineWidth: 0.1, lineColor: [0, 0, 0] }, // 24 segundos

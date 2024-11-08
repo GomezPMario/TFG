@@ -290,12 +290,49 @@ CREATE TABLE categorias (
 );
 
 ALTER TABLE categorias
-ADD COLUMN escolar boolean DEFAULT false;
+ADD COLUMN padre INT,
+ADD CONSTRAINT fk_categoria_padre
+FOREIGN KEY (padre) REFERENCES categorias(id)
+ON DELETE SET NULL;
 
-INSERT INTO categorias (nombre) VALUES 
-    ('2ª Aragonesa Masculina'),
-    ('ACB'),
-    ('1ª Femenina A1');
+INSERT INTO categorias (nombre, padre) VALUES
+('ACB', 37),
+('LIGA FEM', 37),
+('2ª FEB', 37),
+('LIGA FEM 2', 37),
+('3ª FEB', 37),
+('COPA ESPAÑA', 37),
+('SILLA RUEDAS (1ª DIV)', 37),
+('1ª MASC A1', 37),
+('COPA 1ª MASC', 37),
+('1ª MASC A2', 37),
+('1ª FEM A1 (Liga Regular)', 37),
+('1ª FEM A1 (Semis y Final)', 37),
+('COPA 1ª FEM', 37),
+('1ª FEM A2', 37),
+('2ª ARAG MASC', 37),
+('2ª ARAG FEM', 37),
+('3ª ARAG MASC', 37),
+('3ª ARAG FEM', 37),
+('LIGA SOCIAL', 37),
+('CTO. ARAGÓN JUNIOR MASC 1ª', 37),
+('CTO. ARAGÓN JUNIOR FEM 1ª', 37),
+('CTO. ARAGÓN JUNIOR MASC 2ª', 37),
+('CTO. ARAGÓN JUNIOR FEM 2ª', 37),
+('CTO. ARAGÓN JUNIOR MASC 3ª', 37),
+('CTO. ARAGÓN JUNIOR FEM 3ª', 37),
+('FINALES CTO. ARAGÓN ESCOLAR', 36),
+('CATEG. INFERIORES', 36),
+('ESCUELA', 36),
+('CADETE FEMENINO A', 36),
+('ALEVÍN MASCULINO B', 65),
+('CADETE MASCULINO B', 63),
+('3x3 SENIOR (cada 20 min)', 37),
+('3x3 JUNIOR (cada 20 min)', 37),
+('3x3 ESCOLAR (cada 20 min)', 37),
+('3x3 SENIOR (cada 25 min)', 37),
+('3x3 JUNIOR (cada 25 min)', 37),
+('3x3 ESCOLAR (cada 25 min)', 37);
 
 CREATE TABLE equipos (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -596,293 +633,193 @@ CREATE TABLE tarifas (
     categoria_id INT NOT NULL,
     funcion_id INT NOT NULL,
     importe DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (categoria_id) REFERENCES categorias(id),
-    FOREIGN KEY (funcion_id) REFERENCES funciones(id),
-    UNIQUE KEY (categoria_id, funcion_id) -- Evita duplicados de combinaciones de categoría y función
+    CONSTRAINT fk_funcion FOREIGN KEY (funcion_id) REFERENCES funciones(id) ON DELETE CASCADE,
+    CONSTRAINT fk_categoria FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE CASCADE,
+    UNIQUE (funcion_id, categoria_id)
 );
 
-INSERT INTO categorias (nombre, escolar) VALUES
-('LIGA FEM', 0),
-('2ª FEB', 0),
-('LIGA FEM 2', 0),
-('3ª FEB', 0),
-('COPA ESPAÑA', 0),
-('SILLA RUEDAS (1ª DIV)', 0),
-('1ª MASC A1', 0),
-('COPA 1ª MASC', 0),
-('1ª MASC A2', 0),
-('1ª FEM A1 (Semis y Final)', 0),
-('COPA 1ª FEM', 0),
-('1ª FEM A2', 0),
-('2ª ARAG FEM', 0),
-('3ª ARAG MASC', 0),
-('3ª ARAG FEM', 0),
-('LIGA SOCIAL', 0),
-('CTO. ARAGÓN JUNIOR MASC 1ª', 0),
-('CTO. ARAGÓN JUNIOR FEM 1ª', 0),
-('CTO. ARAGÓN JUNIOR MASC 2ª', 0),
-('CTO. ARAGÓN JUNIOR FEM 2ª', 0),
-('CTO. ARAGÓN JUNIOR MASC 3ª', 0),
-('CTO. ARAGÓN JUNIOR FEM 3ª', 0);
-('FINALES CTO. ARAGÓN ESCOLAR', 1),
-('CATEG. INFERIORES', 1),
-('ESCUELA', 1),
-('3x3 SENIOR (cada 20 min)', 0),
-('3x3 JUNIOR (cada 20 min)', 0),
-('3x3 ESCOLAR (cada 20 min)', 0),
-('3x3 SENIOR (cada 25 min)', 0),
-('3x3 JUNIOR (cada 25 min)', 0),
-('3x3 ESCOLAR (cada 25 min)', 0);
-
-
+INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES
 -- ACB
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(2, 5, 86),
-(2, 6, 86),
-(2, 8, 26);
-
+(38, 5, 86), 
+(38, 6, 86), 
+(38, 8, 26),
 -- LIGA FEM
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(4, 4, 48),
-(4, 5, 48),
-(4, 6, 48),
-(4, 7, 48),
-(4, 8, 17);
-
+(39, 4, 48),
+(39, 5, 48),
+(39, 6, 48),
+(39, 7, 48),
+(39, 8, 17),
 -- 2ª FEB
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(5, 4, 48),
-(5, 5, 48),
-(5, 6, 48),
-(5, 7, 48),
-(5, 8, 17);
-
+(40, 4, 48),
+(40, 5, 48),
+(40, 6, 48),
+(40, 7, 48),
+(40, 8, 17),
 -- LIGA FEM 2
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(6, 4, 31.2),
-(6, 5, 31.2),
-(6, 6, 31.2),
-(6, 7, 31.2),
-(6, 8, 14);
-
+(41, 4, 31.2),
+(41, 5, 31.2),
+(41, 6, 31.2),
+(41, 7, 31.2),
+(41, 8, 14),
 -- 3ª FEB
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(7, 4, 29.12),
-(7, 5, 29.12),
-(7, 6, 29.12),
-(7, 7, 29.12),
-(7, 8, 14);
-
+(42, 4, 29.12),
+(42, 5, 29.12),
+(42, 6, 29.12),
+(42, 7, 29.12),
+(42, 8, 14),
 -- COPA ESPAÑA
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(8, 4, 50),
-(8, 5, 50),
-(8, 6, 50),
-(8, 7, 50),
-(8, 8, 19);
-
+(43, 4, 50),
+(43, 5, 50),
+(43, 6, 50),
+(43, 7, 50),
+(43, 8, 19),
 -- SILLA RUEDAS (1ª DIV)
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(9, 4, 20),
-(9, 5, 20),
-(9, 6, 20),
-(9, 8, 20);
-
+(44, 4, 20),
+(44, 5, 20),
+(44, 6, 20),
+(44, 8, 20),
 -- 1ª MASC A1
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(10, 1, 70),
-(10, 2, 70),
-(10, 4, 25),
-(10, 5, 25),
-(10, 6, 25),
-(10, 8, 18);
-
+(45, 1, 70),
+(45, 2, 70),
+(45, 4, 25),
+(45, 5, 25),
+(45, 6, 25),
+(45, 8, 18),
 -- COPA 1ª MASC
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(11, 1, 60),
-(11, 2, 60),
-(11, 4, 23),
-(11, 5, 23),
-(11, 6, 23),
-(11, 8, 24);
-
+(46, 1, 60),
+(46, 2, 60),
+(46, 4, 23),
+(46, 5, 23),
+(46, 6, 23),
+(46, 8, 24),
 -- 1ª MASC A2
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(12, 1, 41.5),
-(12, 2, 41.5),
-(12, 4, 20.5),
-(12, 5, 20.5),
-(12, 6, 20.5),
-(12, 8, 24);
-
+(47, 1, 41.5),
+(47, 2, 41.5),
+(47, 4, 20.5),
+(47, 5, 20.5),
+(47, 6, 20.5),
+(47, 8, 24),
 -- 1ª FEM A1 (Liga Regular)
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(3, 1, 41.5),
-(3, 2, 41.5),
-(3, 4, 21),
-(3, 5, 21),
-(3, 6, 21),
-(3, 8, 17);
-
+(48, 1, 41.5),
+(48, 2, 41.5),
+(48, 4, 21),
+(48, 5, 21),
+(48, 6, 21),
+(48, 8, 17),
 -- 1ª FEM A1 (Semis y Final)
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(13, 1, 51.5),
-(13, 2, 51.5),
-(13, 4, 24),
-(13, 5, 24),
-(13, 6, 24),
-(13, 8, 20);
-
+(49, 1, 51.5),
+(49, 2, 51.5),
+(49, 4, 24),
+(49, 5, 24),
+(49, 6, 24),
+(49, 8, 20),
 -- COPA 1ª FEM
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(14, 1, 41.5),
-(14, 2, 41.5),
-(14, 4, 21),
-(14, 5, 21),
-(14, 6, 21),
-(14, 8, 17);
-
+(50, 1, 41.5),
+(50, 2, 41.5),
+(50, 4, 21),
+(50, 5, 21),
+(50, 6, 21),
+(50, 8, 17),
 -- 1ª FEM A2
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(15, 1, 31.5),
-(15, 2, 31.5),
-(15, 4, 18),
-(15, 5, 18),
-(15, 6, 18),
-(15, 8, 17);
-
+(51, 1, 31.5),
+(51, 2, 31.5),
+(51, 4, 18),
+(51, 5, 18),
+(51, 6, 18),
+(51, 8, 17),
 -- 2ª ARAG MASC
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(1, 1, 26.5),
-(1, 2, 22.5),
-(1, 4, 14.5),
-(1, 5, 16.5),
-(1, 8, 20.5);
-
+(52, 1, 26.5),
+(52, 2, 22.5),
+(52, 4, 14.5),
+(52, 5, 16.5),
+(52, 8, 20.5),
 -- 2ª ARAG FEM
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(16, 1, 24.5),
-(16, 2, 18),
-(16, 4, 14.5),
-(16, 5, 16.5),
-(16, 8, 21);
-
+(53, 1, 24.5),
+(53, 2, 18),
+(53, 4, 14.5),
+(53, 5, 16.5),
+(53, 8, 21),
 -- 3ª ARAG MASC
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(17, 1, 26.5),
-(17, 2, 19),
-(17, 4, 14.5),
-(17, 5, 16.5),
-(17, 8, 21);
-
+(54, 1, 26.5),
+(54, 2, 19),
+(54, 4, 14.5),
+(54, 5, 16.5),
+(54, 8, 21),
 -- 3ª ARAG FEM
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(18, 1, 21.5),
-(18, 4, 15),
-(18, 8, 18);
-
+(55, 1, 21.5),
+(55, 4, 15),
+(55, 8, 18),
 -- LIGA SOCIAL
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(19, 1, 26),
-(19, 4, 16.5),
-(19, 8, 17);
-
+(56, 1, 26),
+(56, 4, 16.5),
+(56, 8, 17),
 -- CTO. ARAGÓN JUNIOR MASC 1ª
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(20, 1, 23.5),
-(20, 2, 21.5),
-(20, 4, 14.5),
-(20, 5, 16.5),
-(20, 8, 18.5);
-
+(57, 1, 23.5),
+(57, 2, 21.5),
+(57, 4, 14.5),
+(57, 5, 16.5),
+(57, 8, 18.5),
 -- CTO. ARAGÓN JUNIOR FEM 1ª
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(21, 1, 23.5),
-(21, 2, 21.5),
-(21, 4, 14.5),
-(21, 5, 16.5),
-(21, 8, 18.5);
-
+(58, 1, 23.5),
+(58, 2, 21.5),
+(58, 4, 14.5),
+(58, 5, 16.5),
+(58, 8, 18.5),
 -- CTO. ARAGÓN JUNIOR MASC 2ª
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(22, 1, 22.5),
-(22, 2, 17),
-(22, 4, 13),
-(22, 5, 15),
-(22, 8, 18.5);
-
+(59, 1, 22.5),
+(59, 2, 17),
+(59, 4, 13),
+(59, 5, 15),
+(59, 8, 18.5),
 -- CTO. ARAGÓN JUNIOR FEM 2ª
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(23, 1, 19.5),
-(23, 2, 15),
-(23, 4, 13),
-(23, 5, 15),
-(23, 8, 16);
-
+(60, 1, 19.5),
+(60, 2, 15),
+(60, 4, 13),
+(60, 5, 15),
+(60, 8, 16),
 -- CTO. ARAGÓN JUNIOR MASC 3ª
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(34, 1, 19.5),
-(34, 4, 13.5),
-(34, 8, 16);
-
+(61, 1, 19.5),
+(61, 4, 13.5),
+(61, 8, 16),
 -- CTO. ARAGÓN JUNIOR FEM 3ª
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(35, 1, 19.5),
-(35, 4, 13.5),
-(35, 8, 16);
-
+(62, 1, 19.5),
+(62, 4, 13.5),
+(62, 8, 16),
 -- FINALES CTO. ARAGÓN ESCOLAR
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(25, 1, 19.5),
-(25, 2, 19.5),
-(25, 4, 13.75),
-(25, 5, 13.75),
-(25, 6, 13.75),
-(25, 8, 9.75);
-
+(63, 1, 19.5),
+(63, 2, 19.5),
+(63, 4, 13.75),
+(63, 5, 13.75),
+(63, 6, 13.75),
+(63, 8, 9.75),
 -- CATEG. INFERIORES
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(26, 1, 14),
-(26, 4, 10.5),
-(26, 8, 7.5);
-
+(64, 1, 14),
+(64, 4, 10.5),
+(64, 8, 7.5),
 -- ESCUELA
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(27, 1, 11.5),
-(27, 8, 6);
-
+(65, 1, 11.5),
+(65, 8, 6),
 -- 3x3 SENIOR (cada 20 min)
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(28, 1, 7),
-(28, 4, 4.5),
-(28, 8, 3.5);
-
+(67, 1, 7),
+(67, 4, 4.5),
+(67, 8, 3.5),
 -- 3x3 JUNIOR (cada 20 min)
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(29, 1, 5.75),
-(29, 4, 4),
-(29, 8, 3.25);
-
+(68, 1, 5.75),
+(68, 4, 4),
+(68, 8, 3.25),
 -- 3x3 ESCOLAR (cada 20 min)
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(30, 1, 5),
-(30, 4, 3.5),
-(30, 8, 1.5);
-
+(69, 1, 5),
+(69, 4, 3.5),
+(69, 8, 1.5),
 -- 3x3 SENIOR (cada 25 min)
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(31, 1, 8.75),
-(31, 4, 5.75),
-(31, 8, 4.5);
-
+(70, 1, 8.75),
+(70, 4, 5.75),
+(70, 8, 4.5),
 -- 3x3 JUNIOR (cada 25 min)
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(32, 1, 7),
-(32, 4, 5),
-(32, 8, 4);
-
+(71, 1, 7),
+(71, 4, 5),
+(71, 8, 4),
 -- 3x3 ESCOLAR (cada 25 min)
-INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES 
-(33, 1, 6.25),
-(33, 4, 4.5),
-(33, 8, 1.75);
+(72, 1, 6.25),
+(72, 4, 4.5),
+(72, 8, 1.75);
