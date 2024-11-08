@@ -94,7 +94,7 @@ const Partidos = () => {
             </button>
             <button className="button" onClick={openModal}>
                 <CgImport style={{ marginRight: '8px' }} />
-                Importar Partidos
+                Generar Designación
             </button>
 
             {isModalOpen && (

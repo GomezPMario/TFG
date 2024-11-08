@@ -8,7 +8,6 @@ import { FaUserGear } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
 import { GiPriceTag } from "react-icons/gi";
 import { IoDocumentsOutline } from "react-icons/io5";
-import { IoCloudUploadOutline } from "react-icons/io5";
 import { GiWhistle } from "react-icons/gi";
 import { PiCourtBasketballDuotone } from "react-icons/pi";
 import { GiStairsGoal } from "react-icons/gi";
@@ -57,9 +56,6 @@ const Sidebar = ({ onLogout }) => {
 
                     {permiso === '1' && (
                         <>
-                            <li className={location.pathname === '/designacion' ? 'active' : ''}>
-                                <Link to="/designacion"><IoCloudUploadOutline />Generar Designación</Link>
-                            </li>
                             <li className={location.pathname === '/arbitros' ? 'active' : ''}>
                                 <Link to="/arbitros"><GiWhistle />Árbitros</Link>
                             </li>

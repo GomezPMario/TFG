@@ -1,0 +1,34 @@
+/* Estilos generales */
+.tarifas-container {
+    position: relative;
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+/* Título */
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Fondo de marca de agua */
+.watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px; /* Ajusta el tamaño según necesites */
+    height: auto;
+    opacity: 0.1; /* Ajusta la opacidad para un efecto tenue */
+    transform: translate(-50%, -50%);
+    z-index: -1; /* Coloca el logo en el fondo */
+}
+
+/* Botón */
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}

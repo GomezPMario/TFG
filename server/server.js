@@ -7,6 +7,8 @@ const db = require('./db_setup');
 const arbitrosRoutes = require('./arbitros');
 const partidos = require('./partidos');
 const informes = require('./informes');
+const tarifas = require('./tarifas');
+
 
 // dotenv.config();
 
@@ -56,7 +58,7 @@ app.use('/arbitros', arbitrosRoutes);
 app.use('/partidos', partidos);      // Ruta para obtener todos los partidos
 app.use('/api/partidos', partidos);  // Ruta para obtener partidos específicos en Consultas.jsx
 app.use('/api/informes', informes);
-
+app.use('/api', tarifas);
 
 // Endpoint para iniciar sesión
 app.post('/login', async (req, res) => {
