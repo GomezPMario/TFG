@@ -54,6 +54,12 @@ const Sidebar = ({ onLogout }) => {
                         <Link to="/informes"><IoDocumentsOutline />Informes</Link>
                     </li>
 
+                    {permiso !== '1' && (
+                        <li className={location.pathname === '/tarifas' ? 'active' : ''}>
+                            <Link to="/tarifas"><GiMoneyStack />Tarifas</Link>
+                        </li>
+                    )}
+
                     {permiso === '1' && (
                         <>
                             <li className={location.pathname === '/arbitros' ? 'active' : ''}>
