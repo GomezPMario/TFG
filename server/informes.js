@@ -20,9 +20,12 @@ router.get('/', async (req, res) => {
                 ea.nombre AS equipo_local,
                 eb.nombre AS equipo_visitante,
                 ea.ubicacion AS campo,  -- Ubicación basada en el equipo A
-                p.autobus AS transporte,
-                p.anotaciones AS notas,
-                a.alias AS tecnico
+                a.alias AS tecnico,
+                i.imagen,               -- Nuevo campo: imagen
+                i.mecanica,             -- Nuevo campo: mecanica
+                i.criterio,             -- Nuevo campo: criterio
+                i.control_partido,      -- Nuevo campo: control_partido
+                i.valoracion            -- Nuevo campo: valoracion
             FROM informes i
             JOIN partidos p ON i.partido_id = p.id
             JOIN categorias c ON p.categoria_id = c.id
@@ -32,7 +35,6 @@ router.get('/', async (req, res) => {
             WHERE i.arbitro_id = ?`,
             [arbitroId]
         );
-
 
         res.json(rows);
     } catch (error) {

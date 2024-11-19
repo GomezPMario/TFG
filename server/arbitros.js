@@ -116,6 +116,10 @@ router.post('/nuevoarbitro', async (req, res) => {
             alias = primerApellido;
         } else if (!(await checkAlias(segundoApellido))) {
             alias = segundoApellido;
+        } else if (!(await checkAlias(nombre))) {
+            alias = nombre;
+        } else {
+            return res.status(400).json({ message: 'Ponte en contacto con Luis para gestionar la creación de tu usuario' });
         }
 
         alias = alias || '';
