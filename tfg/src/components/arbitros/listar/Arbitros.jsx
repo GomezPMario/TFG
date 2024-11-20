@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './styles/Arbitros.css';
-import { baseURL } from './Login';
-import NuevoArbitro from './NuevoArbitro';
-import Licencias from './Licencias';
-import Exportar from './Exportar';
+import './Arbitros.css';
+import { baseURL } from '../../Login';
+import NuevoArbitro from '../crear/NuevoArbitro';
+import Licencias from '../../Licencias';
+import Exportar from '../../Exportar';
 import { MdManageHistory, MdGroupAdd } from 'react-icons/md';
 import { PiShareBold } from 'react-icons/pi';
 
