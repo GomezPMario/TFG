@@ -5,7 +5,8 @@ import { baseURL } from '../../../components/login/Login';
 import { FaUser, FaEnvelope, FaPhone, FaHome, FaKey, FaTag, FaCarSide } from 'react-icons/fa';
 import { RiMotorbikeFill } from "react-icons/ri";
 import { LiaBirthdayCakeSolid } from "react-icons/lia";
-import { GiPencilRuler } from "react-icons/gi";
+import { GiPencilRuler, GiWhistle } from "react-icons/gi";
+import { HiMiniFingerPrint } from "react-icons/hi2";
 
 const Perfil = () => {
     const [arbitro, setArbitro] = useState(null);
@@ -170,7 +171,7 @@ const Perfil = () => {
                 <div className="perfil-content">
                     <div className="perfil-column">
                         <ul>
-                            <li><FaUser className="icon" /> <strong>Usuario:</strong> {isEditing && isEditable('username') ?
+                            <li><HiMiniFingerPrint className="icon" /> <strong>DNI:</strong> {isEditing && isEditable('username') ?
                                 <input type="text" name="username" value={updatedData.username} onChange={handleChange} />
                                 : arbitro.username}
                             </li>
@@ -182,7 +183,7 @@ const Perfil = () => {
                                 <input type="text" name="alias" value={updatedData.alias} onChange={handleChange} />
                                 : arbitro.alias}
                             </li>
-                            <li><FaTag className="icon" /> <strong>Nº de Colegiado:</strong> {isEditing && arbitro.permiso === '1' ?
+                            <li><GiWhistle className="icon" /> <strong>Nº de Colegiado:</strong> {isEditing && arbitro.permiso === '1' ?
                                 <input type="text" name="numero_colegiado" value={updatedData.numero_colegiado} onChange={handleChange} />
                                 : arbitro.numero_colegiado}
                             </li>
