@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { IoCreateOutline } from "react-icons/io5";
 import { CgImport } from "react-icons/cg";
-import { baseURL } from './Login';
-import './styles/Partidos.css';
+import { baseURL } from '../../../components/login/Login';
+import './Partidos.css';
 
 const Partidos = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);

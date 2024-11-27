@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import './styles/Sidebar.css';
-import LogoCAAB from './images/LogoCAAB.png';
+import './Sidebar.css';
+import LogoCAAB from '../../assets/images/LogoCAAB.png'
 
 // Iconos
 import { FaUserGear } from "react-icons/fa6";

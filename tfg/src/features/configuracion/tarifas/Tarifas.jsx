@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import axios from 'axios';
-import { baseURL } from './Login';
-import logo from '../components/images/LogoCAAB.png';
-import './styles/Tarifas.css'; // Importa los estilos de Tarifas
+import { baseURL } from '../../../components/login/Login';
+import logo from '../../../assets/images/LogoCAAB.png';
+import './Tarifas.css'; // Importa los estilos de Tarifas
 import { FaDownload } from "react-icons/fa6";
 
 const Tarifas = () => {

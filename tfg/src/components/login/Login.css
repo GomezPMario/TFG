@@ -15,7 +15,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../images/LoginWallpaper.jpeg');
+  background-image: url('../../assets/images/LoginWallpaper.jpeg');
   background-size: cover;
   background-position: center;
   filter: blur(5px);

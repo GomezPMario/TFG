@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './Arbitros.css';
-import { baseURL } from '../../Login';
-import NuevoArbitro from '../crear/NuevoArbitro';
-import Licencias from '../../Licencias';
-import Exportar from '../../Exportar';
+import { baseURL } from '../../../components/login/Login';
+import NuevoArbitro from '../nuevoarbitro/NuevoArbitro';
+import Licencias from '../licencias/Licencias';
+import Exportar from '../exportar/Exportar';
 import { MdManageHistory, MdGroupAdd } from 'react-icons/md';
 import { PiShareBold } from 'react-icons/pi';
 
@@ -62,7 +62,7 @@ const Arbitros = () => {
                 <PiShareBold style={{ marginRight: '8px' }} />
                 Exportar datos
             </button>
-            
+
             {showLicencias && (
                 <Licencias onClose={() => setShowLicencias(false)} />
             )}

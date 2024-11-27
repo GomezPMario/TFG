@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { baseURL } from './Login';
-import './styles/Consultas.css';
+import { baseURL } from '../../../components/login/Login';
+import './Consultas.css';
 import { IoMdAlarm } from "react-icons/io";
 import { PiPrinterFill } from "react-icons/pi";
 

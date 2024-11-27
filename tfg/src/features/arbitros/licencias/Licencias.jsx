@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { IoTrashBinSharp, IoTrashBinOutline } from 'react-icons/io5'; // Importar ambos íconos
 import { FiSend } from 'react-icons/fi';
-import { baseURL } from './Login';
-import './styles/Licencias.css';
+import { baseURL } from '../../../components/login/Login';
+import './Licencias.css';
 
 const Licencias = ({ onClose }) => {
     const [licencias, setLicencias] = useState([]);

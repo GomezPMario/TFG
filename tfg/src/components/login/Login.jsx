@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import './styles/Login.css';
-import logo from '../components/images/LogoCAAB.png';
+import './Login.css';
+import logo from '../../assets/images/LogoCAAB.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 

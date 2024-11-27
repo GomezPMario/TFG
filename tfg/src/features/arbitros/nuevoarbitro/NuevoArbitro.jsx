@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './NuevoArbitro.css';
-import { baseURL } from '../../Login';
+import { baseURL } from '../../../components/login/Login';
 
 const NuevoArbitro = ({ onClose = null, isPublic = false, isManual = false }) => {
     const [nombre, setNombre] = useState('');

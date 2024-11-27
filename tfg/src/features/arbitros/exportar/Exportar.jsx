@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
-import { baseURL } from './Login';
-import './styles/Exportar.css';
+import { baseURL } from '../../../components/login/Login';
+import './Exportar.css';
 
 const Exportar = ({ onClose }) => {
     const fields = [

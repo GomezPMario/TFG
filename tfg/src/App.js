@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
-import Login from './components/Login';
-import Sidebar from './components/Sidebar';
-import Perfil from './components/Perfil';
-import Consultas from './components/Consultas';
-import Nominas from './components/Nominas';
-import Informes from './components/Informes';
+import Login from './components/login/Login';
+import Sidebar from './components/sidebar/Sidebar';
+import Perfil from './features/arbitros/perfil/Perfil';
+import Consultas from './features/partidos/consultas/Consultas';
+import Nominas from './features/arbitros/nominas/Nominas';
+import Informes from './features/arbitros/informes/Informes';
 // import Designacion from './components/Designacion';
-import Arbitros from './components/arbitros/listar/Arbitros';
-import NuevoArbitro from './components/arbitros/crear/NuevoArbitro';
-import Campos from './components/Campos';
-import Categorias from './components/Categorias';
-import Equipos from './components/Equipos';
-import Tarifas from './components/Tarifas';
-import Partidos from './components/Partidos';
-import Miscelaneo from './components/Miscelaneo';
+import Arbitros from './features/arbitros/arbitros/Arbitros';
+import NuevoArbitro from './features/arbitros/nuevoarbitro/NuevoArbitro';
+import Campos from './features/equipos/campos/Campos';
+import Categorias from './features/equipos/categorias/Categorias';
+import Equipos from './features/equipos/equipos/Equipos';
+import Tarifas from './features/configuracion/tarifas/Tarifas';
+import Partidos from './features/partidos/partidos/Partidos';
+import Miscelaneo from './features/configuracion/miscelaneo/Miscelaneo';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {

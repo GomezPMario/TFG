@@ -1,7 +1,7 @@
 // Informes.jsx
 import React, { useState, useEffect } from 'react';
-import './styles/Informes.css';
-import { baseURL } from './Login';
+import './Informes.css';
+import { baseURL } from '../../../components/login/Login';
 
 const Informes = () => {
     const [informes, setInformes] = useState([]);
