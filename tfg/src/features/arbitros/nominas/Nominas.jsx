@@ -119,23 +119,23 @@ const Nominas = ({ arbitroId }) => {
                     const dietas = parseFloat(partido.dietas) || 0;
                     const desplazamiento = parseFloat(partido.desplazamiento) || 0;
 
-                    const dietaFormatted = dietas === 0 ? '--' : `${dietas.toFixed(2)} €`;
-                    const desplazamientoFormatted = desplazamiento === 0 ? '--' : `${desplazamiento.toFixed(2)}`;
-                    const total = importe + dietas + desplazamiento;
+                const dietaFormatted = dietas === 0 ? '--' : `${dietas.toFixed(2)} €`;
+                const desplazamientoFormatted = desplazamiento === 0 ? '--' : `${desplazamiento.toFixed(2)} €`;
+                const total = importe + dietas + desplazamiento;
 
-                    return (
-                        <tr key={idx}>
-                            <td>{formatDia(partido.dia)}</td>
-                            <td>{formatHora(partido.hora)}</td>
-                            <td>{partido.categoria}</td>
-                            <td>{partido.equipoA}</td>
-                            <td>{partido.equipoB}</td>
-                            <td>{importe.toFixed(2)}</td>
-                            <td>{desplazamientoFormatted}</td>
-                            <td>{dietaFormatted}</td>
-                            <td>{total.toFixed(2)}</td>
-                        </tr>
-                    );
+                return (
+                <tr key={idx}>
+                    <td>{formatDia(partido.dia)}</td>
+                    <td>{formatHora(partido.hora)}</td>
+                    <td>{partido.categoria}</td>
+                    <td>{partido.equipoA}</td>
+                    <td>{partido.equipoB}</td>
+                    <td>{importe.toFixed(2)}</td>
+                    <td>{desplazamientoFormatted}</td>
+                    <td>{dietaFormatted}</td>
+                    <td>{total.toFixed(2)}</td>
+                </tr>
+                );
                 })}
             </tbody>
             <tfoot>
@@ -144,30 +144,30 @@ const Nominas = ({ arbitroId }) => {
                         <span className="texto-a-cobrar">A cobrar:</span>
                     </td>
                     <td>
-                        {`${partidos.reduce((sum, partido) => {
+                        {partidos.reduce((sum, partido) => {
                             const importe = parseFloat(partido.importe) || 0;
                             return sum + importe;
-                        }, 0).toFixed(2)} €`}
+                        }, 0).toFixed(2)} €
                     </td>
                     <td>
-                        {`${partidos.reduce((sum, partido) => {
+                        {partidos.reduce((sum, partido) => {
                             const desplazamiento = parseFloat(partido.desplazamiento) || 0;
                             return sum + desplazamiento;
-                        }, 0).toFixed(2)} €`}
+                        }, 0).toFixed(2)} €
                     </td>
                     <td>
-                        {`${partidos.reduce((sum, partido) => {
+                        {partidos.reduce((sum, partido) => {
                             const dietas = parseFloat(partido.dietas) || 0;
                             return sum + dietas;
-                        }, 0).toFixed(2)} €`}
+                        }, 0).toFixed(2)} €
                     </td>
                     <td className="tabla-total">
-                        {`${partidos.reduce((sum, partido) => {
+                        {partidos.reduce((sum, partido) => {
                             const importe = parseFloat(partido.importe) || 0;
                             const desplazamiento = parseFloat(partido.desplazamiento) || 0;
                             const dietas = parseFloat(partido.dietas) || 0;
                             return sum + importe + desplazamiento + dietas;
-                        }, 0).toFixed(2)} €`}
+                        }, 0).toFixed(2)} €
                     </td>
                 </tr>
             </tfoot>
@@ -184,27 +184,27 @@ const Nominas = ({ arbitroId }) => {
                     <div
                         key={index}
                         className={`mes-container ${mesActivo === item.mes ? 'activo' : ''}`}
-                        onClick={() => toggleMesActivo(item.mes)}
+            onClick={() => toggleMesActivo(item.mes)}
                     >
-                        <div className="mes-header">
-                            <h2>{item.mes}</h2>
-                            <div className="icono-check">
-                                {mesActivo === item.mes ? <RxCross2 /> : <RiArrowDropDownLine />}
-                            </div>
-                        </div>
-                        {mesActivo === item.mes && (
-                            <div className="nominas-detalle">
-                                {renderTabla(partidosEscolares, 'Categorías Escolares')}
-                                {renderTabla(partidosFederados, 'Categorías Federadas')}
-                            </div>
-                        )}
-                    </div>
-
-                ))
-            ) : (
-                <p>No hay nóminas disponibles.</p>
+            <div className="mes-header">
+                <h2>{item.mes}</h2>
+                <div className="icono-check">
+                    {mesActivo === item.mes ? <RxCross2 /> : <RiArrowDropDownLine />}
+                </div>
+            </div>
+            {mesActivo === item.mes && (
+                <div className="nominas-detalle">
+                    {renderTabla(partidosEscolares, 'Categorías Escolares')}
+                    {renderTabla(partidosFederados, 'Categorías Federadas')}
+                </div>
             )}
         </div>
+
+    ))
+            ) : (
+    <p>No hay nóminas disponibles.</p>
+)}
+        </div >
     );
 };
 

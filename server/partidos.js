@@ -113,7 +113,7 @@ router.get('/federados/:arbitroId/:mes/:year', async (req, res) => {
             Diciembre: 12
         };
 
-        const monthNumber = meses[mes]; // Obtener el número del mes
+        const monthNumber = meses[mes];
         if (!monthNumber) {
             throw new Error(`Mes no válido: ${mes}`);
         }
@@ -135,7 +135,11 @@ router.get('/federados/:arbitroId/:mes/:year', async (req, res) => {
             JOIN equipos eb ON p.equipo_b_id = eb.id
             JOIN partidos_arbitros pa ON p.id = pa.partido_id
             JOIN tarifas t ON p.categoria_id = t.categoria_id AND pa.funcion_id = t.funcion_id
-            WHERE pa.arbitro_id = ? AND MONTH(p.dia) = ? AND YEAR(p.dia) = ? AND c.padre = 37
+            WHERE pa.arbitro_id = ?
+              AND MONTH(p.dia) = ?
+              AND YEAR(p.dia) = ?
+              AND c.padre = 37
+              AND TIMESTAMP(p.dia, p.hora) <= NOW() - INTERVAL 3 HOUR
         `;
 
         const [results] = await db.query(query, [arbitroId, monthNumber, year]);
@@ -205,6 +209,7 @@ router.get('/escolares/:arbitroId/:mes/:year', async (req, res) => {
             WHERE pa.arbitro_id = ?
               AND MONTH(p.dia) = ?
               AND YEAR(p.dia) = ?
+              AND TIMESTAMP(p.dia, p.hora) <= NOW() - INTERVAL 3 HOUR
               AND p.categoria_id IN (
                   SELECT id FROM categorias_escolares
               )
