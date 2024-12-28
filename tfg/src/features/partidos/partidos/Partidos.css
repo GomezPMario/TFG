@@ -60,3 +60,9 @@
     cursor: pointer; /* Cambia el cursor para indicar interactividad */
     transition: background-color 0.3s; /* Suaviza la transición de color */
 }
+
+
+/* Alinea solo las celdas del cuerpo de la columna "Árbitro(s)" a la derecha */
+.arbitros-cell div{
+    text-align: right;
+}

@@ -62,10 +62,6 @@
     cursor: pointer;
 }
 
-.companeros-td:hover .companero-info p {
-    color: #7d7d7d; /* Cambia el color del texto a un tono grisáceo al pasar el ratón */
-}
-
 .companero-info {
     margin-top: 10px;
     text-align: left; /* Alinea el contenido de los compañeros a la izquierda */
@@ -73,7 +69,7 @@
 }
 
 .companero-info:hover p {
-    color: #7d7d7d; /* Cambia el color del texto cuando se pasa el ratón sobre el elemento .companero-info */
+    color: #7d7d7d; /* Cambia el color del texto a un tono grisáceo */
 }
 
 /* ====== Estilos del Modal ====== */

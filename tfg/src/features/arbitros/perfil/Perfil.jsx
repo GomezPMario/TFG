@@ -5,7 +5,8 @@ import { baseURL } from '../../../components/login/Login';
 import { FaUser, FaEnvelope, FaPhone, FaHome, FaKey, FaTag, FaCarSide } from 'react-icons/fa';
 import { RiMotorbikeFill } from "react-icons/ri";
 import { LiaBirthdayCakeSolid } from "react-icons/lia";
-import { GiPencilRuler, GiWhistle } from "react-icons/gi";
+import { GiPencilRuler, GiWhistle, GiPiggyBank } from "react-icons/gi";
+import { BiCategory } from "react-icons/bi";
 import { HiMiniFingerPrint } from "react-icons/hi2";
 
 const Perfil = () => {
@@ -171,7 +172,7 @@ const Perfil = () => {
                 <div className="perfil-content">
                     <div className="perfil-column">
                         <ul>
-                            <li><HiMiniFingerPrint className="icon" /> <strong>DNI:</strong> {isEditing && isEditable('username') ?
+                            <li><HiMiniFingerPrint className="icon" /> <strong>Usuario:</strong> {isEditing && isEditable('username') ?
                                 <input type="text" name="username" value={updatedData.username} onChange={handleChange} />
                                 : arbitro.username}
                             </li>
@@ -211,7 +212,7 @@ const Perfil = () => {
                                 <input type="text" name="domicilio" value={updatedData.domicilio} onChange={handleChange} />
                                 : arbitro.domicilio}
                             </li>
-                            <li><FaUser className="icon" /> <strong>Cuenta:</strong> {isEditing && isEditable('cuenta') ?
+                            <li><GiPiggyBank className="icon" /> <strong>Cuenta:</strong> {isEditing && isEditable('cuenta') ?
                                 <input type="text" name="cuenta" value={updatedData.cuenta} onChange={handleChange} />
                                 : arbitro.cuenta}
                             </li>
@@ -268,7 +269,7 @@ const Perfil = () => {
                                     arbitro.permiso === '2' ? 'Técnico' : 'Árbitro - Oficial'}
                             </li>
                             <li>
-                                <FaTag className="icon" />
+                                <BiCategory className="icon" />
                                 <strong>Categoría:</strong>
                                 {isEditing && arbitro.permiso === '1' ? (
                                     <select name="categoria" value={updatedData.categoria} onChange={handleChange}>

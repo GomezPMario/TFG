@@ -141,16 +141,21 @@ const Partidos = () => {
                         partidos.map((partido, index) => (
                             <tr key={index}>
                                 <td>{partido.tecnico}</td>
-                                <td>
-                                    {partido.arbitros.split(',').map((arbitro, idx) => {
-                                        const [alias, nombre, apellido] = arbitro.trim().split(' ');
-                                        return (
-                                            <div key={idx}>
-                                                ({alias}) - {nombre} {apellido}
-                                            </div>
-                                        );
-                                    })}
+                                <td className="arbitros-cell">
+                                    {partido.arbitros ? (
+                                        partido.arbitros.split(',').map((arbitro, idx) => {
+                                            const [alias, nombre, apellido] = arbitro.trim().split(' ');
+                                            return (
+                                                <div key={idx}>
+                                                    ({alias || '--'}) - {nombre || '--'} {apellido || '--'}
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        <div style={{ textAlign: 'center' }}>--</div>
+                                    )}
                                 </td>
+
 
                                 <td>{partido.categoria}</td>
                                 <td>{partido.equipos}</td>

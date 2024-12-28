@@ -1,0 +1,43 @@
+/* Contenedor principal */
+.nominas-container {
+    margin: 20px;
+    text-align: center;
+}
+
+/* Título principal */
+.nominas-title {
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Contenedor de cada mes */
+.mes-container {
+    display: flex;
+    justify-content: space-between; /* Espacio entre el mes y el icono */
+    align-items: center; /* Centra verticalmente los elementos */
+    padding: 10px 0;
+    font-size: 15px;
+    color: #444;
+    border-bottom: 1px solid #ddd; /* Línea separadora */
+}
+
+/* Título del mes alineado a la izquierda */
+.mes-container h2 {
+    margin: 0;
+    text-align: left;
+    font-weight: bold;
+    flex-grow: 1; /* Ocupa el espacio restante para empujar el icono */
+}
+
+/* Icono alineado a la derecha */
+.icono-check {
+    font-size: 35px;
+    color: #D02B57;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.icono-check:hover {
+    transform: scale(1.1); /* Pequeño efecto al pasar el ratón */
+}

@@ -60,7 +60,7 @@ router.get('/:arbitroId', async (req, res) => {
                 p.autobus AS autobus,
                 p.anotaciones AS notas,
                 f.nombre AS mi_funcion,
-                GROUP_CONCAT(
+                CONCAT('[', GROUP_CONCAT(
                     JSON_OBJECT(
                         'arbitro_id', ac.id,
                         'numero_colegiado', ac.numero_colegiado,
@@ -70,7 +70,7 @@ router.get('/:arbitroId', async (req, res) => {
                         'telefono', ac.telefono,
                         'funcion', cf.nombre
                     )
-                ) AS companeros
+                ), ']') AS companeros
             FROM partidos p
             JOIN partidos_arbitros pa ON p.id = pa.partido_id
             JOIN funciones f ON pa.funcion_id = f.id

@@ -111,16 +111,51 @@ const Consultas = ({ arbitroId }) => {
                                 <td><strong>Compañeros</strong></td>
                                 <td colSpan="3" className="companeros-td">
                                     {partido.companeros ? (
-                                        (Array.isArray(JSON.parse(partido.companeros))
-                                            ? JSON.parse(partido.companeros)
-                                            : [JSON.parse(partido.companeros)]
-                                        ).map((companero, idx) => (
-                                            <div key={idx} className="companero-info" onClick={() => openModal(companero)}>
-                                                <p><strong>{companero.funcion}</strong> - ({companero.numero_colegiado})({companero.alias}) - {companero.nombre} {companero.apellido} - {companero.telefono}</p>
-                                                <hr />
-                                            </div>
-                                        ))
+                                        (() => {
+                                            console.log("companeros:", partido.companeros); // Log para depuración
+                                            try {
+                                                // Orden de las funciones
+                                                const ordenFunciones = [
+                                                    "Principal",
+                                                    "Auxiliar 1",
+                                                    "Auxiliar 2",
+                                                    "Anotador",
+                                                    "Cronometrador",
+                                                    "24 segundos",
+                                                    "Ayudante de Anotador"
+                                                ];
+
+                                                // Parsear los compañeros
+                                                const companeros = JSON.parse(partido.companeros);
+                                                const companerosArray = Array.isArray(companeros) ? companeros : [companeros];
+
+                                                // Filtrar para excluir la función del usuario
+                                                const companerosFiltrados = companerosArray.filter(
+                                                    (companero) => companero.funcion !== partido.mi_funcion
+                                                );
+
+                                                // Ordenar los compañeros según el orden de funciones
+                                                companerosFiltrados.sort((a, b) => {
+                                                    const ordenA = ordenFunciones.indexOf(a.funcion);
+                                                    const ordenB = ordenFunciones.indexOf(b.funcion);
+                                                    return ordenA - ordenB;
+                                                });
+
+                                                // Renderizar los compañeros
+                                                return companerosFiltrados.map((companero, idx) => (
+                                                    <div key={idx} className="companero-info" onClick={() => openModal(companero)}>
+                                                        <p>
+                                                            <strong>{companero.funcion}</strong> - ({companero.numero_colegiado})({companero.alias}) - {companero.nombre} {companero.apellido} - {companero.telefono}
+                                                        </p>
+                                                    </div>
+                                                ));
+                                            } catch (error) {
+                                                console.error("Error al analizar el campo companeros:", error);
+                                                return <p>El formato de los compañeros no es válido.</p>;
+                                            }
+                                        })()
                                     ) : <p>No hay compañeros asignados.</p>}
+
                                 </td>
                             </tr>
                             <tr>
