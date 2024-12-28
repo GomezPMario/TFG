@@ -120,7 +120,7 @@ const Nominas = ({ arbitroId }) => {
                     const desplazamiento = parseFloat(partido.desplazamiento) || 0;
 
                     const dietaFormatted = dietas === 0 ? '--' : `${dietas.toFixed(2)} €`;
-                    const desplazamientoFormatted = desplazamiento === 0 ? '--' : `${desplazamiento.toFixed(2)} €`;
+                    const desplazamientoFormatted = desplazamiento === 0 ? '--' : `${desplazamiento.toFixed(2)}`;
                     const total = importe + dietas + desplazamiento;
 
                     return (
@@ -130,10 +130,10 @@ const Nominas = ({ arbitroId }) => {
                             <td>{partido.categoria}</td>
                             <td>{partido.equipoA}</td>
                             <td>{partido.equipoB}</td>
-                            <td>{`${importe.toFixed(2)} €`}</td>
+                            <td>{importe.toFixed(2)}</td>
                             <td>{desplazamientoFormatted}</td>
                             <td>{dietaFormatted}</td>
-                            <td>{`${total.toFixed(2)} €`}</td>
+                            <td>{total.toFixed(2)}</td>
                         </tr>
                     );
                 })}
@@ -141,7 +141,7 @@ const Nominas = ({ arbitroId }) => {
             <tfoot>
                 <tr>
                     <td colSpan="5" className="tabla-footer texto-derecha">
-                        <span className="texto-a-cobrar">A cobrar</span>
+                        <span className="texto-a-cobrar">A cobrar:</span>
                     </td>
                     <td>
                         {`${partidos.reduce((sum, partido) => {
@@ -177,6 +177,7 @@ const Nominas = ({ arbitroId }) => {
     return (
         <div className="nominas-container">
             <h1 className="nominas-title">Comprobación de Nóminas</h1>
+            <p style={{ fontStyle: 'italic', fontSize: '0.7em' }}>Si encuentras algún error, por favor envía un correo a Luis.</p>
 
             {meses.length > 0 ? (
                 meses.map((item, index) => (
@@ -185,9 +186,11 @@ const Nominas = ({ arbitroId }) => {
                         className={`mes-container ${mesActivo === item.mes ? 'activo' : ''}`}
                         onClick={() => toggleMesActivo(item.mes)}
                     >
-                        <h2>{item.mes}</h2>
-                        <div className="icono-check">
-                            {mesActivo === item.mes ? <RxCross2 /> : <RiArrowDropDownLine />}
+                        <div className="mes-header">
+                            <h2>{item.mes}</h2>
+                            <div className="icono-check">
+                                {mesActivo === item.mes ? <RxCross2 /> : <RiArrowDropDownLine />}
+                            </div>
                         </div>
                         {mesActivo === item.mes && (
                             <div className="nominas-detalle">
@@ -196,6 +199,7 @@ const Nominas = ({ arbitroId }) => {
                             </div>
                         )}
                     </div>
+
                 ))
             ) : (
                 <p>No hay nóminas disponibles.</p>

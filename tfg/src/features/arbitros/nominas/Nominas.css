@@ -14,30 +14,36 @@
 /* Contenedor de cada mes */
 .mes-container {
     display: flex;
-    justify-content: space-between; /* Espacio entre el mes y el icono */
-    align-items: center; /* Centra verticalmente los elementos */
+    flex-direction: column; /* Apila los elementos verticalmente */
+    border-bottom: 1px solid #ddd; /* Línea separadora */
     padding: 10px 0;
     font-size: 15px;
     color: #444;
-    border-bottom: 1px solid #ddd; /* Línea separadora */
     cursor: pointer; /* Indica que la fila es interactiva */
     transition: background-color 0.2s;
 }
 
-/* Título del mes alineado a la izquierda */
-.mes-container h2 {
-    margin: 0;
-    text-align: left;
+/* Cabecera del mes: Nombre a la izquierda, icono a la derecha */
+.mes-header {
+    display: flex;
+    justify-content: space-between; /* Nombre del mes a la izquierda, icono a la derecha */
+    align-items: center; /* Centra verticalmente */
+    padding: 0 10px; /* Espaciado horizontal */
+    font-size: 18px;
     font-weight: bold;
-    flex-grow: 1; /* Ocupa el espacio restante para empujar el icono */
 }
 
-/* Icono alineado a la derecha */
+/* Icono de la cabecera */
 .icono-check {
-    font-size: 35px;
+    font-size: 25px; /* Define un tamaño fijo para ambos iconos */
     color: #D02B57;
     cursor: pointer;
     transition: transform 0.2s ease, color 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px; /* Ancho fijo */
+    height: 30px; /* Alto fijo */
 }
 
 .icono-check:hover {
@@ -51,25 +57,29 @@
 
 /* Icono del mes activo */
 .mes-container.activo .icono-check {
-    font-size: 25px;
+    font-size: 20px;
     color: #007BFF;
 }
 
 /* Contenido desplegable para las nóminas */
 .nominas-detalle {
     margin-top: 10px;
-    text-align: left;
     font-size: 14px;
     color: #666;
-    padding-left: 15px;
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Tablas una debajo de otra */
+    align-items: center; /* Centra las tablas horizontalmente */
 }
 
 /* Tabla de Nóminas */
 .tabla-nominas {
-    width: 100%;
+    width: 90%; /* Ajustar para centrar la tabla */
     border-collapse: collapse;
     margin-top: 10px;
+    margin-bottom: 30px; /* Añade espacio entre tablas */
     font-size: 14px;
+    text-align: center;
 }
 
 .tabla-titulo {
@@ -77,6 +87,7 @@
     font-weight: bold;
     font-size: 18px;
     padding: 10px 0;
+    color: #000000;
     background-color: #f9f9f9; /* Color de fondo para destacarlo */
     border-bottom: 2px solid #ddd; /* Línea separadora con las celdas */
 }
@@ -110,8 +121,10 @@
     width: 100%; /* Asegura que ocupe todo el ancho disponible */
     text-align: right; /* Alinea el texto dentro del contenedor */
     font-weight: bold; /* Resalta el texto */
+    color:#000000;
 }
 
 .tabla-total {
+    color:#000000;
     font-weight: bold;
 }
