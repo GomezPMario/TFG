@@ -146,4 +146,76 @@ router.get('/federados/:arbitroId/:mes/:year', async (req, res) => {
     }
 });
 
+router.get('/escolares/:arbitroId/:mes/:year', async (req, res) => {
+    const { arbitroId, mes, year } = req.params;
+
+    try {
+        const meses = {
+            Enero: 1,
+            Febrero: 2,
+            Marzo: 3,
+            Abril: 4,
+            Mayo: 5,
+            Junio: 6,
+            Julio: 7,
+            Agosto: 8,
+            Septiembre: 9,
+            Octubre: 10,
+            Noviembre: 11,
+            Diciembre: 12,
+        };
+
+        const monthNumber = meses[mes];
+        if (!monthNumber) throw new Error(`Mes no válido: ${mes}`);
+
+        const query = `
+            WITH RECURSIVE categorias_escolares AS (
+                SELECT id, padre
+                FROM categorias
+                WHERE id = 36
+                UNION ALL
+                SELECT c.id, c.padre
+                FROM categorias c
+                INNER JOIN categorias_escolares ce ON c.padre = ce.id
+            )
+            SELECT DISTINCT
+                p.id AS partido_id,
+                p.dia,
+                p.hora,
+                c.nombre AS categoria,
+                ea.nombre AS equipoA,
+                eb.nombre AS equipoB,
+                pa.dieta,
+                pa.desplazamiento,
+                (pa.dieta + pa.desplazamiento) AS total,
+                (
+                    SELECT t.importe
+                    FROM tarifas t
+                    WHERE t.categoria_id IN (
+                        SELECT id FROM categorias_escolares
+                    )
+                    AND t.funcion_id = pa.funcion_id
+                    LIMIT 1
+                ) AS importe
+            FROM partidos p
+            JOIN categorias c ON p.categoria_id = c.id
+            LEFT JOIN equipos ea ON p.equipo_a_id = ea.id
+            LEFT JOIN equipos eb ON p.equipo_b_id = eb.id
+            JOIN partidos_arbitros pa ON p.id = pa.partido_id
+            WHERE pa.arbitro_id = ?
+              AND MONTH(p.dia) = ?
+              AND YEAR(p.dia) = ?
+              AND p.categoria_id IN (
+                  SELECT id FROM categorias_escolares
+              )
+        `;
+
+        const [results] = await db.query(query, [arbitroId, monthNumber, year]);
+        res.json(results);
+    } catch (error) {
+        console.error('Error al obtener partidos escolares:', error);
+        res.status(500).json({ error: 'Error al obtener los partidos escolares' });
+    }
+});
+
 module.exports = router;

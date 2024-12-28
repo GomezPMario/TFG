@@ -23,7 +23,8 @@ const formatHora = (hora) => {
 const Nominas = ({ arbitroId }) => {
     const [meses, setMeses] = useState([]);
     const [mesActivo, setMesActivo] = useState(null); // Mes actualmente desplegado
-    const [partidosFederados, setPartidosFederados] = useState([]); // Partidos del mes activo
+    const [partidosFederados, setPartidosFederados] = useState([]); // Partidos federados del mes activo
+    const [partidosEscolares, setPartidosEscolares] = useState([]); // Partidos escolares del mes activo
 
     const capitalize = (text) => {
         return text.charAt(0).toUpperCase() + text.slice(1);
@@ -35,20 +36,24 @@ const Nominas = ({ arbitroId }) => {
                 const response = await axios.get(`${baseURL}/partidos/${id}`);
                 const partidos = response.data;
 
-                const mesesUnicos = Array.from(
-                    new Set(
-                        partidos.map((partido) => {
-                            const fecha = new Date(partido.dia.split('/').reverse().join('-'));
-                            const opciones = { year: 'numeric', month: 'long' };
-                            let mes = fecha.toLocaleDateString('es-ES', opciones);
-                            mes = mes.replace(' de ', ' ');
-                            mes = capitalize(mes);
-                            return { mes, fecha };
-                        })
-                    )
-                );
+                // Crear un mapa para evitar duplicados
+                const mesesMap = new Map();
 
-                mesesUnicos.sort((a, b) => b.fecha - a.fecha);
+                partidos.forEach((partido) => {
+                    const fecha = new Date(partido.dia.split('/').reverse().join('-'));
+                    const opciones = { year: 'numeric', month: 'long' };
+                    let mes = fecha.toLocaleDateString('es-ES', opciones);
+                    mes = mes.replace(' de ', ' ');
+                    mes = capitalize(mes);
+
+                    // Usar el mes como clave única
+                    if (!mesesMap.has(mes)) {
+                        mesesMap.set(mes, { mes, fecha });
+                    }
+                });
+
+                // Convertir el mapa a un array ordenado por fecha
+                const mesesUnicos = Array.from(mesesMap.values()).sort((a, b) => b.fecha - a.fecha);
                 setMeses(mesesUnicos);
             } catch (error) {
                 console.error('Error al obtener los partidos:', error);
@@ -60,10 +65,12 @@ const Nominas = ({ arbitroId }) => {
         }
     }, [arbitroId]);
 
+
     const toggleMesActivo = async (mes) => {
         if (mesActivo === mes) {
             setMesActivo(null); // Cierra el mes si ya está abierto
             setPartidosFederados([]);
+            setPartidosEscolares([]);
             return;
         }
 
@@ -71,15 +78,101 @@ const Nominas = ({ arbitroId }) => {
 
         try {
             const [mesNombre, year] = mes.split(' ');
-            const response = await axios.get(
+
+            // Fetch partidos federados
+            const federadosResponse = await axios.get(
                 `${baseURL}/api/partidos/federados/${arbitroId}/${mesNombre}/${year}`
             );
-            setPartidosFederados(response.data);
+            setPartidosFederados(federadosResponse.data);
+
+            // Fetch partidos escolares
+            const escolaresResponse = await axios.get(
+                `${baseURL}/api/partidos/escolares/${arbitroId}/${mesNombre}/${year}`
+            );
+            setPartidosEscolares(escolaresResponse.data);
         } catch (error) {
-            console.error('Error al filtrar los partidos federados:', error);
+            console.error('Error al filtrar los partidos:', error);
         }
     };
 
+    const renderTabla = (partidos, titulo) => (
+        <table className="tabla-nominas">
+            <thead>
+                <tr>
+                    <th colSpan="9" className="tabla-titulo">{titulo}</th>
+                </tr>
+                <tr>
+                    <th>Día</th>
+                    <th>Hora</th>
+                    <th>Categoría</th>
+                    <th>Equipo A</th>
+                    <th>Equipo B</th>
+                    <th>Importe</th>
+                    <th>Desplazamiento</th>
+                    <th>Dietas</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {partidos.map((partido, idx) => {
+                    const importe = parseFloat(partido.importe) || 0;
+                    const dietas = parseFloat(partido.dietas) || 0;
+                    const desplazamiento = parseFloat(partido.desplazamiento) || 0;
+
+                    const dietaFormatted = dietas === 0 ? '--' : `${dietas.toFixed(2)} €`;
+                    const desplazamientoFormatted = desplazamiento === 0 ? '--' : `${desplazamiento.toFixed(2)} €`;
+                    const total = importe + dietas + desplazamiento;
+
+                    return (
+                        <tr key={idx}>
+                            <td>{formatDia(partido.dia)}</td>
+                            <td>{formatHora(partido.hora)}</td>
+                            <td>{partido.categoria}</td>
+                            <td>{partido.equipoA}</td>
+                            <td>{partido.equipoB}</td>
+                            <td>{`${importe.toFixed(2)} €`}</td>
+                            <td>{desplazamientoFormatted}</td>
+                            <td>{dietaFormatted}</td>
+                            <td>{`${total.toFixed(2)} €`}</td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colSpan="5" className="tabla-footer texto-derecha">
+                        <span className="texto-a-cobrar">A cobrar</span>
+                    </td>
+                    <td>
+                        {`${partidos.reduce((sum, partido) => {
+                            const importe = parseFloat(partido.importe) || 0;
+                            return sum + importe;
+                        }, 0).toFixed(2)} €`}
+                    </td>
+                    <td>
+                        {`${partidos.reduce((sum, partido) => {
+                            const desplazamiento = parseFloat(partido.desplazamiento) || 0;
+                            return sum + desplazamiento;
+                        }, 0).toFixed(2)} €`}
+                    </td>
+                    <td>
+                        {`${partidos.reduce((sum, partido) => {
+                            const dietas = parseFloat(partido.dietas) || 0;
+                            return sum + dietas;
+                        }, 0).toFixed(2)} €`}
+                    </td>
+                    <td className="tabla-total">
+                        {`${partidos.reduce((sum, partido) => {
+                            const importe = parseFloat(partido.importe) || 0;
+                            const desplazamiento = parseFloat(partido.desplazamiento) || 0;
+                            const dietas = parseFloat(partido.dietas) || 0;
+                            return sum + importe + desplazamiento + dietas;
+                        }, 0).toFixed(2)} €`}
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    );
 
     return (
         <div className="nominas-container">
@@ -98,64 +191,8 @@ const Nominas = ({ arbitroId }) => {
                         </div>
                         {mesActivo === item.mes && (
                             <div className="nominas-detalle">
-                                {partidosFederados.length > 0 ? (
-                                    <table className="tabla-nominas">
-                                        <thead>
-                                            <tr>
-                                                <th colSpan="9" className="tabla-titulo">Categorías Federadas</th>
-                                            </tr>
-                                            <tr>
-                                                <th>Día</th>
-                                                <th>Hora</th>
-                                                <th>Categoría</th>
-                                                <th>Equipo A</th>
-                                                <th>Equipo B</th>
-                                                <th>Importe</th>
-                                                <th>Desplazamiento</th>
-                                                <th>Dietas</th>
-                                                <th>Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {partidosFederados.map((partido, idx) => {
-                                                // Asegurarse de que todos los valores sean números o 0
-                                                const importe = parseFloat(partido.importe) || 0;
-                                                const dietas = parseFloat(partido.dietas) || 0;
-                                                const desplazamiento = parseFloat(partido.desplazamiento) || 0;
-
-                                                // Valor específico cuando dieta es 1
-                                                const dietaValor = 10; // Cambia este valor según sea necesario
-
-                                                // Formatear dietas y desplazamiento
-                                                const dietaFormatted = dietas === 0
-                                                    ? '--'
-                                                    : dietas === 1
-                                                        ? dietaValor.toFixed(2) // Muestra el valor definido si dieta es 1
-                                                        : dietas.toFixed(2);
-                                                const desplazamientoFormatted = desplazamiento === 0 ? '--' : desplazamiento.toFixed(2);
-
-                                                // Calcular el total
-                                                const total = importe + (dietas === 1 ? dietaValor : dietas) + desplazamiento;
-
-                                                return (
-                                                    <tr key={idx}>
-                                                        <td>{formatDia(partido.dia)}</td>
-                                                        <td>{formatHora(partido.hora)}</td>
-                                                        <td>{partido.categoria}</td>
-                                                        <td>{partido.equipoA}</td>
-                                                        <td>{partido.equipoB}</td>
-                                                        <td>{importe.toFixed(2)}</td>
-                                                        <td>{desplazamientoFormatted}</td>
-                                                        <td>{dietaFormatted}</td>
-                                                        <td>{total.toFixed(2)}</td>
-                                                    </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
-                                ) : (
-                                    <p>No hay partidos federados para este mes.</p>
-                                )}
+                                {renderTabla(partidosEscolares, 'Categorías Escolares')}
+                                {renderTabla(partidosFederados, 'Categorías Federadas')}
                             </div>
                         )}
                     </div>
