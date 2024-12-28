@@ -55,8 +55,8 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Rutas de la aplicación
 app.use('/arbitros', arbitrosRoutes);
-app.use('/partidos', partidos);      // Ruta para obtener todos los partidos
-app.use('/api/partidos', partidos);  // Ruta para obtener partidos específicos en Consultas.jsx
+app.use('/partidos', partidos);     
+app.use('/api/partidos', partidos);
 app.use('/api/informes', informes);
 app.use('/api', tarifas);
 

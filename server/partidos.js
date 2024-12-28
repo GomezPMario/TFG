@@ -93,4 +93,57 @@ router.get('/:arbitroId', async (req, res) => {
     }
 });
 
+router.get('/federados/:arbitroId/:mes/:year', async (req, res) => {
+    const { arbitroId, mes, year } = req.params;
+
+    try {
+        // Mapeo de meses en español a números
+        const meses = {
+            Enero: 1,
+            Febrero: 2,
+            Marzo: 3,
+            Abril: 4,
+            Mayo: 5,
+            Junio: 6,
+            Julio: 7,
+            Agosto: 8,
+            Septiembre: 9,
+            Octubre: 10,
+            Noviembre: 11,
+            Diciembre: 12
+        };
+
+        const monthNumber = meses[mes]; // Obtener el número del mes
+        if (!monthNumber) {
+            throw new Error(`Mes no válido: ${mes}`);
+        }
+
+        const query = `
+            SELECT
+                p.dia,
+                p.hora,
+                c.nombre AS categoria,
+                ea.nombre AS equipoA,
+                eb.nombre AS equipoB,
+                pa.dieta,
+                pa.desplazamiento,
+                (pa.dieta + pa.desplazamiento) AS total,
+                t.importe
+            FROM partidos p
+            JOIN categorias c ON p.categoria_id = c.id
+            JOIN equipos ea ON p.equipo_a_id = ea.id
+            JOIN equipos eb ON p.equipo_b_id = eb.id
+            JOIN partidos_arbitros pa ON p.id = pa.partido_id
+            JOIN tarifas t ON p.categoria_id = t.categoria_id AND pa.funcion_id = t.funcion_id
+            WHERE pa.arbitro_id = ? AND MONTH(p.dia) = ? AND YEAR(p.dia) = ? AND c.padre = 37
+        `;
+
+        const [results] = await db.query(query, [arbitroId, monthNumber, year]);
+        res.json(results);
+    } catch (error) {
+        console.error('Error al obtener partidos federados:', error);
+        res.status(500).json({ error: 'Error al obtener los partidos federados' });
+    }
+});
+
 module.exports = router;

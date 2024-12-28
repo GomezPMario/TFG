@@ -20,6 +20,8 @@
     font-size: 15px;
     color: #444;
     border-bottom: 1px solid #ddd; /* Línea separadora */
+    cursor: pointer; /* Indica que la fila es interactiva */
+    transition: background-color 0.2s;
 }
 
 /* Título del mes alineado a la izquierda */
@@ -35,9 +37,65 @@
     font-size: 35px;
     color: #D02B57;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .icono-check:hover {
     transform: scale(1.1); /* Pequeño efecto al pasar el ratón */
+}
+
+/* Estilo para el mes activo */
+.mes-container.activo h2 {
+    color: black; /* Cambia el color del texto del mes activo */
+}
+
+/* Icono del mes activo */
+.mes-container.activo .icono-check {
+    font-size: 25px;
+    color: #007BFF;
+}
+
+/* Contenido desplegable para las nóminas */
+.nominas-detalle {
+    margin-top: 10px;
+    text-align: left;
+    font-size: 14px;
+    color: #666;
+    padding-left: 15px;
+}
+
+/* Tabla de Nóminas */
+.tabla-nominas {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.tabla-titulo {
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 10px 0;
+    background-color: #f9f9f9; /* Color de fondo para destacarlo */
+    border-bottom: 2px solid #ddd; /* Línea separadora con las celdas */
+}
+
+.tabla-nominas th, .tabla-nominas td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.tabla-nominas th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.tabla-nominas tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tabla-nominas tbody tr:hover {
+    background-color: #f1f1f1;
 }
