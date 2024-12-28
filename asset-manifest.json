@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/TFG/static/css/main.b4b0c1fb.css",
-    "main.js": "/TFG/static/js/main.856fad5c.js",
+    "main.css": "/TFG/static/css/main.34c7bc73.css",
+    "main.js": "/TFG/static/js/main.4b06408e.js",
     "static/js/239.c1da2b7e.chunk.js": "/TFG/static/js/239.c1da2b7e.chunk.js",
     "static/js/213.b4759dc3.chunk.js": "/TFG/static/js/213.b4759dc3.chunk.js",
     "static/js/732.be84d9d8.chunk.js": "/TFG/static/js/732.be84d9d8.chunk.js",
@@ -9,15 +9,15 @@
     "static/media/LoginWallpaper.jpeg": "/TFG/static/media/LoginWallpaper.0d429ebd4ce696420d8b.jpeg",
     "static/media/LogoCAAB.png": "/TFG/static/media/LogoCAAB.b98001116c66cf4b3e29.png",
     "index.html": "/TFG/index.html",
-    "main.b4b0c1fb.css.map": "/TFG/static/css/main.b4b0c1fb.css.map",
-    "main.856fad5c.js.map": "/TFG/static/js/main.856fad5c.js.map",
+    "main.34c7bc73.css.map": "/TFG/static/css/main.34c7bc73.css.map",
+    "main.4b06408e.js.map": "/TFG/static/js/main.4b06408e.js.map",
     "239.c1da2b7e.chunk.js.map": "/TFG/static/js/239.c1da2b7e.chunk.js.map",
     "213.b4759dc3.chunk.js.map": "/TFG/static/js/213.b4759dc3.chunk.js.map",
     "732.be84d9d8.chunk.js.map": "/TFG/static/js/732.be84d9d8.chunk.js.map",
     "453.3c9de2ab.chunk.js.map": "/TFG/static/js/453.3c9de2ab.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b4b0c1fb.css",
-    "static/js/main.856fad5c.js"
+    "static/css/main.34c7bc73.css",
+    "static/js/main.4b06408e.js"
   ]
 }
