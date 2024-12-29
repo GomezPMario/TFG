@@ -81,7 +81,8 @@ router.get('/:arbitroId', async (req, res) => {
             LEFT JOIN arbitros ac ON pac.arbitro_id = ac.id
             LEFT JOIN funciones cf ON pac.funcion_id = cf.id
             WHERE pa.arbitro_id = ?
-            GROUP BY p.id;
+            GROUP BY p.id
+            ORDER BY p.dia ASC, p.hora ASC; -- Ordena por fecha y hora de manera ascendente
         `;
 
         const [results] = await db.query(query, [arbitroId]);
