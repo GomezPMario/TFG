@@ -11,6 +11,7 @@ const db = mysql.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     charset: 'utf8mb4',
+    timezone: 'Z', // Para que no haya problemas con las fechas
 });
 
 // Exportar la conexión para poder usarla en otros archivos

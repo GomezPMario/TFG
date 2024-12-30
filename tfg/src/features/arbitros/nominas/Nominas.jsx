@@ -33,7 +33,7 @@ const Nominas = ({ arbitroId }) => {
     useEffect(() => {
         const fetchMeses = async (id) => {
             try {
-                const response = await axios.get(`${baseURL}/partidos/${id}`);
+                const response = await axios.get(`${baseURL}/api/partidos/${id}`);
                 const partidos = response.data;
 
                 // Crear un mapa para evitar duplicados

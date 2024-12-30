@@ -44,6 +44,118 @@ router.get('/', async (req, res) => {
     }
 });
 
+// router.get('/intervalo', async (req, res) => {
+//     const { startDate, endDate } = req.query;
+
+//     if (!startDate || !endDate) {
+//         return res.status(400).json({ error: "Se requieren los parámetros 'startDate' y 'endDate'" });
+//     }
+
+//     try {
+//         const query = `
+//             SELECT
+//                 p.id AS partido_id,
+//                 p.dia AS dia,
+//                 TIME_FORMAT(p.hora, '%H:%i') AS hora,
+//                 c.nombre AS categoria,
+//                 ea.nombre AS equipoA,
+//                 eb.nombre AS equipoB,
+//                 ea.ubicacion AS campo,
+//                 p.anotaciones AS notas,
+//                 f.nombre AS mi_funcion,
+//                 CONCAT('[', GROUP_CONCAT(
+//                     JSON_OBJECT(
+//                         'arbitro_id', ac.id,
+//                         'numero_colegiado', ac.numero_colegiado,
+//                         'nombre', ac.nombre,
+//                         'apellido', ac.apellido,
+//                         'alias', ac.alias,
+//                         'telefono', ac.telefono,
+//                         'funcion', cf.nombre
+//                     )
+//                 ), ']') AS companeros
+//             FROM partidos p
+//             JOIN partidos_arbitros pa ON p.id = pa.partido_id
+//             JOIN funciones f ON pa.funcion_id = f.id
+//             JOIN categorias c ON p.categoria_id = c.id
+//             JOIN equipos ea ON p.equipo_a_id = ea.id
+//             JOIN equipos eb ON p.equipo_b_id = eb.id
+//             LEFT JOIN partidos_arbitros pac ON p.id = pac.partido_id AND pac.arbitro_id != pa.arbitro_id
+//             LEFT JOIN arbitros ac ON pac.arbitro_id = ac.id
+//             LEFT JOIN funciones cf ON pac.funcion_id = cf.id
+//             WHERE DATE(p.dia) BETWEEN DATE(?) AND DATE(?)
+//             GROUP BY p.id, pa.arbitro_id
+//             ORDER BY p.dia ASC, p.hora ASC;
+//         `;
+
+//         const [results] = await db.query(query, [startDate, endDate]);
+//         console.log('Datos enviados al cliente:', results);
+//         res.json(results);
+//     } catch (error) {
+//         console.error("Error al ejecutar el query:", error);
+//         res.status(500).json({ error: "Error al obtener los partidos" });
+//     }
+// });
+
+router.get('/intervalo/:arbitroId', async (req, res) => {
+    const { startDate, endDate } = req.query;
+    const { arbitroId } = req.params;
+
+    if (!startDate || !endDate || !arbitroId) {
+        return res.status(400).json({ error: "Se requieren los parámetros 'startDate', 'endDate' y 'arbitroId'" });
+    }
+
+    try {
+        const query = `
+            SELECT
+                p.id AS partido_id,
+                p.dia AS dia,
+                TIME_FORMAT(p.hora, '%H:%i') AS hora,
+                c.nombre AS categoria,
+                ea.nombre AS equipoA,
+                eb.nombre AS equipoB,
+                ea.ubicacion AS campo,
+                p.anotaciones AS notas,
+                f.nombre AS mi_funcion,
+                CONCAT('[', GROUP_CONCAT(
+                    JSON_OBJECT(
+                        'arbitro_id', ac.id,
+                        'numero_colegiado', ac.numero_colegiado,
+                        'nombre', ac.nombre,
+                        'apellido', ac.apellido,
+                        'alias', ac.alias,
+                        'telefono', ac.telefono,
+                        'funcion', cf.nombre
+                    )
+                ), ']') AS companeros
+            FROM partidos p
+            JOIN partidos_arbitros pa ON p.id = pa.partido_id
+            JOIN funciones f ON pa.funcion_id = f.id
+            JOIN categorias c ON p.categoria_id = c.id
+            JOIN equipos ea ON p.equipo_a_id = ea.id
+            JOIN equipos eb ON p.equipo_b_id = eb.id
+            LEFT JOIN partidos_arbitros pac ON p.id = pac.partido_id AND pac.arbitro_id != pa.arbitro_id
+            LEFT JOIN arbitros ac ON pac.arbitro_id = ac.id
+            LEFT JOIN funciones cf ON pac.funcion_id = cf.id
+            WHERE pa.arbitro_id = ? 
+              AND DATE(p.dia) BETWEEN DATE(?) AND DATE(?)
+            GROUP BY p.id, pa.arbitro_id
+            ORDER BY p.dia ASC, p.hora ASC;
+        `;
+
+        console.log('Ejecutando consulta con arbitroId:', arbitroId);
+        const [results] = await db.query(query, [arbitroId, startDate, endDate]);
+        console.log('Datos enviados al cliente:', results);
+        res.json(results);
+    } catch (error) {
+        console.error("Error al ejecutar el query:", error);
+        res.status(500).json({ error: "Error al obtener los partidos" });
+    }
+});
+
+
+
+// aqui falta cambiarlo por nominas o algo asi 
 router.get('/:arbitroId', async (req, res) => {
     const arbitroId = req.params.arbitroId;
 
@@ -57,7 +169,6 @@ router.get('/:arbitroId', async (req, res) => {
                 ea.nombre AS equipoA,
                 eb.nombre AS equipoB,
                 ea.ubicacion AS campo,
-                p.autobus AS autobus,
                 p.anotaciones AS notas,
                 f.nombre AS mi_funcion,
                 CONCAT('[', GROUP_CONCAT(
