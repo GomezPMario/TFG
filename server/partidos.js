@@ -172,13 +172,11 @@ router.get('/federados/:arbitroId/:mes/:year', async (req, res) => {
             Septiembre: 9,
             Octubre: 10,
             Noviembre: 11,
-            Diciembre: 12
+            Diciembre: 12,
         };
 
         const monthNumber = meses[mes];
-        if (!monthNumber) {
-            throw new Error(`Mes no válido: ${mes}`);
-        }
+        if (!monthNumber) throw new Error(`Mes no válido: ${mes}`);
 
         const query = `
             SELECT
@@ -190,18 +188,20 @@ router.get('/federados/:arbitroId/:mes/:year', async (req, res) => {
                 pa.dieta,
                 pa.desplazamiento,
                 (pa.dieta + pa.desplazamiento) AS total,
-                t.importe
+                t.importe,
+                f.nombre AS funcion
             FROM partidos p
             JOIN categorias c ON p.categoria_id = c.id
             JOIN equipos ea ON p.equipo_a_id = ea.id
             JOIN equipos eb ON p.equipo_b_id = eb.id
             JOIN partidos_arbitros pa ON p.id = pa.partido_id
+            JOIN funciones f ON pa.funcion_id = f.id
             JOIN tarifas t ON p.categoria_id = t.categoria_id AND pa.funcion_id = t.funcion_id
             WHERE pa.arbitro_id = ?
               AND MONTH(p.dia) = ?
               AND YEAR(p.dia) = ?
               AND c.padre = 37
-              AND TIMESTAMP(p.dia, p.hora) <= NOW() - INTERVAL 3 HOUR
+              AND TIMESTAMP(p.dia, p.hora) <= NOW() - INTERVAL 3 HOUR;
         `;
 
         const [results] = await db.query(query, [arbitroId, monthNumber, year]);
@@ -262,19 +262,21 @@ router.get('/escolares/:arbitroId/:mes/:year', async (req, res) => {
                     )
                     AND t.funcion_id = pa.funcion_id
                     LIMIT 1
-                ) AS importe
+                ) AS importe,
+                f.nombre AS funcion
             FROM partidos p
             JOIN categorias c ON p.categoria_id = c.id
             LEFT JOIN equipos ea ON p.equipo_a_id = ea.id
             LEFT JOIN equipos eb ON p.equipo_b_id = eb.id
             JOIN partidos_arbitros pa ON p.id = pa.partido_id
+            JOIN funciones f ON pa.funcion_id = f.id
             WHERE pa.arbitro_id = ?
               AND MONTH(p.dia) = ?
               AND YEAR(p.dia) = ?
               AND TIMESTAMP(p.dia, p.hora) <= NOW() - INTERVAL 3 HOUR
               AND p.categoria_id IN (
                   SELECT id FROM categorias_escolares
-              )
+              );
         `;
 
         const [results] = await db.query(query, [arbitroId, monthNumber, year]);
