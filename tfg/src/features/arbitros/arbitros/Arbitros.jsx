@@ -44,6 +44,33 @@ const Arbitros = () => {
         setSearch('');
     };
 
+    const handleIconClick = async () => {
+        if (selectedArbitros.length === 0) {
+            alert("No se ha seleccionado ningún árbitro.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${baseURL}/arbitros`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ids: selectedArbitros }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al eliminar los árbitros seleccionados');
+            }
+
+            alert('Árbitro(s) eliminados correctamente');
+            setArbitros(arbitros.filter(arbitro => !selectedArbitros.includes(arbitro.id))); // Actualizar la lista en el frontend
+            setSelectedArbitros([]); // Reiniciar selección
+        } catch (error) {
+            console.error('Error eliminando los árbitros:', error);
+        }
+    };
+
     const handleCheckboxChange = (id) => {
         setSelectedArbitros((prev) =>
             prev.includes(id)
@@ -130,7 +157,7 @@ const Arbitros = () => {
                         <thead>
                             <tr>
                                 <th>
-                                    <TiUserDelete className="interactive-icon" />
+                                    <TiUserDelete className="interactive-icon" onClick={handleIconClick}/>
                                 </th>
                                 <th>Número Colegiado</th>
                                 <th>Alias</th>
