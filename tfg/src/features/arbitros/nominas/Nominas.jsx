@@ -99,11 +99,12 @@ const Nominas = ({ arbitroId }) => {
         <table className="tabla-nominas">
             <thead>
                 <tr>
-                    <th colSpan="9" className="tabla-titulo">{titulo}</th>
+                    <th colSpan="10" className="tabla-titulo">{titulo}</th>
                 </tr>
                 <tr>
                     <th>Día</th>
                     <th>Hora</th>
+                    <th>Función</th>
                     <th>Categoría</th>
                     <th>Equipo A</th>
                     <th>Equipo B</th>
@@ -127,6 +128,7 @@ const Nominas = ({ arbitroId }) => {
                 <tr key={idx}>
                     <td>{formatDia(partido.dia)}</td>
                     <td>{formatHora(partido.hora)}</td>
+                    <td>{partido.funcion}</td>
                     <td>{partido.categoria}</td>
                     <td>{partido.equipoA}</td>
                     <td>{partido.equipoB}</td>
@@ -140,7 +142,7 @@ const Nominas = ({ arbitroId }) => {
             </tbody>
             <tfoot>
                 <tr>
-                    <td colSpan="5" className="tabla-footer texto-derecha">
+                    <td colSpan="6" className="tabla-footer texto-derecha">
                         <span className="texto-a-cobrar">A cobrar:</span>
                     </td>
                     <td>

@@ -116,6 +116,18 @@
     padding-right: 15px; /* Espacio adicional a la derecha */
 }
 
+/* Estilo para el footer de la tabla */
+.tabla-nominas tfoot {
+    font-size: 14px; /* Mismo tamaño que las demás celdas */
+    font-weight: normal; /* Opcional, para que no se vea más grueso */
+    white-space: nowrap; /* Evita saltos de línea */
+}
+
+.tabla-nominas tfoot td {
+    padding: 8px; /* Igual que las celdas del body */
+    text-align: center; /* Ajusta el texto al centro de las celdas */
+}
+
 .texto-a-cobrar {
     display: inline-block; /* Permite ajustes finos de alineación */
     width: 100%; /* Asegura que ocupe todo el ancho disponible */
