@@ -132,7 +132,7 @@ const Nominas = ({ arbitroId }) => {
                     <td>{partido.categoria}</td>
                     <td>{partido.equipoA}</td>
                     <td>{partido.equipoB}</td>
-                    <td>{importe.toFixed(2)}</td>
+                    <td>{importe.toFixed(2)} €</td>
                     <td>{desplazamientoFormatted}</td>
                     <td>{dietaFormatted}</td>
                     <td>{total.toFixed(2)}</td>

@@ -92,11 +92,15 @@
     border-bottom: 2px solid #ddd; /* Línea separadora con las celdas */
 }
 
-.tabla-nominas th, .tabla-nominas td {
+.tabla-nominas td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    overflow: hidden; /* Opcional: Esconde el contenido que se salga de los límites */
+    text-overflow: ellipsis; /* Opcional: Añade puntos suspensivos si el texto es muy largo */
 }
+
 
 .tabla-nominas th {
     background-color: #f4f4f4;
