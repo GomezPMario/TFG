@@ -48,6 +48,27 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.delete('/', async (req, res) => {
+    const { ids } = req.body;
+
+    if (!ids || ids.length === 0) {
+        return res.status(400).json({ error: 'No se proporcionaron IDs para eliminar.' });
+    }
+
+    try {
+        const placeholders = ids.map(() => '?').join(', ');
+        const sql = `DELETE FROM arbitros WHERE id IN (${placeholders})`;
+
+        await db.query(sql, ids);
+
+        res.status(200).json({ message: 'Árbitros eliminados correctamente.' });
+    } catch (error) {
+        console.error('Error eliminando árbitros:', error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+});
+
+
 const combinarApellidos = (primerApellido, segundoApellido) => {
     return `${primerApellido} ${segundoApellido}`;
 };
@@ -214,7 +235,7 @@ router.post('/licencia', async (req, res) => {
     }
 });
 
-
+// eliminar numeros de colegiado
 router.delete('/licencia/:numero_colegiado', async (req, res) => {
     const { numero_colegiado } = req.params;
 

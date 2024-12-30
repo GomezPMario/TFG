@@ -24,6 +24,32 @@
     width: 25%;
 }
 
+/* Define el ancho fijo para la columna del icono */
+.table th:first-child,
+.table td:first-child {
+    width: 50px; /* Ajusta este valor según el tamaño del icono y captcha */
+    text-align: center; /* Centra el contenido en la celda */
+}
+
+/* Estilo del icono interactivo con tamaño más grande */
+.interactive-icon {
+    font-size: 22px; /* Ajusta el tamaño del icono según sea necesario */
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.interactive-icon:hover {
+    color: #0056b3; /* Cambia el color al pasar el ratón */
+    transform: scale(1.2); /* Efecto de agrandamiento al pasar el ratón */
+}
+
+.captcha-container {
+    display: flex; /* Flexbox para centrar contenido */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    height: 100%; /* Asegura que ocupe toda la altura de la celda */
+}
+
 /* Botón estilo básico */
 .button {
     margin: 15px 25px 30px 5px;
