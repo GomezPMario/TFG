@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Perfil.css';
-import { baseURL } from '../../../components/login/Login';
+import { baseURL } from '../../../../components/login/Login';
 import { FaUser, FaEnvelope, FaPhone, FaHome, FaKey, FaTag, FaCarSide } from 'react-icons/fa';
 import { RiMotorbikeFill } from "react-icons/ri";
 import { LiaBirthdayCakeSolid } from "react-icons/lia";

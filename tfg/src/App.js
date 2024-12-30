@@ -3,7 +3,8 @@ import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css';
 import Login from './components/login/Login';
 import Sidebar from './components/sidebar/Sidebar';
-import Perfil from './features/arbitros/perfil/Perfil';
+import Perfil from './features/arbitros/perfil/perfil/Perfil';
+import PerfilArbitroDetalles from './features/arbitros/perfil/detalle/PerfilArbitroDetalles';
 import Consultas from './features/partidos/consultas/Consultas';
 import Nominas from './features/arbitros/nominas/Nominas';
 import Informes from './features/arbitros/informes/Informes';
@@ -75,6 +76,7 @@ function App() {
               <Route path="/informes" element={<Informes arbitroId={arbitroId} />} />
               {/* <Route path="/designacion" element={<Designacion />} /> */}
               <Route path="/arbitros" element={<Arbitros />} />
+              <Route path="/arbitros/:id" element={<PerfilArbitroDetalles />} />
               <Route path="/campos" element={<Campos />} />
               <Route path="/categorias" element={<Categorias />} />
               <Route path="/equipos" element={<Equipos />} />

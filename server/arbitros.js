@@ -297,6 +297,23 @@ const obtenerCategoriaId = async (categoria, nivel) => {
     return rows.length > 0 ? rows[0].id : null;
 };
 
+router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const [rows] = await db.query('SELECT * FROM arbitros WHERE id = ?', [id]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Árbitro no encontrado' });
+        }
+
+        res.json(rows[0]);
+    } catch (error) {
+        console.error('Error al obtener detalles del árbitro:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
 // Ruta para actualizar el perfil
 router.put('/:id', async (req, res) => {
     const id = req.params.id;

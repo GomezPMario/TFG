@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; // Importamos Link para la navegación
 import './Arbitros.css';
 import { baseURL } from '../../../components/login/Login';
 import NuevoArbitro from '../nuevoarbitro/NuevoArbitro';
@@ -39,39 +40,8 @@ const Arbitros = () => {
     const handleOrderByChange = (value) => {
         setOrderBy(value);
         setOrderType('asc');
-        if (value !== 'permiso') {
-            setPermission('');
-        }
-        if (value !== 'tipo_cargo') {
-            setSearch('');
-        }
-    };
-
-    const handleIconClick = async () => {
-        if (selectedArbitros.length === 0) {
-            alert("No se ha seleccionado ningún árbitro.");
-            return;
-        }
-
-        try {
-            const response = await fetch(`${baseURL}/arbitros`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ ids: selectedArbitros }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Error al eliminar los árbitros seleccionados');
-            }
-
-            alert('Árbitro(s) eliminados correctamente');
-            setArbitros(arbitros.filter(arbitro => !selectedArbitros.includes(arbitro.id))); // Actualizar la lista en el frontend
-            setSelectedArbitros([]); // Reiniciar selección
-        } catch (error) {
-            console.error('Error eliminando los árbitros:', error);
-        }
+        setPermission('');
+        setSearch('');
     };
 
     const handleCheckboxChange = (id) => {
@@ -121,6 +91,30 @@ const Arbitros = () => {
                                     <option value="desc">Descendente</option>
                                 </select>
                             )}
+
+                            {orderBy === 'tipo_cargo' && (
+                                <select onChange={e => setOrderType(e.target.value)} value={orderType}>
+                                    <option value="">Selecciona cargo</option>
+                                    <option value="arbitro">Árbitro</option>
+                                    <option value="oficial">Oficial</option>
+                                </select>
+                            )}
+
+                            {orderBy === 'categoria' && (
+                                <select onChange={e => setOrderType(e.target.value)} value={orderType}>
+                                    <option value="asc">Ascendente</option>
+                                    <option value="desc">Descendente</option>
+                                </select>
+                            )}
+
+                            {orderBy === 'permiso' && (
+                                <select onChange={e => setPermission(e.target.value)} value={permission}>
+                                    <option value="">Seleccionar permiso</option>
+                                    <option value="1">Admin</option>
+                                    <option value="2">Técnico</option>
+                                    <option value="3">Árbitro - Oficial</option>
+                                </select>
+                            )}
                         </div>
                         <div className="search-container">
                             <input
@@ -136,10 +130,7 @@ const Arbitros = () => {
                         <thead>
                             <tr>
                                 <th>
-                                    <TiUserDelete
-                                        className="interactive-icon"
-                                        onClick={handleIconClick}
-                                    />
+                                    <TiUserDelete className="interactive-icon" />
                                 </th>
                                 <th>Número Colegiado</th>
                                 <th>Alias</th>
@@ -163,7 +154,9 @@ const Arbitros = () => {
                                     <td>{arbitro.alias}</td>
                                     <td>{arbitro.nombre} {arbitro.apellido}</td>
                                     <td>
-                                        <button>Ver árbitro</button>
+                                        <Link to={`/arbitros/${arbitro.id}`}>
+                                            <button>Ver árbitro</button>
+                                        </Link>
                                     </td>
                                 </tr>
                             ))}

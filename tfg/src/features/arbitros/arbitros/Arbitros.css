@@ -31,6 +31,11 @@
     text-align: center; /* Centra el contenido en la celda */
 }
 
+.table tbody tr:hover {
+    background-color: #f1f1f1; /* Color de fondo al hacer hover */
+    transition: background-color 0.3s ease; /* Efecto suave */
+}
+
 /* Estilo del icono interactivo con tamaño más grande */
 .interactive-icon {
     font-size: 22px; /* Ajusta el tamaño del icono según sea necesario */
