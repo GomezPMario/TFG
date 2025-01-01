@@ -28,6 +28,11 @@ function App() {
     return arbitro ? arbitro.id : null;
   });
 
+  const [permiso, setPermiso] = useState(() => {
+    const arbitro = JSON.parse(localStorage.getItem('arbitro'));
+    return arbitro ? parseInt(arbitro.permiso, 10) : null; // Convertir permiso a número
+  });
+
   const handleLogin = () => {
     setIsAuthenticated(true);
 
@@ -35,6 +40,7 @@ function App() {
     const arbitro = JSON.parse(localStorage.getItem('arbitro'));
     if (arbitro) {
       setArbitroId(arbitro.id);
+      setPermiso(parseInt(arbitro.permiso, 10));
     }
   };
 
@@ -43,6 +49,19 @@ function App() {
     localStorage.removeItem('arbitro'); // Elimina el arbitro
     setIsAuthenticated(false);
     setArbitroId(null);
+    setPermiso(null);
+  };
+
+  const ProtectedRoute = ({ children, allowedPermissions }) => {
+    console.log("Permiso actual (numérico):", permiso);
+    console.log("Permisos permitidos:", allowedPermissions);
+
+    if (!allowedPermissions.includes(permiso)) {
+      console.log("Acceso denegado: redirigiendo a /consultas");
+      return <Navigate to="/consultas" />;
+    }
+    console.log("Acceso permitido");
+    return children;
   };
 
   useEffect(() => {
@@ -74,15 +93,46 @@ function App() {
               <Route path="/perfil" element={<Perfil />} />
               <Route path="/nominas" element={<Nominas arbitroId={arbitroId} />} />
               <Route path="/informes" element={<Informes arbitroId={arbitroId} />} />
-              {/* <Route path="/designacion" element={<Designacion />} /> */}
-              <Route path="/arbitros" element={<Arbitros />} />
-              <Route path="/arbitros/:id" element={<PerfilArbitroDetalles />} />
-              <Route path="/campos" element={<Campos />} />
-              <Route path="/categorias" element={<Categorias />} />
-              <Route path="/equipos" element={<Equipos />} />
+              <Route
+                path="/arbitros"
+                element={
+                  <ProtectedRoute allowedPermissions={[1]}>
+                    <Arbitros />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/arbitros/:id" element={
+                <ProtectedRoute allowedPermissions={[1]}>
+                  <PerfilArbitroDetalles />
+                </ProtectedRoute>
+              } />
+              <Route path="/campos" element={
+                <ProtectedRoute allowedPermissions={[1]}>
+                  <Campos />
+                </ProtectedRoute>
+              } />
+              <Route path="/categorias" element={
+                <ProtectedRoute allowedPermissions={[1]}>
+                  <Categorias />
+                </ProtectedRoute>
+                } />
+              <Route path="/equipos" element={
+                <ProtectedRoute allowedPermissions={[1]}>
+                  <Equipos />
+                </ProtectedRoute>
+              } />
               <Route path="/tarifas" element={<Tarifas />} />
-              <Route path="/partidos" element={<Partidos />} />
-              <Route path="/miscelaneo" element={<Miscelaneo />} />
+              <Route path="/partidos" element={
+                  <ProtectedRoute allowedPermissions={[1, 2]}>
+                    <Partidos />
+                  </ProtectedRoute>
+              } />
+
+              <Route path="/miscelaneo" element={
+                  <ProtectedRoute allowedPermissions={[1]}>
+                    <Miscelaneo />
+                  </ProtectedRoute>
+                  } />
               <Route path="*" element={<Navigate to="/consultas" />} />
             </Routes>
           </div>
