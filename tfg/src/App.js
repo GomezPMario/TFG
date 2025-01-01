@@ -32,11 +32,6 @@ function App() {
     return arbitro ? parseInt(arbitro.permiso, 10) : null; // Convertir permiso a número
   });
 
-  const [permiso, setPermiso] = useState(() => {
-    const arbitro = JSON.parse(localStorage.getItem('arbitro'));
-    return arbitro ? parseInt(arbitro.permiso, 10) : null; // Convertir permiso a número
-  });
-
   const handleLogin = () => {
     setIsAuthenticated(true);
 
@@ -68,18 +63,6 @@ function App() {
     console.log("Acceso permitido");
     return children;
     setPermiso(null);
-  };
-
-  const ProtectedRoute = ({ children, allowedPermissions }) => {
-    console.log("Permiso actual (numérico):", permiso);
-    console.log("Permisos permitidos:", allowedPermissions);
-
-    if (!allowedPermissions.includes(permiso)) {
-      console.log("Acceso denegado: redirigiendo a /consultas");
-      return <Navigate to="/consultas" />;
-    }
-    console.log("Acceso permitido");
-    return children;
   };
 
   useEffect(() => {
