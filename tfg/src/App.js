@@ -62,7 +62,6 @@ function App() {
     }
     console.log("Acceso permitido");
     return children;
-    setPermiso(null);
   };
 
   useEffect(() => {
