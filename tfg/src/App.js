@@ -39,7 +39,6 @@ function App() {
     const arbitro = JSON.parse(localStorage.getItem('arbitro'));
     if (arbitro) {
       setArbitroId(arbitro.id);
-      setPermiso(parseInt(arbitro.permiso, 10));
     }
   };
 
@@ -126,17 +125,8 @@ function App() {
                 </ProtectedRoute>
               } />
               <Route path="/tarifas" element={<Tarifas />} />
-              <Route path="/partidos" element={
-                <ProtectedRoute allowedPermissions={[1, 2]}>
-                  <Partidos />
-                </ProtectedRoute>
-              } />
-
-              <Route path="/miscelaneo" element={
-                <ProtectedRoute allowedPermissions={[1]}>
-                  <Miscelaneo />
-                </ProtectedRoute>
-              } />
+              <Route path="/partidos" element={<Partidos />} />
+              <Route path="/miscelaneo" element={<Miscelaneo />} />
               <Route path="*" element={<Navigate to="/consultas" />} />
             </Routes>
           </div>
