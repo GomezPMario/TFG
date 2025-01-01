@@ -157,7 +157,7 @@ const Arbitros = () => {
                         <thead>
                             <tr>
                                 <th>
-                                    <TiUserDelete className="interactive-icon" onClick={handleIconClick}/>
+                                    <TiUserDelete className="interactive-icon" onClick={handleIconClick} />
                                 </th>
                                 <th>Número Colegiado</th>
                                 <th>Alias</th>

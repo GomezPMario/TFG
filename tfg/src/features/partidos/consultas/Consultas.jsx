@@ -186,7 +186,7 @@ const Consultas = () => {
                             {fotoPerfil ? (
                                 <img src={fotoPerfil} alt="Foto de perfil" />
                             ) : (
-                                <p>Foto no disponible</p>
+                                <img src="../../../assets/images/LogoCAAB.png" alt="Foto de perfil" />
                             )}
                         </div>
                         <h2>{selectedCompanero.alias}</h2>
