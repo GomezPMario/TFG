@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Perfil.css';
-import { baseURL } from '../../../../components/login/Login';
+import { baseURL } from '../../../components/login/Login';
 import { FaUser, FaEnvelope, FaPhone, FaHome, FaKey, FaTag, FaCarSide } from 'react-icons/fa';
 import { RiMotorbikeFill } from "react-icons/ri";
 import { LiaBirthdayCakeSolid } from "react-icons/lia";
@@ -9,13 +9,14 @@ import { GiPencilRuler, GiWhistle, GiPiggyBank } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
 import { HiMiniFingerPrint } from "react-icons/hi2";
 
-const Perfil = () => {
+const Perfil = ({ arbitroId }) => {
     const [arbitro, setArbitro] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [updatedData, setUpdatedData] = useState({});
     const [coche, setCoche] = useState(false);
     const [moto, setMoto] = useState(false);
     const [fechaNacimiento, setFechaNacimiento] = useState('');
+    const [fotoPerfil, setFotoPerfil] = useState(null);
 
     const formatToISODate = (isoString) => {
         if (!isoString) return '';
@@ -41,19 +42,38 @@ const Perfil = () => {
     };
 
     useEffect(() => {
-        const storedArbitro = localStorage.getItem('arbitro');
-        if (storedArbitro) {
-            const parsedArbitro = JSON.parse(storedArbitro);
-            setArbitro(parsedArbitro);
-            setUpdatedData(parsedArbitro);
+        const arbitroLogueado = JSON.parse(localStorage.getItem('arbitro'));
+        const id = arbitroId || arbitroLogueado?.id; // Usar el id del prop o del usuario logueado
 
-            const vehiculo = parsedArbitro.vehiculo;
-            setCoche(vehiculo === '1' || vehiculo === '3');
-            setMoto(vehiculo === '2' || vehiculo === '3');
+        if (id) {
+            const fetchArbitro = async () => {
+                try {
+                    const response = await axios.get(`${baseURL}/arbitros/${id}`);
+                    setArbitro(response.data);
+                    setUpdatedData(response.data);
 
-            setFechaNacimiento(formatToISODate(parsedArbitro.fecha_nacimiento));
+                    const vehiculo = response.data.vehiculo;
+                    setCoche(vehiculo === '1' || vehiculo === '3');
+                    setMoto(vehiculo === '2' || vehiculo === '3');
+                    setFechaNacimiento(formatToISODate(response.data.fecha_nacimiento));
+                } catch (error) {
+                    console.error('Error al cargar los datos del árbitro:', error);
+                }
+            };
+
+            const fetchFotoPerfil = async () => {
+                try {
+                    const response = await axios.get(`${baseURL}/arbitros/foto/${id}`);
+                    setFotoPerfil(response.data.foto);
+                } catch (error) {
+                    console.error('Error al obtener la foto de perfil:', error);
+                }
+            };
+
+            fetchArbitro();
+            fetchFotoPerfil();
         }
-    }, []);
+    }, [arbitroId]);
 
     if (!arbitro) {
         return <p>Loading...</p>;
@@ -154,9 +174,9 @@ const Perfil = () => {
                     id="fileInput"
                 />
 
-                {arbitro.foto ? (
+                {fotoPerfil ? (
                     <img
-                        src={`data:image/jpeg;base64,${arbitro.foto}`}
+                        src={fotoPerfil}
                         alt="Foto de perfil"
                         className="perfil-foto"
                         onClick={() => !isEditing && document.getElementById('fileInput').click()}
@@ -169,6 +189,7 @@ const Perfil = () => {
                         <p>+</p>
                     </div>
                 )}
+
                 <div className="perfil-content">
                     <div className="perfil-column">
                         <ul>
