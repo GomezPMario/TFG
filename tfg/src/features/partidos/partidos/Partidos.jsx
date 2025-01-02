@@ -3,11 +3,13 @@ import { IoCreateOutline } from "react-icons/io5";
 import { CgImport } from "react-icons/cg";
 import { baseURL } from '../../../components/login/Login';
 import './Partidos.css';
+import { HiDocumentAdd } from "react-icons/hi";
 
 const Partidos = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [file, setFile] = useState(null);
     const [partidos, setPartidos] = useState([]); // Estado para almacenar los datos de la tabla
+    // const [selectedPartidos, setSelectedPartidos] = useState([]); // Estado para captchas seleccionados
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => {
@@ -79,7 +81,6 @@ const Partidos = () => {
         }
     };
 
-
     useEffect(() => {
         fetchPartidos(); // Llama a la API cuando el componente se monta
     }, []);
@@ -128,6 +129,9 @@ const Partidos = () => {
             <table className="partidos-table">
                 <thead>
                     <tr>
+                        <th>
+                            <HiDocumentAdd className="interactive-icon" />
+                        </th>
                         <th>Técnico</th>
                         <th>Árbitro(s)</th>
                         <th>Categoría</th>
@@ -140,6 +144,15 @@ const Partidos = () => {
                     {partidos.length > 0 ? (
                         partidos.map((partido, index) => (
                             <tr key={index}>
+                                <td>
+                                    <div className="radio-container">
+                                        <input
+                                            type="radio"
+                                            name="partido"
+                                            value={partido.id}
+                                        />
+                                    </div>
+                                </td>
                                 <td>{partido.tecnico}</td>
                                 <td className="arbitros-cell">
                                     {partido.arbitros ? (

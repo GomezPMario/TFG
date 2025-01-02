@@ -48,7 +48,8 @@
     transform: scale(1.2); /* Efecto de agrandamiento al pasar el ratón */
 }
 
-.captcha-container {
+.captcha-container, 
+.radio-container {
     display: flex; /* Flexbox para centrar contenido */
     justify-content: center; /* Centra horizontalmente */
     align-items: center; /* Centra verticalmente */

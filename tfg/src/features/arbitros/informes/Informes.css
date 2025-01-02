@@ -14,13 +14,17 @@
     width: 90%;  /* Ahora tiene el mismo ancho que la tabla de Arbitros */
     margin: 0 auto;
     border-collapse: collapse;
+    table-layout: auto; /* Ajusta el ancho automáticamente basado en el contenido */
+    width: 100%; /* Ancho completo del contenedor */
 }
 
 /* Celdas de la tabla */
 .informes-table th,
 .informes-table td {
+    white-space: nowrap;
     padding: 10px;
     border: 1px solid #ddd;
+    text-align: center;
 }
 
 /* Botón de acción */
@@ -39,3 +43,84 @@
 .action-button:hover {
     background-color: #45a049;
 }
+
+/* Estilos del modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Contenido del modal ajustado para ocupar más espacio */
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%; /* Aumentar el ancho del modal */
+    max-width: 1000px; /* Limitar el ancho máximo */
+    text-align: left;
+    max-height: 90%; /* Limitar la altura para evitar overflow */
+    overflow-y: auto; /* Habilitar scroll en caso de contenido largo */
+    margin: 0 auto; /* Centrar el modal horizontalmente */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+}
+
+/* Botón de cierre */
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px; /* Tamaño del ícono */
+    color: #000 !important; /* Forzar color negro */
+    background: none !important; /* Quitar el fondo rojo */
+    border: none !important; /* Quitar cualquier borde */
+    cursor: pointer;
+}
+
+
+/* Ajustar la tabla dentro del modal */
+.modal-content .informes-table {
+    width: 100%; /* Asegurar que la tabla ocupa todo el ancho del modal */
+    margin: 0;
+    border-collapse: collapse;
+}
+
+/* Detalles adicionales del informe */
+.detalle-informe-extra {
+    margin-top: 20px;
+    font-size: 16px;
+    line-height: 2; /* Aumenta la separación entre líneas */
+    text-align: justify;
+    max-width: 900px; /* Limitar el ancho máximo del texto */
+    margin-left: auto; /* Centrar el contenido */
+    margin-right: auto;
+}
+
+/* Detalles adicionales del informe */
+.detalle-informe-extra p {
+    margin: 0; /* Eliminar márgenes por defecto */
+    margin-bottom: 35px; /* Aumentar la separación entre párrafos */
+    padding-bottom: 0; /* No espacio adicional dentro del párrafo */
+    text-align: justify; /* Justificar el texto */
+}
+
+.detalle-informe-extra p strong {
+    display: inline; /* Mantén el título en la misma línea */
+    font-weight: bold;
+    margin-right: 10px; /* Espacio entre el título y el contenido */
+}
+
+
+
+
+
+
