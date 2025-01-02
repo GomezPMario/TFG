@@ -358,37 +358,66 @@ router.put('/:id', async (req, res) => {
 
 
 // Ruta para actualizar la foto de perfil
+// router.put('/:id/foto', async (req, res) => {
+//     const { id } = req.params;
+//     const { foto } = req.body;
+
+//     try {
+//         // Primero, verifica si ya existe una foto para este árbitro
+//         const [rows] = await db.query(
+//             `SELECT id FROM foto_arbitros WHERE arbitro_id = ? LIMIT 1`,
+//             [id]
+//         );
+
+//         if (rows.length > 0) {
+//             // Si existe, realiza un UPDATE
+//             await db.query(
+//                 `UPDATE foto_arbitros SET foto = ? WHERE arbitro_id = ?`,
+//                 [Buffer.from(foto, 'base64'), id]
+//             );
+//             res.json({ success: true, message: 'Foto de perfil actualizada correctamente' });
+//         } else {
+//             // Si no existe, realiza un INSERT
+//             await db.query(
+//                 `INSERT INTO foto_arbitros (arbitro_id, foto) VALUES (?, ?)`,
+//                 [id, Buffer.from(foto, 'base64')]
+//             );
+//             res.json({ success: true, message: 'Foto de perfil guardada correctamente' });
+//         }
+//     } catch (error) {
+//         console.error('Error al guardar la foto de perfil:', error);
+//         res.status(500).json({ success: false, message: 'Error al guardar la foto de perfil' });
+//     }
+// });
+
+// Ruta para actualizar la foto de perfil
 router.put('/:id/foto', async (req, res) => {
     const { id } = req.params;
     const { foto } = req.body;
 
     try {
-        // Primero, verifica si ya existe una foto para este árbitro
+        const fotoBuffer = Buffer.from(foto, 'base64');
+
+        // Verificar si ya existe una foto
         const [rows] = await db.query(
             `SELECT id FROM foto_arbitros WHERE arbitro_id = ? LIMIT 1`,
             [id]
         );
 
         if (rows.length > 0) {
-            // Si existe, realiza un UPDATE
-            await db.query(
-                `UPDATE foto_arbitros SET foto = ? WHERE arbitro_id = ?`,
-                [Buffer.from(foto, 'base64'), id]
-            );
-            res.json({ success: true, message: 'Foto de perfil actualizada correctamente' });
+            await db.query(`UPDATE foto_arbitros SET foto = ? WHERE arbitro_id = ?`, [fotoBuffer, id]);
         } else {
-            // Si no existe, realiza un INSERT
-            await db.query(
-                `INSERT INTO foto_arbitros (arbitro_id, foto) VALUES (?, ?)`,
-                [id, Buffer.from(foto, 'base64')]
-            );
-            res.json({ success: true, message: 'Foto de perfil guardada correctamente' });
+            await db.query(`INSERT INTO foto_arbitros (arbitro_id, foto) VALUES (?, ?)`, [id, fotoBuffer]);
         }
+
+        // Devolver la foto actualizada en formato base64
+        res.json({ success: true, message: 'Foto actualizada correctamente', foto: `data:image/jpeg;base64,${foto}` });
     } catch (error) {
         console.error('Error al guardar la foto de perfil:', error);
         res.status(500).json({ success: false, message: 'Error al guardar la foto de perfil' });
     }
 });
+
 
 // Ruta para obtener la foto de perfil de un árbitro específico
 // router.get('/foto/:arbitroId', async (req, res) => {

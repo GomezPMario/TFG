@@ -87,11 +87,15 @@ const Perfil = ({ arbitroId }) => {
                 reader.onloadend = async () => {
                     const base64Image = reader.result.split(',')[1];
                     try {
-                        await axios.put(`${baseURL}/arbitros/${arbitro.id}/foto`, { foto: base64Image }, {
-                            headers: { 'Content-Type': 'application/json' },
-                        });
-                        setArbitro(prev => ({ ...prev, foto: base64Image }));
-                        localStorage.setItem('arbitro', JSON.stringify({ ...arbitro, foto: base64Image }));
+                        const response = await axios.put(
+                            `${baseURL}/arbitros/${arbitro.id}/foto`,
+                            { foto: base64Image },
+                            { headers: { 'Content-Type': 'application/json' } }
+                        );
+                        // Actualizar la foto en el estado local inmediatamente
+                        if (response.data.foto) {
+                            setFotoPerfil(response.data.foto);
+                        }
                     } catch (error) {
                         console.error('Error al actualizar la foto de perfil:', error);
                     }
