@@ -301,7 +301,12 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const [rows] = await db.query('SELECT * FROM arbitros WHERE id = ?', [id]);
+        const [rows] = await db.query(`
+            SELECT a.*, e.categoria, e.nivel
+            FROM arbitros a
+            LEFT JOIN escala e ON a.categoria_id = e.id
+            WHERE a.id = ?
+        `, [id]);
 
         if (rows.length === 0) {
             return res.status(404).json({ error: 'Árbitro no encontrado' });
@@ -313,6 +318,7 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
+
 
 // Ruta para actualizar el perfil
 router.put('/:id', async (req, res) => {

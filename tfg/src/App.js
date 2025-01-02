@@ -76,9 +76,9 @@ function App() {
     };
   }, []);
 
-  const InfoArbitro = () => {
+  const InfoArbitro = ({isAdminView}) => {
     const { id } = useParams();
-    return <Perfil arbitroId={id} />;
+    return <Perfil arbitroId={id} isAdminView={isAdminView} />;
   };
 
   return (
@@ -108,7 +108,7 @@ function App() {
               />
               <Route path="/arbitros/:id" element={
                 <ProtectedRoute allowedPermissions={[1]}>
-                  <InfoArbitro />
+                    <InfoArbitro isAdminView={true} />
                 </ProtectedRoute>
               } />
               <Route path="/campos" element={

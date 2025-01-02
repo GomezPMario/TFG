@@ -9,7 +9,7 @@ import { GiPencilRuler, GiWhistle, GiPiggyBank } from "react-icons/gi";
 import { BiCategory } from "react-icons/bi";
 import { HiMiniFingerPrint } from "react-icons/hi2";
 
-const Perfil = ({ arbitroId }) => {
+const Perfil = ({ arbitroId, isAdminView = false }) => {
     const [arbitro, setArbitro] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [updatedData, setUpdatedData] = useState({});
@@ -44,7 +44,8 @@ const Perfil = ({ arbitroId }) => {
     useEffect(() => {
         const arbitroLogueado = JSON.parse(localStorage.getItem('arbitro'));
         const id = arbitroId || arbitroLogueado?.id; // Usar el id del prop o del usuario logueado
-
+        console.log('Datos del árbitro:', arbitroLogueado);
+        
         if (id) {
             const fetchArbitro = async () => {
                 try {
@@ -156,6 +157,10 @@ const Perfil = ({ arbitroId }) => {
     };
 
     const isEditable = (field) => {
+        if (isAdminView) {
+            return true;
+        }
+
         if (arbitro.permiso === '1') {
             return true;
         } else if (arbitro.permiso === '2' || arbitro.permiso === '3') {
@@ -191,6 +196,21 @@ const Perfil = ({ arbitroId }) => {
                         onClick={() => !isEditing && document.getElementById('fileInput').click()}
                     >
                         <p>+</p>
+                    </div>
+                )}
+
+                {isAdminView && (
+                    <div className="boton-container">
+                        {isEditing ? (
+                            <>
+                                <button className="aceptar-btn" onClick={() => actualizarPerfil(arbitro.id)}>Aceptar</button>
+                                <button className="cancelar-btn" onClick={cancelEdit}>Cancelar</button>
+                            </>
+                        ) : (
+                            <button className="editar-perfil-btn" onClick={toggleEditing}>
+                                <GiPencilRuler /> Editar perfil
+                            </button>
+                        )}
                     </div>
                 )}
 
@@ -290,50 +310,77 @@ const Perfil = ({ arbitroId }) => {
                             <li>
                                 <FaTag className="icon" />
                                 <strong>Permiso:</strong>
-                                {arbitro.permiso === '1' ? 'Admin' :
-                                    arbitro.permiso === '2' ? 'Técnico' : 'Árbitro - Oficial'}
+                                {isEditing && isAdminView ? (
+                                    <select
+                                        name="permiso"
+                                        value={updatedData.permiso}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="1">Admin</option>
+                                        <option value="2">Técnico</option>
+                                        <option value="3">Árbitro - Oficial</option>
+                                    </select>
+                                ) : (
+                                    arbitro.permiso === '1' ? 'Admin' :
+                                        arbitro.permiso === '2' ? 'Técnico' : 'Árbitro - Oficial'
+                                )}
                             </li>
                             <li>
                                 <BiCategory className="icon" />
                                 <strong>Categoría:</strong>
-                                {isEditing && arbitro.permiso === '1' ? (
-                                    <select name="categoria" value={updatedData.categoria} onChange={handleChange}>
-                                        {categorias.map(categoria => (
-                                            <option key={categoria} value={categoria}>{categoria}</option>
+                                {isEditing && isAdminView ? (
+                                    <select
+                                        name="categoria"
+                                        value={updatedData.categoria}
+                                        onChange={handleChange}
+                                    >
+                                        {categorias.map((categoria) => (
+                                            <option key={categoria} value={categoria}>
+                                                {categoria}
+                                            </option>
                                         ))}
                                     </select>
                                 ) : (
                                     <span>{arbitro.categoria} - {arbitro.nivel}</span>
                                 )}
                             </li>
-                            {isEditing && arbitro.permiso === '1' && (
+                            {isEditing && isAdminView && (
                                 <li>
                                     <FaTag className="icon" />
                                     <strong>Nivel:</strong>
-                                    <select name="nivel" value={updatedData.nivel} onChange={handleChange}>
-                                        {niveles.map(nivel => (
-                                            <option key={nivel} value={nivel}>{nivel}</option>
+                                    <select
+                                        name="nivel"
+                                        value={updatedData.nivel}
+                                        onChange={handleChange}
+                                    >
+                                        {niveles.map((nivel) => (
+                                            <option key={nivel} value={nivel}>
+                                                {nivel}
+                                            </option>
                                         ))}
                                     </select>
                                 </li>
                             )}
+
                         </ul>
                     </div>
                 </div>
             </div>
 
-            <div className="boton-container">
-                {isEditing ? (
-                    <>
-                        <button className="aceptar-btn" onClick={() => actualizarPerfil(arbitro.id)}>Aceptar</button>
-                        <button className="cancelar-btn" onClick={cancelEdit}>Cancelar</button>
-                    </>
-                ) : (
-                    <button className="editar-perfil-btn" onClick={toggleEditing}>
-                        <GiPencilRuler /> Editar perfil
-                    </button>
-                )}
-            </div>
+            {!isAdminView && (
+                <div className="boton-container">
+                    {isEditing ? (
+                        <>
+                            <button className="aceptar-btn" onClick={() => actualizarPerfil(arbitro.id)}>Aceptar</button>
+                            <button className="cancelar-btn" onClick={cancelEdit}>Cancelar</button>
+                        </>
+                    ) : (
+                        <button className="editar-perfil-btn" onClick={toggleEditing}>
+                            <GiPencilRuler /> Editar perfil
+                        </button>
+                    )}
+                </div>
+            )}
         </div>
     );
 };
