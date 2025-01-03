@@ -832,9 +832,9 @@ CREATE TABLE campos (
 );
 
 INSERT INTO campos (nombre, ubicacion) VALUES
-('CDM DUQUESA VILLAHERMOSA', 'https://maps.app.goo.gl/Qm8K92GvB1Pk5UxB7'),
 ('Pab. SANTO DOMINGO', 'https://maps.app.goo.gl/5wQbUSizaL7jNHki8'),
 ('Pab. LICEO EUROPA', 'https://maps.app.goo.gl/fLDMLQprvoVofQRp7');
+('CDM DUQUESA VILLAHERMOSA', 'https://maps.app.goo.gl/Qm8K92GvB1Pk5UxB7'),
 
 ALTER TABLE campos
 ADD COLUMN calle TEXT;
