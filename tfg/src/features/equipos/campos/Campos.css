@@ -16,7 +16,7 @@
 .campos-table th {
     background-color: #f4f4f4;
     font-weight: bold;
-    /* text-align: center; */
+    text-align: center;
 }
 
 .campos-table td.celda-ubicacion, 
@@ -24,3 +24,9 @@
     text-align: center; /* Centra horizontalmente las celdas de la columna */
 }
 
+.captcha-container {
+    display: flex; /* Utiliza flexbox para centrar el contenido */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    height: 100%; /* Asegura que ocupe toda la celda */
+}

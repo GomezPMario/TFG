@@ -841,12 +841,12 @@ ADD COLUMN calle TEXT;
 
 UPDATE campos
 SET calle = 'Pl. de la Convivencia, 3, Delicias, 50017 Zaragoza'
-WHERE id = 1;
+WHERE nombre = 'CDM DUQUESA VILLAHERMOSA';
 
 UPDATE campos
 SET calle = 'P.º Echegaray y Caballero, 74, Casco Antiguo, 50003 Zaragoza'
-WHERE id = 2;
+WHERE nombre = 'Pab. SANTO DOMINGO';
 
 UPDATE campos
 SET calle = 'Cam. del Alfaz, 50007 Zaragoza'
-WHERE id = 3;
+WHERE nombre = 'Pab. LICEO EUROPA';
