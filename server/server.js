@@ -10,6 +10,7 @@ const arbitrosRoutes = require('./arbitros');
 const partidosRoutes = require('./partidos');
 const informesRoutes = require('./informes');
 const tarifasRoutes = require('./tarifas');
+const camposRoutes = require('./campos');
 
 // Cargar configuración de entorno
 dotenv.config();
@@ -51,6 +52,7 @@ app.use('/arbitros', arbitrosRoutes);
 app.use('/api/informes', informesRoutes);
 app.use('/api', tarifasRoutes);
 app.use('/api/partidos', partidosRoutes);
+app.use('/api/campos', camposRoutes);
 
 // Endpoint para iniciar sesión
 app.post('/login', async (req, res) => {

@@ -1,0 +1,26 @@
+.campos-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.campos-table th,
+.campos-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    overflow: hidden;    /* Oculta el texto que no cabe en la celda */
+    text-overflow: ellipsis; /* Añade puntos suspensivos al final del texto que no cabe */
+}
+
+.campos-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    /* text-align: center; */
+}
+
+.campos-table td.celda-ubicacion, 
+.campos-table th.celda-ubicacion {
+    text-align: center; /* Centra horizontalmente las celdas de la columna */
+}
+

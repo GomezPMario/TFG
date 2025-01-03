@@ -823,3 +823,30 @@ INSERT INTO tarifas (categoria_id, funcion_id, importe) VALUES
 (72, 1, 6.25),
 (72, 4, 4.5),
 (72, 8, 1.75);
+
+
+CREATE TABLE campos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    ubicacion VARCHAR(255) NOT NULL
+);
+
+INSERT INTO campos (nombre, ubicacion) VALUES
+('CDM DUQUESA VILLAHERMOSA', 'https://maps.app.goo.gl/Qm8K92GvB1Pk5UxB7'),
+('Pab. SANTO DOMINGO', 'https://maps.app.goo.gl/5wQbUSizaL7jNHki8'),
+('Pab. LICEO EUROPA', 'https://maps.app.goo.gl/fLDMLQprvoVofQRp7');
+
+ALTER TABLE campos
+ADD COLUMN calle TEXT;
+
+UPDATE campos
+SET calle = 'Pl. de la Convivencia, 3, Delicias, 50017 Zaragoza'
+WHERE id = 1;
+
+UPDATE campos
+SET calle = 'P.º Echegaray y Caballero, 74, Casco Antiguo, 50003 Zaragoza'
+WHERE id = 2;
+
+UPDATE campos
+SET calle = 'Cam. del Alfaz, 50007 Zaragoza'
+WHERE id = 3;
