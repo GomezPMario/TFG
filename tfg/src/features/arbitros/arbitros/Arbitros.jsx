@@ -54,10 +54,21 @@ const Arbitros = () => {
     useEffect(() => {
         const fetchArbitros = async () => {
             try {
-                const response = await fetch(`${baseURL}/arbitros?orderBy=${orderBy || 'numero_colegiado'}&orderType=${orderBy ? orderType : 'asc'}&search=${search}&permission=${permission}`);
-                if (!response.ok) {
-                    throw new Error('Error en la respuesta de la API');
+                const params = new URLSearchParams();
+
+                if (orderBy) params.append('orderBy', orderBy);
+                if (orderType) params.append('orderType', orderType); // Solo enviar si no está vacío
+                if (permission && orderBy === 'permiso') params.append('permission', permission);
+                if (category && orderBy === 'categoria') {
+                    params.append('category', category);
+                    params.append(
+                        'categoryOrder',
+                        category === 'Escuela - ACB' ? 'desc' : 'asc'
+                    );
                 }
+
+                const response = await fetch(`${baseURL}/arbitros?${params.toString()}`);
+                if (!response.ok) throw new Error('Error en la respuesta de la API');
                 const data = await response.json();
                 setArbitros(data);
             } catch (error) {
@@ -66,24 +77,30 @@ const Arbitros = () => {
         };
 
         fetchArbitros();
-    }, [orderBy, orderType, search, permission]);
+    }, [orderBy, orderType, permission, category]);
+
 
     const handleOrderByChange = (value) => {
         setOrderBy(value);
         setOrderType('asc');
-        setCategory('');
         setPermission('');
+        setCategory('');
         setSearch('');
     };
 
     const handleOrderTypeChange = (value) => {
-        setOrderType(value);
+        if (orderBy === 'tipo_cargo' && value === '') {
+            // Si el usuario selecciona "Selecciona cargo", no aplicamos filtro
+            setOrderType('');
+        } else {
+            setOrderType(value);
+        }
         setCategory('');
     };
 
-    const handleCategoryChange = (value) => {
-        setCategory(value);
-    };
+    // const handleCategoryChange = (value) => {
+    //     setCategory(value);
+    // };
 
     const handleIconClick = async () => {
         if (selectedArbitros.length === 0) {
@@ -167,17 +184,17 @@ const Arbitros = () => {
                                     <option value="oficial">Oficial</option>
                                 </select>
                             )}
-                            
+
                             {orderBy === 'categoria' && (
                                 <div className="inline-dropdowns">
-                                    <select onChange={e => handleOrderTypeChange(e.target.value)} value={orderType}>
+                                    <select onChange={(e) => handleOrderTypeChange(e.target.value)} value={orderType}>
                                         <option value="">Selecciona tipo</option>
                                         <option value="arbitro">Árbitro</option>
                                         <option value="oficial">Oficial</option>
                                     </select>
 
                                     {orderType && (
-                                        <select onChange={e => handleCategoryChange(e.target.value)} value={category}>
+                                        <select onChange={(e) => setCategory(e.target.value)} value={category}>
                                             <option value="">Selecciona categoría</option>
                                             {categoryOptions[orderType]?.map((option, index) => (
                                                 <option key={index} value={option}>

@@ -3,48 +3,91 @@ const router = express.Router();
 const db = require('./db_setup');
 // const { hash } = require('bcrypt');
 
+// router.get('/', async (req, res) => {
+//     let sql = 'SELECT * FROM arbitros WHERE 1=1'; // Consulta base
+//     const { orderBy, orderType, search, permission } = req.query;
+
+//     if (orderBy !== 'permiso') {
+//         if (search) {
+//             sql += ` AND (username LIKE ? OR nombre LIKE ? OR apellido LIKE ? OR alias LIKE ? OR numero_colegiado LIKE ?)`;
+//         }
+//     }
+
+//     if (orderBy === 'permiso') {
+//         if (permission) {
+//             sql += ` AND permiso = ?`;
+//         }
+//     } else {
+//         if (orderBy === 'tipo_cargo' && orderType) {
+//             if (orderType === 'arbitro') {
+//                 sql += ' AND cargo = 1';
+//             } else if (orderType === 'oficial') {
+//                 sql += ' AND cargo = 2';
+//             }
+//         }
+//     }
+
+//     const orderDirection = orderType === 'desc' ? 'DESC' : 'ASC';
+//     sql += ` ORDER BY numero_colegiado ${orderDirection}`;
+
+//     try {
+//         let params = [];
+//         if (search && orderBy !== 'permiso') {
+//             params = Array(5).fill(`%${search}%`);
+//         }
+//         if (permission) {
+//             params.push(permission);
+//         }
+
+//         console.log('Ejecutando consulta:', sql, params); // Debug
+//         const [result] = await db.query(sql, params);
+//         res.json(result);
+//     } catch (err) {
+//         console.error('Error querying the database:', err);
+//         return res.status(500).send(err);
+//     }
+// });
+
 router.get('/', async (req, res) => {
-    let sql = 'SELECT * FROM arbitros WHERE 1=1'; // Consulta base
-    const { orderBy, orderType, search, permission } = req.query;
+    let sql = `
+        SELECT a.*, e.categoria, e.nivel 
+        FROM arbitros a 
+        LEFT JOIN escala e ON a.categoria_id = e.id 
+        WHERE 1=1
+    `;
 
-    if (orderBy !== 'permiso') {
-        if (search) {
-            sql += ` AND (username LIKE ? OR nombre LIKE ? OR apellido LIKE ? OR alias LIKE ? OR numero_colegiado LIKE ?)`;
-        }
+    const { orderBy, orderType, permission, category } = req.query;
+    const params = [];
+
+    // Filtrar por tipo de cargo solo si hay un valor válido
+    if (orderBy === 'tipo_cargo' && orderType && ['arbitro', 'oficial'].includes(orderType)) {
+        sql += ` AND a.cargo = ?`;
+        params.push(orderType === 'arbitro' ? 1 : 2);
     }
 
-    if (orderBy === 'permiso') {
-        if (permission) {
-            sql += ` AND permiso = ?`;
-        }
-    } else {
-        if (orderBy === 'tipo_cargo' && orderType) {
-            if (orderType === 'arbitro') {
-                sql += ' AND cargo = 1';
-            } else if (orderType === 'oficial') {
-                sql += ' AND cargo = 2';
-            }
-        }
+    // Filtrar por permiso
+    if (orderBy === 'permiso' && permission) {
+        sql += ` AND a.permiso = ?`;
+        params.push(permission);
     }
 
-    const orderDirection = orderType === 'desc' ? 'DESC' : 'ASC';
-    sql += ` ORDER BY numero_colegiado ${orderDirection}`;
+    // Filtrar por categoría
+    if (orderBy === 'categoria' && category) {
+        sql += ` AND e.categoria = ? ORDER BY e.nivel ASC, a.orden ASC`;
+        params.push(category);
+    }
+
+    // Ordenar por número colegiado
+    if (orderBy === 'numero_colegiado') {
+        sql += ` ORDER BY a.numero_colegiado ${orderType === 'desc' ? 'DESC' : 'ASC'}`;
+    }
 
     try {
-        let params = [];
-        if (search && orderBy !== 'permiso') {
-            params = Array(5).fill(`%${search}%`);
-        }
-        if (permission) {
-            params.push(permission);
-        }
-
-        console.log('Ejecutando consulta:', sql, params); // Debug
         const [result] = await db.query(sql, params);
         res.json(result);
     } catch (err) {
         console.error('Error querying the database:', err);
-        return res.status(500).send(err);
+        res.status(500).send(err);
     }
 });
 
