@@ -15,10 +15,41 @@ const Arbitros = () => {
     const [search, setSearch] = useState('');
     const [orderBy, setOrderBy] = useState('');
     const [orderType, setOrderType] = useState('asc');
+    const [category, setCategory] = useState('');
     const [permission, setPermission] = useState('');
     const [showNuevoArbitro, setShowNuevoArbitro] = useState(false);
     const [showLicencias, setShowLicencias] = useState(false);
     const [showExportar, setShowExportar] = useState(false);
+
+    const categoryOptions = {
+        arbitro: [
+            "ACB - Escuela",
+            "Escuela - ACB",
+            "ACB",
+            "1ª FEB",
+            "2ª FEB",
+            "3ª FEB",
+            "A1",
+            "A2",
+            "A3",
+            "A4",
+            "P1",
+            "P2",
+            "P3",
+            "Escuela",
+        ],
+        oficial: [
+            "ACB - P3",
+            "P3 - ACB",
+            "ACB",
+            "LF",
+            "EBA",
+            "1 DIV",
+            "P1",
+            "P2",
+            "P3",
+        ],
+    };
 
     useEffect(() => {
         const fetchArbitros = async () => {
@@ -40,8 +71,18 @@ const Arbitros = () => {
     const handleOrderByChange = (value) => {
         setOrderBy(value);
         setOrderType('asc');
+        setCategory('');
         setPermission('');
         setSearch('');
+    };
+
+    const handleOrderTypeChange = (value) => {
+        setOrderType(value);
+        setCategory('');
+    };
+
+    const handleCategoryChange = (value) => {
+        setCategory(value);
     };
 
     const handleIconClick = async () => {
@@ -126,12 +167,26 @@ const Arbitros = () => {
                                     <option value="oficial">Oficial</option>
                                 </select>
                             )}
-
+                            
                             {orderBy === 'categoria' && (
-                                <select onChange={e => setOrderType(e.target.value)} value={orderType}>
-                                    <option value="asc">Ascendente</option>
-                                    <option value="desc">Descendente</option>
-                                </select>
+                                <div className="inline-dropdowns">
+                                    <select onChange={e => handleOrderTypeChange(e.target.value)} value={orderType}>
+                                        <option value="">Selecciona tipo</option>
+                                        <option value="arbitro">Árbitro</option>
+                                        <option value="oficial">Oficial</option>
+                                    </select>
+
+                                    {orderType && (
+                                        <select onChange={e => handleCategoryChange(e.target.value)} value={category}>
+                                            <option value="">Selecciona categoría</option>
+                                            {categoryOptions[orderType]?.map((option, index) => (
+                                                <option key={index} value={option}>
+                                                    {option}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    )}
+                                </div>
                             )}
 
                             {orderBy === 'permiso' && (

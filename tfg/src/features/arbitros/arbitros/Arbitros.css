@@ -98,6 +98,12 @@
     margin-right: 20px; /* Añade espacio entre los desplegables */
 }
 
+.inline-dropdowns {
+    display: inline-flex; /* Coloca los elementos en una línea horizontal */
+    align-items: center; /* Alinea verticalmente los dropdowns */
+}
+
+
 /* Barra de búsqueda alineada a la derecha */
 .search-container {
     text-align: right;
@@ -108,7 +114,6 @@
 
 /* Inputs y select básicos con margen */
 select {
-    padding: 5px;
     font-size: 14px;
     height: 38px;  /* Ajuste de altura para alinearse con el contenido */
 }
