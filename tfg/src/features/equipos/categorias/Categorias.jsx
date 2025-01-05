@@ -68,13 +68,21 @@ const Categorias = () => {
                 }
             })
             .then((savedCategoria) => {
-                setCategorias((prevCategorias) => [...prevCategorias, savedCategoria]);
+                // Actualiza la tabla directamente
+                fetch(`${baseURL}/api/categorias`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        setCategorias(data); // Reemplaza las categorías con los datos más recientes
+                    })
+                    .catch((error) =>
+                        console.error('Error al actualizar la tabla después de crear:', error)
+                    );
+
                 setIsModalOpen(false);
                 alert('Categoría creada con éxito.');
             })
             .catch((error) => console.error('Error creando categoría:', error));
     };
-
 
     const handleCheckboxChange = (id) => {
         setSelectedCategorias((prevSelected) => {
@@ -105,6 +113,7 @@ const Categorias = () => {
                         prevCategorias.filter((categoria) => !selectedCategorias.includes(categoria.id))
                     );
                     setSelectedCategorias([]);
+                    alert('Categoría(s) eliminada(s) correctamente.'); // Mensaje de éxito
                 } else {
                     alert('Error al eliminar las categorías.');
                 }
@@ -338,13 +347,17 @@ const Categorias = () => {
                         <h2>Crear Nueva Categoría</h2>
                         <div className="categorias-modal-form">
                             {/* Nombre de la categoría */}
-                            <label style={{ display: 'block', marginBottom: '10px' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                                 Nombre:
                                 <input
                                     type="text"
                                     value={newCategoria.nombre}
                                     onChange={(e) => handleInputChangeModal('nombre', e.target.value)}
-                                    style={{ marginLeft: '10px' }}
+                                    style={{
+                                        marginLeft: '10px',
+                                        flex: 1, // Para que el input ocupe el espacio necesario
+                                        padding: '8px', // Opcional: para mejor apariencia
+                                    }}
                                 />
                             </label>
 
