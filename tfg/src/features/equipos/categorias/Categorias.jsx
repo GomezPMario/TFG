@@ -22,6 +22,8 @@ const Categorias = () => {
     //     { id: 64, nombre: "CATEG. INFERIORES" },
     //     { id: 65, nombre: "ESCUELA" },
     // ];
+    const [tipoSeleccionado, setTipoSeleccionado] = useState(""); // Nuevo estado
+    const [subcategoriaSeleccionada, setSubcategoriaSeleccionada] = useState(""); // Para el segundo dropdown (ESCOLAR)
 
     const handleOpenModal = () => {
         setNewCategoria({ nombre: '', padre: '' });
@@ -37,12 +39,26 @@ const Categorias = () => {
     };
 
     const handleSaveCategoria = () => {
+        // Determinar el valor del campo "padre"
+        let padreValue = null;
+        if (tipoSeleccionado === "FEDERADO") {
+            padreValue = 37; // Valor fijo para FEDERADO
+        } else if (tipoSeleccionado === "ESCOLAR" && subcategoriaSeleccionada) {
+            padreValue = parseInt(subcategoriaSeleccionada); // Valor de la subcategoría seleccionada
+        }
+
+        if (!newCategoria.nombre || !padreValue) {
+            alert("Debe completar todos los campos antes de guardar.");
+            return;
+        }
+
+        // Guardar en la base de datos
         fetch(`${baseURL}/api/categorias`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(newCategoria),
+            body: JSON.stringify({ ...newCategoria, padre: padreValue }),
         })
             .then((response) => {
                 if (response.ok) {
@@ -58,6 +74,7 @@ const Categorias = () => {
             })
             .catch((error) => console.error('Error creando categoría:', error));
     };
+
 
     const handleCheckboxChange = (id) => {
         setSelectedCategorias((prevSelected) => {
@@ -222,6 +239,12 @@ const Categorias = () => {
     };
 
     useEffect(() => {
+        if (isModalOpen && tipoSeleccionado === "ESCOLAR") {
+            fetchSubcategorias(36); // ID raíz de ESCOLAR
+        }
+    }, [isModalOpen, tipoSeleccionado]);
+
+    useEffect(() => {
         fetch(`${baseURL}/api/categorias`)
             .then((response) => response.json())
             .then((data) => {
@@ -314,22 +337,51 @@ const Categorias = () => {
                         <RxCross2 className="categorias-modal-close-button" onClick={handleCloseModal} />
                         <h2>Crear Nueva Categoría</h2>
                         <div className="categorias-modal-form">
-                            <label>
+                            {/* Nombre de la categoría */}
+                            <label style={{ display: 'block', marginBottom: '10px' }}>
                                 Nombre:
                                 <input
                                     type="text"
                                     value={newCategoria.nombre}
                                     onChange={(e) => handleInputChangeModal('nombre', e.target.value)}
+                                    style={{ marginLeft: '10px' }}
                                 />
                             </label>
-                            <label>
+
+                            {/* Primer dropdown: Tipo */}
+                            <label style={{ display: 'block', marginBottom: '10px' }}>
                                 Tipo:
-                                <input
-                                    type="text"
-                                    value={newCategoria.padre}
-                                    onChange={(e) => handleInputChangeModal('padre', e.target.value)}
-                                />
+                                <select
+                                    value={tipoSeleccionado}
+                                    onChange={(e) => setTipoSeleccionado(e.target.value)}
+                                    style={{ marginLeft: '10px' }}
+                                >
+                                    <option value="">Seleccione un tipo</option>
+                                    <option value="FEDERADO">FEDERADO</option>
+                                    <option value="ESCOLAR">ESCOLAR</option>
+                                </select>
                             </label>
+
+                            {/* Segundo dropdown: Subcategorías de ESCOLAR */}
+                            {tipoSeleccionado === "ESCOLAR" && (
+                                <label style={{ display: 'block', marginBottom: '10px' }}>
+                                    Subcategoría:
+                                    <select
+                                        value={subcategoriaSeleccionada}
+                                        onChange={(e) => setSubcategoriaSeleccionada(e.target.value)}
+                                        style={{ marginLeft: '10px' }}
+                                    >
+                                        <option value="">Seleccione una subcategoría</option>
+                                        {subcategorias.map((subcategoria) => (
+                                            <option key={subcategoria.id} value={subcategoria.id}>
+                                                {subcategoria.nombre}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+                            )}
+
+                            {/* Botón para guardar */}
                             <button className="button button-guardar" onClick={handleSaveCategoria}>
                                 Guardar
                             </button>
