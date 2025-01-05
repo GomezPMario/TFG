@@ -69,7 +69,7 @@ const Informes = () => {
                                 <td>{informe.categoria}</td>
                                 <td>{informe.equipo_local}</td>
                                 <td>{informe.equipo_visitante}</td>
-                                <td>{informe.campo}</td>
+                                <td>{informe.campo || "No se sabe"}</td>
                                 <td>{informe.tecnico}</td>
                                 <td>
                                     <button

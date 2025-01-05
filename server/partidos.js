@@ -63,7 +63,9 @@ router.get('/intervalo/:arbitroId', async (req, res) => {
                 c.nombre AS categoria,
                 ea.nombre AS equipoA,
                 eb.nombre AS equipoB,
-                ea.ubicacion AS campo,
+                ca.nombre AS campo,
+                ca.calle AS direccion,
+                ca.ubicacion AS ubicacion,
                 p.anotaciones AS notas,
                 f.nombre AS mi_funcion,
                 CONCAT('[', GROUP_CONCAT(
@@ -86,22 +88,20 @@ router.get('/intervalo/:arbitroId', async (req, res) => {
             LEFT JOIN partidos_arbitros pac ON p.id = pac.partido_id AND pac.arbitro_id != pa.arbitro_id
             LEFT JOIN arbitros ac ON pac.arbitro_id = ac.id
             LEFT JOIN funciones cf ON pac.funcion_id = cf.id
+            LEFT JOIN campos ca ON p.campo_id = ca.id
             WHERE pa.arbitro_id = ? 
               AND DATE(p.dia) BETWEEN DATE(?) AND DATE(?)
             GROUP BY p.id, pa.arbitro_id
             ORDER BY p.dia ASC, p.hora ASC;
         `;
 
-        console.log('Ejecutando consulta con arbitroId:', arbitroId);
         const [results] = await db.query(query, [arbitroId, startDate, endDate]);
-        console.log('Datos enviados al cliente:', results);
         res.json(results);
     } catch (error) {
         console.error("Error al ejecutar el query:", error);
         res.status(500).json({ error: "Error al obtener los partidos" });
     }
 });
-
 
 
 // aqui falta cambiarlo por nominas o algo asi 

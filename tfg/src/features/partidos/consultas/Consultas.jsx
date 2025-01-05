@@ -136,11 +136,19 @@ const Consultas = () => {
                             </tr>
                             <tr>
                                 <td><strong>Campo</strong></td>
-                                <td colSpan="3">{partido.campo || "No se sabe"}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Dirección</strong></td>
-                                <td colSpan="3">{partido.direccion || "En algún lugar del mundo"}</td>
+                                <td colSpan="3">
+                                    {partido.campo || "No se sabe"} - {partido.direccion || "En algún lugar del mundo"} - [
+                                    {partido.ubicacion && (
+                                        <a
+                                            href={partido.ubicacion}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            style={{ textDecoration: 'none', color: 'blue' }}
+                                        >
+                                            Ir aquí
+                                        </a>
+                                    )}]
+                                </td>
                             </tr>
                             <tr>
                                 <td><strong>Compañeros</strong></td>

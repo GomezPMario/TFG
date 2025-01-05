@@ -19,18 +19,20 @@ router.get('/', async (req, res) => {
                 c.nombre AS categoria,
                 ea.nombre AS equipo_local,
                 eb.nombre AS equipo_visitante,
-                ea.ubicacion AS campo,  -- Ubicación basada en el equipo A
+                ca.nombre AS campo,       -- Nombre del campo desde la tabla campos
+                ca.ubicacion AS ubicacion, -- Ubicación del campo desde la tabla campos
                 a.alias AS tecnico,
-                i.imagen,               -- Nuevo campo: imagen
-                i.mecanica,             -- Nuevo campo: mecanica
-                i.criterio,             -- Nuevo campo: criterio
-                i.control_partido,      -- Nuevo campo: control_partido
-                i.valoracion            -- Nuevo campo: valoracion
+                i.imagen,
+                i.mecanica,
+                i.criterio,
+                i.control_partido,
+                i.valoracion
             FROM informes i
             JOIN partidos p ON i.partido_id = p.id
             JOIN categorias c ON p.categoria_id = c.id
             JOIN equipos ea ON p.equipo_a_id = ea.id
             JOIN equipos eb ON p.equipo_b_id = eb.id
+            LEFT JOIN campos ca ON p.campo_id = ca.id -- Relación con la tabla campos
             JOIN arbitros a ON i.evaluador_id = a.id
             WHERE i.arbitro_id = ?`,
             [arbitroId]
