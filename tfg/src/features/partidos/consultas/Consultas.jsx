@@ -4,6 +4,7 @@ import { baseURL } from '../../../components/login/Login';
 import './Consultas.css';
 import { IoMdAlarm } from "react-icons/io";
 import { PiPrinterFill } from "react-icons/pi";
+import { TbScoreboard } from "react-icons/tb";
 
 const formatDate = (dateString) => {
     if (!dateString) return "Fecha no válida";
@@ -41,6 +42,10 @@ const Consultas = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [fotoPerfil, setFotoPerfil] = useState(null);
 
+    const [selectedPartido, setSelectedPartido] = useState(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+
     const handlePrint = () => {
         window.print();
     };
@@ -62,6 +67,34 @@ const Consultas = () => {
         setIsModalOpen(false);
         setSelectedCompanero(null);
         setFotoPerfil(null);
+    };
+
+    const handleEditClick = (partidoId) => {
+        const partido = partidos.find(p => p.partido_id === partidoId);
+        setSelectedPartido(partido);
+        setIsEditModalOpen(true);
+    };
+
+    const saveChanges = async () => {
+        try {
+            const response = await axios.put(`${baseURL}/api/partidos/${selectedPartido.partido_id}`, {
+                resultado_a: selectedPartido.resultado_a,
+                resultado_b: selectedPartido.resultado_b,
+            });
+
+            if (response.status === 200) {
+                const updatedPartidos = partidos.map(p =>
+                    p.partido_id === selectedPartido.partido_id ? selectedPartido : p
+                );
+                setPartidos(updatedPartidos);
+                alert("Resultados actualizados correctamente");
+            }
+        } catch (error) {
+            console.error("Error al guardar los cambios:", error);
+            alert("Error al guardar los cambios");
+        } finally {
+            setIsEditModalOpen(false);
+        }
     };
 
     useEffect(() => {
@@ -181,16 +214,30 @@ const Consultas = () => {
                                 <td><strong>Notas</strong></td>
                                 <td colSpan="3">{partido.notas || "Sin notas"}</td>
                             </tr>
+                            {/* Botón "Editar partido" */}
+                            <tr>
+                                <td colSpan="4">
+                                    <button
+                                        className="edit-button"
+                                        onClick={() => handleEditClick(partido.partido_id)}
+                                    >
+                                        Añadir resultado
+                                    </button>
+                                    <span className="resultado-actual">
+                                        <TbScoreboard />{partido.resultado_a} - {partido.resultado_b}
+                                    </span>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             )) : <p>No hay partidos designados para usted.</p>}
 
             {isModalOpen && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <span className="close" onClick={closeModal}>&times;</span>
-                        <div className="profile-photo">
+                <div className="consulta-modal">
+                    <div className="consulta-modal-content">
+                        <span className="consulta-modal-close" onClick={closeModal}>&times;</span>
+                        <div className="consulta-modal-profile-photo">
                             {fotoPerfil ? (
                                 <img src={fotoPerfil} alt="Foto de perfil" />
                             ) : (
@@ -204,6 +251,42 @@ const Consultas = () => {
                     </div>
                 </div>
             )}
+
+            {isEditModalOpen && selectedPartido && (
+                <div className="edit-modal">
+                    <div className="edit-modal-content">
+                        <span className="edit-modal-close" onClick={() => setIsEditModalOpen(false)}>&times;</span>
+                        <h2>Añadir Resultado</h2>
+                        <form>
+                            <label>
+                                Equipo A:
+                                <input
+                                    type="number"
+                                    value={selectedPartido.resultado_a || 0}
+                                    onChange={(e) =>
+                                        setSelectedPartido({ ...selectedPartido, resultado_a: parseInt(e.target.value, 10) || 0 })
+                                    }
+                                />
+                            </label>
+                            <label>
+                                Equipo B:
+                                <input
+                                    type="number"
+                                    value={selectedPartido.resultado_b || 0}
+                                    onChange={(e) =>
+                                        setSelectedPartido({ ...selectedPartido, resultado_b: parseInt(e.target.value, 10) || 0 })
+                                    }
+                                />
+                            </label>
+                            <button type="button" onClick={saveChanges}>
+                                Guardar cambios
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+
         </div>
     );
 };

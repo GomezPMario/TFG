@@ -67,6 +67,8 @@ router.get('/intervalo/:arbitroId', async (req, res) => {
                 ca.calle AS direccion,
                 ca.ubicacion AS ubicacion,
                 p.anotaciones AS notas,
+                p.resultado_a,
+                p.resultado_b,
                 f.nombre AS mi_funcion,
                 CONCAT('[', GROUP_CONCAT(
                     JSON_OBJECT(
@@ -100,6 +102,37 @@ router.get('/intervalo/:arbitroId', async (req, res) => {
     } catch (error) {
         console.error("Error al ejecutar el query:", error);
         res.status(500).json({ error: "Error al obtener los partidos" });
+    }
+});
+
+// Actualizar resultados de un partido
+router.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const { resultado_a, resultado_b } = req.body;
+
+    console.log("Valores recibidos:", { id, resultado_a, resultado_b }); // Verifica los valores
+
+    if (resultado_a === undefined || resultado_b === undefined) {
+        return res.status(400).json({ error: "Faltan valores para resultado_a y resultado_b" });
+    }
+
+    try {
+        const query = `
+            UPDATE partidos
+            SET resultado_a = ?, resultado_b = ?
+            WHERE id = ?;
+        `;
+
+        const [result] = await db.query(query, [resultado_a, resultado_b, id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Partido no encontrado" });
+        }
+
+        res.json({ message: "Resultados actualizados correctamente" });
+    } catch (error) {
+        console.error("Error al actualizar resultados:", error);
+        res.status(500).json({ error: "Error al actualizar resultados" });
     }
 });
 

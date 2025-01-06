@@ -31,7 +31,6 @@
     background-color: #ff96c5;
 }
 
-/* Espaciado entre el ícono y el texto del botón */
 .button svg {
     margin-right: 8px;
 }
@@ -42,7 +41,7 @@
     border: 1px solid #ddd;
     padding: 10px;
     border-radius: 5px;
-    text-align: left; /* Alinea el contenido de la tarjeta a la izquierda */
+    text-align: left;
 }
 
 /* ====== Tabla de Partido ====== */
@@ -51,10 +50,9 @@
     border-collapse: collapse;
 }
 
-/* Estilos para las celdas de la tabla */
 .partido-table td {
     padding: 5px;
-    text-align: left; /* Alinea el texto dentro de las celdas a la izquierda */
+    text-align: left;
 }
 
 /* ====== Estilos de Compañeros ====== */
@@ -64,16 +62,56 @@
 
 .companero-info {
     margin-top: 10px;
-    text-align: left; /* Alinea el contenido de los compañeros a la izquierda */
+    text-align: left;
     transition: color 0.3s ease;
 }
 
 .companero-info:hover p {
-    color: #7d7d7d; /* Cambia el color del texto a un tono grisáceo */
+    color: #7d7d7d;
 }
 
-/* ====== Estilos del Modal ====== */
-.modal {
+/* ====== Estilos del Modal de Consulta ====== */
+.consulta-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.consulta-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    max-width: 90%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.consulta-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.consulta-modal-profile-photo img {
+    width: 230px;
+    height: 230px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 20px;
+}
+
+/* ====== Estilos para el Modal de Edición ====== */
+.edit-modal {
     display: flex;
     position: fixed;
     top: 0;
@@ -86,35 +124,69 @@
     z-index: 1000;
 }
 
-.modal-content {
+.edit-modal-content {
     background-color: #fff;
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
     width: 300px;
+    max-width: 90%;
     text-align: center;
     position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Botón de cierre del modal */
-.close {
+.edit-modal-close {
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 24px;
+    font-size: 18px;
     cursor: pointer;
 }
 
-/* ====== Foto de Perfil en el Modal ====== */
-.profile-photo {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 0 auto 20px;
+.edit-modal-content form label {
+    display: block;
+    margin: 10px 0;
 }
 
-.profile-photo img {
+.edit-modal-content form input {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    padding: 5px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+.edit-modal-content button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* ====== Resultado Actual ====== */
+.resultado-actual {
+    margin-left: 10px;
+}
+
+.resultado-actual svg {
+    font-size: 25px;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+/* ====== Botón Editar ====== */
+.edit-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.edit-button:hover {
+    background-color: #45a049;
 }
