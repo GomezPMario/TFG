@@ -176,9 +176,9 @@
     margin-right: 5px;
 }
 
-/* ====== Botón Editar ====== */
-.edit-button {
-    background-color: #4CAF50;
+/* Botón Editar - Verde (resultado distinto de 0) */
+.edit-button-green {
+    background-color: #4CAF50; /* Verde */
     color: white;
     border: none;
     padding: 5px 10px;
@@ -187,6 +187,21 @@
     border-radius: 5px;
 }
 
-.edit-button:hover {
+.edit-button-green:hover {
     background-color: #45a049;
+}
+
+/* Botón Editar - Amarillento (ambos resultados son 0) */
+.edit-button-yellow {
+    background-color: #FFD700; /* Amarillo dorado */
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.edit-button-yellow:hover {
+    background-color: #FFC300; /* Un tono más oscuro */
 }

@@ -218,10 +218,11 @@ const Consultas = () => {
                             <tr>
                                 <td colSpan="4">
                                     <button
-                                        className="edit-button"
+                                        className={`edit-button ${partido.resultado_a === 0 && partido.resultado_b === 0 ? "edit-button-yellow" : "edit-button-green"
+                                            }`}
                                         onClick={() => handleEditClick(partido.partido_id)}
                                     >
-                                        Añadir resultado
+                                        {partido.resultado_a === 0 && partido.resultado_b === 0 ? "Añadir resultado" : "Editar resultado"}
                                     </button>
                                     <span className="resultado-actual">
                                         <TbScoreboard />{partido.resultado_a} - {partido.resultado_b}
