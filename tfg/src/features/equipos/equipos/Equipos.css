@@ -1,0 +1,147 @@
+/* Botón de guardar */
+.equipos-button-guardar {
+    background-color: #28a745 !important; /* Verde */
+    color: white !important;
+    border: none !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    font-size: 16px !important;
+}
+
+.equipos-button-guardar:hover {
+    background-color: #218838 !important; /* Verde más oscuro al pasar el cursor */
+}
+
+/* Botón de cancelar */
+.equipos-button-cancelar {
+    background-color: #dc3545 !important; /* Rojo */
+    color: white !important;
+    border: none !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    font-size: 16px !important;
+}
+
+.equipos-button-cancelar:hover {
+    background-color: #c82333 !important; /* Rojo más oscuro al pasar el cursor */
+}
+
+/* Tabla */
+.equipos-table {
+    width: 80%; /* La tabla ocupará el 80% del ancho del contenedor */
+    margin: 0 auto; /* Centra la tabla horizontalmente */
+    border-collapse: collapse;
+}
+
+.equipos-table th,
+.equipos-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    overflow: hidden; /* Oculta contenido que excede el ancho de la celda */
+    text-overflow: ellipsis; /* Añade puntos suspensivos para contenido largo */
+}
+
+/* Todas las columnas con el mismo ancho en modo edición */
+.equipos-table.editing th,
+.equipos-table.editing td {
+    width: 33.33%; /* Las columnas tendrán el mismo ancho */
+    text-align: center; /* Centrado del texto */
+}
+
+/* Primera columna cuando NO es modo edición */
+.equipos-table th:first-child,
+.equipos-table td:first-child {
+    width: 1%; /* La primera columna ocupará el 1% del ancho */
+    text-align: center;
+    white-space: nowrap; /* Evitar salto de línea */
+}
+
+/* Ajustes adicionales para modo edición */
+.equipos-table.editing th:first-child,
+.equipos-table.editing td:first-child {
+    width: 33.33%; /* La primera columna en modo edición tiene ancho igual al resto */
+}
+
+.equipos-table td input {
+    width: 95%; /* Hacer que los inputs ocupen el 95% de su celda */
+    box-sizing: border-box; /* Incluir el padding en el ancho total */
+    padding: 5px; /* Añadir un padding interno */
+    font-size: 14px; /* Ajustar el tamaño de la fuente */
+    border: 1px solid #ddd; /* Bordes más suaves */
+    border-radius: 4px; /* Bordes redondeados */
+}
+
+.equipos-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    text-align: center;
+}
+
+.equipos-table td {
+    text-align: center;
+}
+
+/* Contenedor del checkbox */
+.captcha-container {
+    display: flex; /* Utiliza flexbox para centrar el contenido */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    height: 100%; /* Asegura que ocupe toda la celda */
+}
+
+/* Modal */
+.equipos-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.equipos-modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.equipos-modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+/* Formulario dentro del modal */
+.equipos-modal-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold; /* Negrita */
+    text-align: left; /* Alineado a la izquierda */
+}
+
+.equipos-modal-form input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.equipos-modal-form select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

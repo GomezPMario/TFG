@@ -17,11 +17,6 @@ const Categorias = () => {
         nombre: '',
         padre: '',
     });
-    // const escolarSubcategorias = [
-    //     { id: 63, nombre: "FINALES CTO. ARAGÓN ESCOLAR" },
-    //     { id: 64, nombre: "CATEG. INFERIORES" },
-    //     { id: 65, nombre: "ESCUELA" },
-    // ];
     const [tipoSeleccionado, setTipoSeleccionado] = useState(""); // Nuevo estado
     const [subcategoriaSeleccionada, setSubcategoriaSeleccionada] = useState(""); // Para el segundo dropdown (ESCOLAR)
 
@@ -302,14 +297,6 @@ const Categorias = () => {
         }
     }, [categorias]);
 
-
-
-
-    // useEffect(() => {
-    //     console.log("Categorias cargadas:", categorias);
-    //     console.log("Initial Subcategory Names:", initialSubcategoryNames);
-    // }, [categorias, initialSubcategoryNames]);
-
     useEffect(() => {
         console.log("Mapa de nombres de padres (initialSubcategoryNames):", initialSubcategoryNames);
     }, [initialSubcategoryNames]);
@@ -460,27 +447,6 @@ const Categorias = () => {
 
                                     {/* Segundo Dropdown: Subcategorías */}
                                     {categoria.categoria_raiz === "ESCOLAR" && (
-                                        // <select
-                                        //     value={
-                                        //         editedCategorias.find((cat) => cat.id === categoria.id)?.padre || "Sin padre"
-                                        //     }
-                                        //     style={{ marginLeft: '6px' }}
-                                        //     onChange={(e) => handleSubcategoriaChange(categoria.id, parseInt(e.target.value))}
-                                        // >
-                                        //     {/* Opción actual */}
-                                        //     {categoria.padre && (
-                                        //         <option value={categoria.padre} key="current">
-                                        //             {categoria.nombre_padre || "Sin padre"}
-                                        //         </option>
-                                        //     )}
-
-                                        //     {/* Opciones adicionales */}
-                                        //     {subcategorias.map((subcategoria) => (
-                                        //         <option key={subcategoria.id} value={subcategoria.id}>
-                                        //             {subcategoria.nombre}
-                                        //         </option>
-                                        //     ))}
-                                        // </select>
                                         <select
                                             value={
                                                 editedCategorias.find((cat) => cat.id === categoria.id)?.padre || categoria.padre || "Sin padre"
