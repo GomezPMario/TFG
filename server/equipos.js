@@ -6,8 +6,8 @@ router.get('/', async (req, res) => {
     try {
         const query = `
             SELECT
-                e.id AS equipo_id,
-                e.nombre AS equipo_nombre,
+                e.id AS id,
+                e.nombre AS nombre,
                 c.nombre AS categoria_nombre,
                 c.id AS categoria_id,
                 ca.nombre AS campo_nombre,
@@ -55,6 +55,13 @@ router.put('/', async (req, res) => {
         return res.status(400).json({ error: 'No hay datos para actualizar' });
     }
 
+    // Validar los datos antes de actualizar
+    for (const equipo of equipos) {
+        if (!equipo.nombre || !equipo.categoria_id || !equipo.campo_id) {
+            return res.status(400).json({ error: 'Todos los campos son obligatorios.' });
+        }
+    }
+
     try {
         const promises = equipos.map((equipo) =>
             db.query(
@@ -68,10 +75,9 @@ router.put('/', async (req, res) => {
         res.json({ message: 'Equipos actualizados correctamente' });
     } catch (error) {
         console.error('Error al actualizar los equipos:', error);
-        res.status(500).json({ error: 'Error al actualizar los equipos' });
+        res.status(500).json({ error: 'Error al actualizar los equipos.' });
     }
 });
-
 
 // Eliminar un equipo
 router.delete('/:id', async (req, res) => {

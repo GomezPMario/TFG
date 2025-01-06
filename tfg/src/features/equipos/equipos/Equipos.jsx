@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './Equipos.css';
 import { baseURL } from '../../../components/login/Login';
-import { MdBookmarkRemove, MdEdit } from "react-icons/md";
+import { MdBookmarkRemove } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 
 const Equipos = () => {
@@ -37,6 +37,19 @@ const Equipos = () => {
             .catch((error) => console.error('Error al cargar campos:', error));
     }, []);
 
+    useEffect(() => {
+        if (!isEditing) {
+            setEditedEquipos(equipos.map((equipo) => ({
+                ...equipo,
+                nombre: equipo.nombre // Asegúrate de copiar `equipo_nombre` a `nombre`
+            })));
+        }
+    }, [equipos, isEditing]);
+
+    useEffect(() => {
+        console.log("Equipos cargados:", equipos);
+    }, [equipos]);
+
     const handleOpenModal = () => {
         setNewEquipo({ nombre: '', categoria_id: '', campo: '' });
         setIsModalOpen(true);
@@ -51,7 +64,7 @@ const Equipos = () => {
     };
 
     const handleSaveEquipo = () => {
-        if (!newEquipo.equipo_nombre || !newEquipo.categoria_id || !newEquipo.campo_nombre) {
+        if (!newEquipo.nombre || !newEquipo.categoria_id || !newEquipo.campo_nombre) {
             alert("Debe completar todos los campos antes de guardar.");
             return;
         }
@@ -124,7 +137,7 @@ const Equipos = () => {
 
     const handleEditMode = () => {
         setIsEditing(true);
-        setEditedEquipos([...equipos]);
+        setEditedEquipos(equipos.map((equipo) => ({ ...equipo }))); // Copia profunda
     };
 
     const handleCancelEdit = () => {
@@ -138,6 +151,7 @@ const Equipos = () => {
                 equipo.id === id ? { ...equipo, [field]: value } : equipo
             )
         );
+        console.log(`Cambiando ${field} del equipo con id ${id} a ${value}`);
     };
 
     const handleSaveChanges = () => {
@@ -147,9 +161,17 @@ const Equipos = () => {
                 original &&
                 (original.nombre !== edited.nombre ||
                     original.categoria_id !== edited.categoria_id ||
-                    original.campo_id !== edited.campo_id) // Nota: aquí asegúrate de usar campo_id
+                    original.campo_id !== edited.campo_id)
             );
         });
+
+        // Validar que no haya campos nulos o vacíos
+        for (const equipo of updatedEquipos) {
+            if (!equipo.nombre || !equipo.categoria_id || !equipo.campo_id) {
+                alert("Todos los campos son obligatorios para cada equipo.");
+                return;
+            }
+        }
 
         if (updatedEquipos.length === 0) {
             alert('No hay cambios para guardar.');
@@ -157,7 +179,7 @@ const Equipos = () => {
             return;
         }
 
-        console.log("Datos a actualizar:", updatedEquipos); // Agrega esto para inspeccionar
+        console.log("Datos a actualizar:", updatedEquipos);
 
         fetch(`${baseURL}/api/equipos`, {
             method: 'PUT',
@@ -214,7 +236,7 @@ const Equipos = () => {
                                 Nombre:
                                 <input
                                     type="text"
-                                    value={newEquipo.equipo_nombre}
+                                    value={newEquipo.nombre}
                                     onChange={(e) => handleInputChangeModal('nombre', e.target.value)}
                                 />
                             </label>
@@ -263,8 +285,8 @@ const Equipos = () => {
                     <th>Campo</th>
                 </tr>
             </thead>
-            <tbody>
-                {(isEditing ? editedEquipos : equipos).map((equipo) => (
+                <tbody>
+                    {(isEditing ? editedEquipos : equipos).map((equipo) => (
                     <tr key={equipo.id}>
                         {!isEditing && (
                             <td>
@@ -279,23 +301,20 @@ const Equipos = () => {
                             {isEditing ? (
                                 <input
                                     type="text"
-                                    value={equipo.equipo_nombre}
-                                    onChange={(e) =>
-                                        handleInputChange(equipo.id, 'nombre', e.target.value)
-                                    }
+                                    value={editedEquipos.find((e) => e.id === equipo.id)?.nombre || ''}
+                                    onChange={(e) => handleInputChange(equipo.id, 'nombre', e.target.value)}
                                 />
                             ) : (
-                                equipo.equipo_nombre
+                                equipo.nombre
                             )}
                         </td>
                         <td>
                             {isEditing ? (
                                 <select
-                                    value={equipo.categoria_id} // Usamos la categoría actual del equipo
-                                    onChange={(e) =>
-                                        handleInputChange(equipo.id, 'categoria_id', e.target.value)
-                                    }
+                                    value={editedEquipos.find((e) => e.id === equipo.id)?.categoria_id || ''}
+                                    onChange={(e) => handleInputChange(equipo.id, 'categoria_id', e.target.value)}
                                 >
+                                    <option value="">Seleccione una categoría</option>
                                     {categorias.map((categoria) => (
                                         <option key={categoria.id} value={categoria.id}>
                                             {categoria.nombre}
@@ -309,23 +328,17 @@ const Equipos = () => {
                         <td>
                             {isEditing ? (
                                 <select
-                                    value={equipo.campo_id} // Usamos el campo actual del equipo
+                                    value={equipo.campo_id} // Usar el valor actual del campo en edición
                                     onChange={(e) =>
                                         handleInputChange(equipo.id, 'campo_id', e.target.value)
                                     }
                                 >
-                                    {/* Muestra el campo actual primero */}
-                                    <option value={equipo.campo_id}>
-                                        {equipo.campo_nombre || "Sin campo"}
-                                    </option>
-                                    {/* Muestra el resto de los campos, excluyendo el actual */}
-                                    {campos
-                                        .filter((campo) => campo.id !== equipo.campo_id)
-                                        .map((campo) => (
-                                            <option key={campo.id} value={campo.id}>
-                                                {campo.nombre}
-                                            </option>
-                                        ))}
+                                    <option value="">Seleccione un campo</option>
+                                    {campos.map((campo) => (
+                                        <option key={campo.id} value={campo.id}>
+                                            {campo.nombre}
+                                        </option>
+                                    ))}
                                 </select>
                             ) : (
                                 equipo.campo_nombre || "Sin campo"
