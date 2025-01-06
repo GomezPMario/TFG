@@ -190,15 +190,21 @@ const Equipos = () => {
         })
             .then((response) => {
                 if (response.ok) {
-                    setEquipos(editedEquipos);
-                    setIsEditing(false);
-                    alert('Cambios guardados con éxito.');
+                    // Realiza una nueva solicitud GET para obtener los equipos actualizados
+                    return fetch(`${baseURL}/api/equipos`)
+                        .then((response) => response.json())
+                        .then((data) => {
+                            setEquipos(data); // Actualiza el estado con los datos más recientes
+                            setIsEditing(false); // Sal del modo edición
+                            alert('Cambios guardados con éxito.');
+                        });
                 } else {
-                    alert('Error al guardar los cambios.');
+                    throw new Error('Error al guardar los cambios.');
                 }
             })
             .catch((error) => {
                 console.error('Error guardando cambios:', error);
+                alert('Hubo un error al guardar los cambios.');
             });
     };
 
@@ -333,7 +339,6 @@ const Equipos = () => {
                                         handleInputChange(equipo.id, 'campo_id', e.target.value)
                                     }
                                 >
-                                    <option value="">Seleccione un campo</option>
                                     {campos.map((campo) => (
                                         <option key={campo.id} value={campo.id}>
                                             {campo.nombre}
