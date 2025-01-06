@@ -280,11 +280,11 @@ const Equipos = () => {
             <thead>
                 <tr>
                     {!isEditing && (
-                        <th>
-                            <div onClick={handleDeleteSelected}>
-                                <MdBookmarkRemove />
-                            </div>
-                        </th>
+                            <th>
+                                <div className="interactive-icon-container" onClick={handleDeleteSelected}>
+                                    <MdBookmarkRemove className="interactive-icon" />
+                                </div>
+                            </th>
                     )}
                     <th>Nombre</th>
                     <th>Categoría</th>
@@ -295,12 +295,14 @@ const Equipos = () => {
                     {(isEditing ? editedEquipos : equipos).map((equipo) => (
                     <tr key={equipo.id}>
                         {!isEditing && (
-                            <td>
-                                <input
-                                    type="checkbox"
-                                    onChange={() => handleCheckboxChange(equipo.id)}
-                                    checked={selectedEquipos.includes(equipo.id)}
-                                />
+                                <td>
+                                    <div className="captcha-container">
+                                        <input
+                                            type="checkbox"
+                                            onChange={() => handleCheckboxChange(equipo.id)}
+                                            checked={selectedEquipos.includes(equipo.id)}
+                                                />
+                                    </div>
                             </td>
                         )}
                         <td>

@@ -79,15 +79,20 @@
 }
 
 .equipos-table td {
-    text-align: center;
+    text-align: center; /* Centrado del contenido */
+    vertical-align: middle; /* Asegura que el contenido esté alineado al centro vertical */
+    min-height: 50px; /* Ajusta según el tamaño esperado del contenido */
+    height: 100%; /* Ajusta la altura al contenido */
 }
 
-/* Contenedor del checkbox */
+/* Contenedor del captcha */
 .captcha-container {
-    display: flex; /* Utiliza flexbox para centrar el contenido */
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
-    height: 100%; /* Asegura que ocupe toda la celda */
+    display: flex; /* Flexbox para centrar */
+    justify-content: center; /* Centrado horizontal */
+    align-items: center; /* Centrado vertical */
+    height: 100%; /* Asegura que ocupe toda la altura de la celda */
+    width: 100%; /* Asegura que ocupe toda la anchura de la celda */
+    box-sizing: border-box; /* Incluye los bordes en el tamaño total */
 }
 
 /* Modal */
@@ -144,4 +149,12 @@
     margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+/* Centrado del icono MdBookmarkRemove */
+.equipos-table th div.interactive-icon-container {
+    display: flex; /* Flexbox para centrar */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    height: 100%; /* Ocupa toda la altura de la celda */
 }
