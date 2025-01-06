@@ -16,7 +16,7 @@ const Equipos = () => {
     const [newEquipo, setNewEquipo] = useState({
         nombre: '',
         categoria_id: '',
-        campo: '',
+        campo_id: '',
     });
     const [campos, setCampos] = useState([]);
 
@@ -66,7 +66,7 @@ const Equipos = () => {
     };
 
     const handleSaveEquipo = () => {
-        if (!newEquipo.nombre || !newEquipo.categoria_id || !newEquipo.campo_nombre) {
+        if (!newEquipo.nombre || !newEquipo.categoria_id || !newEquipo.campo_id) {
             alert("Debe completar todos los campos antes de guardar.");
             return;
         }
@@ -266,11 +266,17 @@ const Equipos = () => {
                             </label>
                             <label>
                                 Campo:
-                                <input
-                                    type="text"
-                                    value={newEquipo.campo_nombre}
-                                    onChange={(e) => handleInputChangeModal('campo', e.target.value)}
-                                />
+                                <select
+                                    value={newEquipo.campo_id} // Cambiado a "campo_id"
+                                    onChange={(e) => handleInputChangeModal('campo_id', e.target.value)} // Cambiado a "campo_id"
+                                >
+                                    <option value="">Seleccione un campo</option>
+                                    {campos.map((campo) => (
+                                        <option key={campo.id} value={campo.id}>
+                                            {campo.nombre}
+                                        </option>
+                                    ))}
+                                </select>
                             </label>
                             <button className="button button-guardar" onClick={handleSaveEquipo}>
                                 Guardar

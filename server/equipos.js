@@ -30,15 +30,18 @@ router.get('/', async (req, res) => {
 
 // Crear un nuevo equipo
 router.post('/', async (req, res) => {
-    const { nombre, categoria_id, campo } = req.body;
+    const { nombre, categoria_id, campo_id } = req.body; // Cambiar "campo" a "campo_id"
 
-    if (!nombre || !categoria_id || !campo) {
+    if (!nombre || !categoria_id || !campo_id) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
 
     try {
-        const result = await db.query('INSERT INTO equipos (nombre, categoria_id, campo) VALUES (?, ?, ?)', [nombre, categoria_id, campo]);
-        res.status(201).json({ id: result[0].insertId, nombre, categoria_id, campo });
+        const result = await db.query(
+            'INSERT INTO equipos (nombre, categoria_id, campo_id) VALUES (?, ?, ?)',
+            [nombre, categoria_id, campo_id] // Usar "campo_id"
+        );
+        res.status(201).json({ id: result[0].insertId, nombre, categoria_id, campo_id });
     } catch (error) {
         console.error('Error al crear el equipo:', error);
         res.status(500).json({ error: 'Error al crear el equipo' });
