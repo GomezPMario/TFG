@@ -83,20 +83,26 @@ router.put('/', async (req, res) => {
 });
 
 // Eliminar un equipo
-router.delete('/:id', async (req, res) => {
-    const { id } = req.params;
+router.delete('/', async (req, res) => {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ error: 'Se requiere un array de IDs para eliminar equipos.' });
+    }
 
     try {
-        const result = await db.query('DELETE FROM equipos WHERE id = ?', [id]);
+        const placeholders = ids.map(() => '?').join(','); // Genera "?, ?, ?" según el número de IDs
+        const query = `DELETE FROM equipos WHERE id IN (${placeholders})`;
+        const result = await db.query(query, ids);
 
         if (result[0].affectedRows === 0) {
-            return res.status(404).json({ error: 'Equipo no encontrado' });
+            return res.status(404).json({ error: 'No se encontraron equipos para eliminar.' });
         }
 
-        res.json({ message: 'Equipo eliminado correctamente' });
+        res.json({ message: 'Equipos eliminados correctamente', deletedCount: result[0].affectedRows });
     } catch (error) {
-        console.error('Error al eliminar el equipo:', error);
-        res.status(500).json({ error: 'Error al eliminar el equipo' });
+        console.error('Error al eliminar los equipos:', error);
+        res.status(500).json({ error: 'Error al eliminar los equipos' });
     }
 });
 

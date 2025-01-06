@@ -119,7 +119,7 @@ const Equipos = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ ids: selectedEquipos }),
+            body: JSON.stringify({ ids: selectedEquipos }), // Envía el array de IDs
         })
             .then((response) => {
                 if (response.ok) {
