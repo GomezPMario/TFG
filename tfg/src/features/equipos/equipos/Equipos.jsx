@@ -3,6 +3,8 @@ import './Equipos.css';
 import { baseURL } from '../../../components/login/Login';
 import { MdBookmarkRemove } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
+import { TbCategoryPlus } from "react-icons/tb";
+import { MdEdit } from "react-icons/md";
 
 const Equipos = () => {
     const [equipos, setEquipos] = useState([]);
@@ -224,9 +226,11 @@ const Equipos = () => {
             ) : (
                 <>
                     <button className="button button-guardar" onClick={handleOpenModal}>
+                            <TbCategoryPlus style={{ marginRight: '8px' }} />
                         Crear Equipo
                     </button>
                     <button className="button button-cancelar" onClick={handleEditMode}>
+                            <MdEdit style={{ marginRight: '8px' }} />
                         Editar Equipo
                     </button>
                 </>
