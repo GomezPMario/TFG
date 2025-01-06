@@ -58,32 +58,33 @@
     z-index: 1000;
 }
 
-/* Contenido del modal ajustado para ocupar más espacio */
+/* Contenido del modal */
 .modal-content {
+    position: relative; /* Asegura que los elementos hijos posicionados se ubiquen dentro de este contenedor */
     background-color: white;
     padding: 20px;
     border-radius: 10px;
-    width: 90%; /* Aumentar el ancho del modal */
-    max-width: 1000px; /* Limitar el ancho máximo */
+    width: 90%; /* Ancho del modal */
+    max-width: 1000px; /* Ancho máximo del modal */
     text-align: left;
     max-height: 90%; /* Limitar la altura para evitar overflow */
-    overflow-y: auto; /* Habilitar scroll en caso de contenido largo */
-    margin: 0 auto; /* Centrar el modal horizontalmente */
+    overflow-y: auto; /* Scroll en caso de contenido largo */
+    margin: 0 auto; /* Centrar horizontalmente */
     scrollbar-width: none;
     -ms-overflow-style: none;
-
 }
 
 /* Botón de cierre */
 .close-button {
-    position: absolute;
-    top: 20px;
-    right: 20px;
+    position: absolute; /* Permite posicionar el ícono dentro del contenedor del modal */
+    top: 10px; /* Ajusta la distancia desde la parte superior */
+    right: 10px; /* Ajusta la distancia desde el lado derecho */
     font-size: 24px; /* Tamaño del ícono */
-    color: #000 !important; /* Forzar color negro */
-    background: none !important; /* Quitar el fondo rojo */
-    border: none !important; /* Quitar cualquier borde */
-    cursor: pointer;
+    color: #000 !important; /* Color del ícono */
+    background: none !important; /* Sin fondo */
+    border: none; /* Sin borde */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    z-index: 10; /* Asegura que el botón esté encima del contenido del modal */
 }
 
 
