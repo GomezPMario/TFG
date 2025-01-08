@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './NuevoArbitro.css';
 import { baseURL } from '../../../components/login/Login';
 
-const NuevoArbitro = ({ onClose = null, isPublic = false, isManual = false }) => {
+const NuevoArbitro = ({ onClose = null, isPublic = false, isManual = false, onArbitroAdded = null }) => {
     const [nombre, setNombre] = useState('');
     const [primerApellido, setPrimerApellido] = useState('');
     const [segundoApellido, setSegundoApellido] = useState('');
@@ -122,9 +122,11 @@ const NuevoArbitro = ({ onClose = null, isPublic = false, isManual = false }) =>
             });
 
             if (response.ok) {
-                const data = await response.json();
-                alert(data.message || 'Árbitro registrado exitosamente');
+                const nuevoArbitro = await response.json();
+                console.log("Árbitro creado en backend:", nuevoArbitro); // Para depurar
+                alert('Árbitro registrado exitosamente');
                 onClose && onClose();
+                onArbitroAdded && onArbitroAdded(nuevoArbitro); // Pasa el árbitro al componente padre
             } else {
                 const errorMessage = await response.text();
                 throw new Error(errorMessage || 'Error al registrar el árbitro');

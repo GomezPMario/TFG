@@ -56,8 +56,21 @@ router.get('/', async (req, res) => {
         WHERE 1=1
     `;
 
-    const { orderBy, orderType, permission, category } = req.query;
+    const { orderBy, orderType, permission, category, search } = req.query;
     const params = [];
+
+    // Filtro de búsqueda
+    if (search) {
+        sql += `
+            AND (
+                a.nombre LIKE ? OR 
+                a.alias LIKE ? OR 
+                a.numero_colegiado LIKE ? OR 
+                CONCAT(a.nombre, ' ', a.apellido) LIKE ?
+            )
+        `;
+        params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
+    }
 
     // Filtrar por tipo de cargo solo si hay un valor válido
     if (orderBy === 'tipo_cargo' && orderType && ['arbitro', 'oficial'].includes(orderType)) {
@@ -152,71 +165,43 @@ router.post('/nuevoarbitro', async (req, res) => {
         moto,
         cargo,
         permiso,
-        categoria_id  
+        categoria_id
     } = req.body;
 
     try {
-        // 1. Obtener el primer numero_colegiado disponible
+        // Obtener el primer numero_colegiado disponible
         const [numeroColegiadoResult] = await db.query(`SELECT numero_colegiado FROM numeros_colegiado ORDER BY numero_colegiado ASC LIMIT 1`);
         if (numeroColegiadoResult.length === 0) {
             return res.status(400).json({ message: 'No hay números colegiados disponibles' });
         }
 
         const numeroColegiado = numeroColegiadoResult[0].numero_colegiado;
-        console.log('Número colegiado seleccionado:', numeroColegiado); // Debug del número colegiado
 
-        // 2. Eliminar el numero_colegiado de la tabla numeros_colegiados
+        // Eliminar el numero_colegiado de la tabla numeros_colegiados
         await db.query(`DELETE FROM numeros_colegiado WHERE numero_colegiado = ?`, [numeroColegiado]);
-        console.log('Número colegiado eliminado de la tabla numeros_colegiado:', numeroColegiado);
 
-        // 3. Comprobación de alias
-        let alias = '';
-        const checkAlias = async (campo) => {
-            const [result] = await db.query(`SELECT COUNT(*) as count FROM arbitros WHERE alias = ?`, [campo]);
-            return result[0].count > 0;
-        };
+        // Determinar alias
+        let alias = primerApellido || segundoApellido || nombre || '';
+        alias = alias.slice(0, 15); // Limita a 15 caracteres
 
-        if (!(await checkAlias(primerApellido))) {
-            alias = primerApellido;
-        } else if (!(await checkAlias(segundoApellido))) {
-            alias = segundoApellido;
-        } else if (!(await checkAlias(nombre))) {
-            alias = nombre;
-        } else {
-            return res.status(400).json({ message: 'Ponte en contacto con Luis para gestionar la creación de tu usuario' });
-        }
+        // Combinación de apellidos
+        const apellidoCompleto = `${primerApellido} ${segundoApellido}`;
 
-        alias = alias || '';
-        console.log('Alias seleccionado:', alias); // Depuración de alias
+        // Estado del vehículo
+        let vehiculo = '0';
+        if (coche && moto) vehiculo = '3';
+        else if (coche) vehiculo = '1';
+        else if (moto) vehiculo = '2';
 
-        // 4. Combinación de apellidos
-        const apellidoCompleto = combinarApellidos(primerApellido, segundoApellido);
-        console.log('Apellidos combinados:', apellidoCompleto); // Depuración de apellidos
+        // Determinar cargo
+        const cargoValue = cargo === 'arbitro' ? '1' : '2';
 
-        // 5. Cifrar la contraseña (opcional, no implementado en este ejemplo)
-
-        // 6. Determinar el estado del campo "vehiculo"
-        let vehiculo = '0'; // Valor por defecto para el campo enum
-        if (coche && moto) {
-            vehiculo = '3'; // Ambos activados
-        } else if (coche) {
-            vehiculo = '1'; // Solo coche
-        } else if (moto) {
-            vehiculo = '2'; // Solo moto
-        }
-        console.log('Estado del vehículo:', vehiculo); // Depuración de vehículo
-
-        // 7. Determinar el valor de "cargo" (1 = Árbitro, 2 = Oficial)
-        let cargoValue = cargo === 'arbitro' ? '1' : '2';
-        console.log('Valor de cargo:', cargoValue); // Depuración de cargo
-
-        // 8. Guardar los datos en la base de datos con el categoria_id correcto
+        // Insertar el nuevo árbitro
         const sql = `
             INSERT INTO arbitros 
             (nombre, apellido, alias, username, password, email, fecha_nacimiento, telefono, domicilio, cuenta, vehiculo, permiso, categoria_id, numero_colegiado, cargo) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
-
         const values = [
             nombre,
             apellidoCompleto,
@@ -229,18 +214,23 @@ router.post('/nuevoarbitro', async (req, res) => {
             domicilio,
             cuenta_bancaria,
             vehiculo,
-            permiso || '3',  // Permiso por defecto '3' si no se proporciona
-            categoria_id,  // Aquí usamos el categoria_id que nos llegó del frontend
+            permiso || '3',
+            categoria_id,
             numeroColegiado,
             cargoValue
         ];
 
-        console.log('Valores a insertar:', values); // Depuración final antes de la inserción
+        const [insertResult] = await db.query(sql, values);
 
-        await db.query(sql, values);
+        // Obtener los datos completos del árbitro recién creado
+        const [nuevoArbitro] = await db.query(`
+            SELECT a.*, e.categoria, e.nivel 
+            FROM arbitros a
+            LEFT JOIN escala e ON a.categoria_id = e.id
+            WHERE a.id = ?
+        `, [insertResult.insertId]);
 
-        console.log('Inserción exitosa en la base de datos');
-        res.status(201).json({ message: 'Árbitro registrado exitosamente' });
+        res.status(201).json(nuevoArbitro[0]);
     } catch (err) {
         console.error('Error al registrar el árbitro:', err.message);
         res.status(500).json({ message: 'Error interno del servidor', error: err.message });

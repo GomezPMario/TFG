@@ -9,6 +9,31 @@ import { MdManageHistory, MdGroupAdd } from 'react-icons/md';
 import { PiShareBold } from 'react-icons/pi';
 import { TiUserDelete } from "react-icons/ti";
 
+const fetchArbitros = async (baseURL, setArbitros, orderBy, orderType, permission, category, search) => {
+    try {
+        const params = new URLSearchParams();
+
+        if (orderBy) params.append('orderBy', orderBy);
+        if (orderType) params.append('orderType', orderType);
+        if (permission && orderBy === 'permiso') params.append('permission', permission);
+        if (category && orderBy === 'categoria') {
+            params.append('category', category);
+            params.append(
+                'categoryOrder',
+                category === 'Escuela - ACB' ? 'desc' : 'asc'
+            );
+        }
+        if (search) params.append('search', search); // Añadir el parámetro de búsqueda
+
+        const response = await fetch(`${baseURL}/arbitros?${params.toString()}`);
+        if (!response.ok) throw new Error('Error en la respuesta de la API');
+        const data = await response.json();
+        setArbitros(data);
+    } catch (error) {
+        console.error('Error fetching arbitros:', error);
+    }
+};
+
 const Arbitros = () => {
     const [arbitros, setArbitros] = useState([]);
     const [selectedArbitros, setSelectedArbitros] = useState([]); // Estado para captchas seleccionados
@@ -20,6 +45,8 @@ const Arbitros = () => {
     const [showNuevoArbitro, setShowNuevoArbitro] = useState(false);
     const [showLicencias, setShowLicencias] = useState(false);
     const [showExportar, setShowExportar] = useState(false);
+
+    const [forceRender, setForceRender] = useState(false);
 
     const categoryOptions = {
         arbitro: [
@@ -51,34 +78,61 @@ const Arbitros = () => {
         ],
     };
 
+    // useEffect(() => {
+    //     const fetchArbitros = async () => {
+    //         try {
+    //             const params = new URLSearchParams();
+
+    //             if (orderBy) params.append('orderBy', orderBy);
+    //             if (orderType) params.append('orderType', orderType); // Solo enviar si no está vacío
+    //             if (permission && orderBy === 'permiso') params.append('permission', permission);
+    //             if (category && orderBy === 'categoria') {
+    //                 params.append('category', category);
+    //                 params.append(
+    //                     'categoryOrder',
+    //                     category === 'Escuela - ACB' ? 'desc' : 'asc'
+    //                 );
+    //             }
+
+    //             const response = await fetch(`${baseURL}/arbitros?${params.toString()}`);
+    //             if (!response.ok) throw new Error('Error en la respuesta de la API');
+    //             const data = await response.json();
+    //             setArbitros(data);
+    //         } catch (error) {
+    //             console.error('Error fetching arbitros:', error);
+    //         }
+    //     };
+
+    //     fetchArbitros();
+    // }, [orderBy, orderType, permission, category]);
+
     useEffect(() => {
-        const fetchArbitros = async () => {
-            try {
-                const params = new URLSearchParams();
+        fetchArbitros(baseURL, setArbitros, orderBy, orderType, permission, category, search);
+    }, [orderBy, orderType, permission, category, search]); // Agregar `search` como dependencia
 
-                if (orderBy) params.append('orderBy', orderBy);
-                if (orderType) params.append('orderType', orderType); // Solo enviar si no está vacío
-                if (permission && orderBy === 'permiso') params.append('permission', permission);
-                if (category && orderBy === 'categoria') {
-                    params.append('category', category);
-                    params.append(
-                        'categoryOrder',
-                        category === 'Escuela - ACB' ? 'desc' : 'asc'
-                    );
-                }
-
-                const response = await fetch(`${baseURL}/arbitros?${params.toString()}`);
-                if (!response.ok) throw new Error('Error en la respuesta de la API');
-                const data = await response.json();
-                setArbitros(data);
-            } catch (error) {
-                console.error('Error fetching arbitros:', error);
-            }
+    useEffect(() => {
+        const fetchArbitrosOnMount = async () => {
+            const response = await fetch(`${baseURL}/arbitros`);
+            const data = await response.json();
+            setArbitros(data);
         };
 
-        fetchArbitros();
-    }, [orderBy, orderType, permission, category]);
+        fetchArbitrosOnMount();
+    }, []);
 
+
+    const handleNuevoArbitroCerrado = async () => {
+        try {
+            const response = await fetch(`${baseURL}/arbitros`);
+            if (!response.ok) throw new Error('Error al obtener árbitros actualizados.');
+            const updatedArbitros = await response.json();
+
+            setArbitros(updatedArbitros); // Actualizamos toda la lista desde el backend
+            console.log("Lista actualizada de árbitros:", updatedArbitros);
+        } catch (error) {
+            console.error('Error actualizando árbitros desde el backend:', error);
+        }
+    };
 
     const handleOrderByChange = (value) => {
         setOrderBy(value);
@@ -101,6 +155,11 @@ const Arbitros = () => {
     // const handleCategoryChange = (value) => {
     //     setCategory(value);
     // };
+
+    const handleSearchChange = (value) => {
+        setSearch(value); // Actualiza el estado de búsqueda
+    };
+
 
     const handleIconClick = async () => {
         if (selectedArbitros.length === 0) {
@@ -155,7 +214,11 @@ const Arbitros = () => {
             </button>
 
             {showLicencias && <Licencias onClose={() => setShowLicencias(false)} />}
-            {showNuevoArbitro && <NuevoArbitro onClose={() => setShowNuevoArbitro(false)} isManual={true} />}
+            {showNuevoArbitro && <NuevoArbitro
+                onClose={() => setShowNuevoArbitro(false)}
+                isManual={true}
+                onArbitroAdded={handleNuevoArbitroCerrado}
+            />}
             {showExportar && <Exportar onClose={() => setShowExportar(false)} />}
 
             {!showNuevoArbitro && (
@@ -220,12 +283,12 @@ const Arbitros = () => {
                                 type="text"
                                 placeholder="Buscar por nombre, alias, etc."
                                 value={search}
-                                onChange={e => setSearch(e.target.value)}
+                                onChange={(e) => handleSearchChange(e.target.value)}
                             />
                         </div>
                     </div>
 
-                    <table className="table">
+                    <table className="table" key={forceRender ? "render-true" : "render-false"}>
                         <thead>
                             <tr>
                                 <th>
@@ -238,7 +301,7 @@ const Arbitros = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {arbitros.map(arbitro => (
+                            {arbitros.map((arbitro) => (
                                 <tr key={arbitro.id}>
                                     <td>
                                         <div className="captcha-container">
