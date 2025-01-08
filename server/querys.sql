@@ -850,3 +850,19 @@ WHERE nombre = 'Pab. SANTO DOMINGO';
 UPDATE campos
 SET calle = 'Cam. del Alfaz, 50007 Zaragoza'
 WHERE nombre = 'Pab. LICEO EUROPA';
+
+
+-- Crear la tabla 'miscelaneo'
+CREATE TABLE miscelaneo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    importe DECIMAL(10, 2) NOT NULL
+);
+
+-- Insertar los datos en la tabla 'miscelaneo'
+INSERT INTO miscelaneo (nombre, importe) VALUES
+('Desp. +10Km conductor', 0.27),
+('Desp. +10Km pasajeros', 0.08),
+('Desp. +10Km', 11.00),
+('Dietas (fueras de hora)', 10.00),
+('Suspendido', 3.00);

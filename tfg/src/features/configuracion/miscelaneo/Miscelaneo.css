@@ -1,0 +1,152 @@
+/* Botón de guardar */
+.miscelaneo-button-guardar {
+    background-color: #28a745 !important; /* Verde */
+    color: white !important;
+    border: none !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    font-size: 16px !important;
+}
+
+.miscelaneo-button-guardar:hover {
+    background-color: #218838 !important; /* Verde más oscuro */
+}
+
+/* Botón de cancelar */
+.miscelaneo-button-cancelar {
+    background-color: #dc3545 !important; /* Rojo */
+    color: white !important;
+    border: none !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    font-size: 16px !important;
+}
+
+.miscelaneo-button-cancelar:hover {
+    background-color: #c82333 !important; /* Rojo más oscuro */
+}
+
+/* Tabla */
+.miscelaneo-table {
+    width: 60%; /* La tabla ocupará el 60% del ancho del contenedor */
+    margin: 0 auto; /* Centra la tabla horizontalmente */
+    border-collapse: collapse;
+}
+
+.miscelaneo-table th,
+.miscelaneo-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    overflow: hidden; /* Oculta contenido que excede el ancho de la celda */
+    text-overflow: ellipsis; /* Añade puntos suspensivos */
+}
+
+/* Todas las columnas con el mismo ancho en modo edición */
+.miscelaneo-table.editing th,
+.miscelaneo-table.editing td {
+    width: 50%; /* Las columnas tendrán el mismo ancho */
+    text-align: center;
+}
+
+/* Primera columna cuando NO es modo edición */
+.miscelaneo-table th:first-child,
+.miscelaneo-table td:first-child {
+    width: 1%; /* La primera columna ocupa el 1% del ancho */
+    text-align: center;
+    white-space: nowrap; /* Evita salto de línea */
+}
+
+/* Ajustes adicionales para modo edición */
+.miscelaneo-table.editing th:first-child,
+.miscelaneo-table.editing td:first-child {
+    width: 50%; /* Ancho igual al resto */
+}
+
+.miscelaneo-table td input {
+    width: 95%; /* Los inputs ocupan el 95% de la celda */
+    box-sizing: border-box;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.miscelaneo-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    text-align: center;
+}
+
+.miscelaneo-table td {
+    text-align: center;
+    vertical-align: middle;
+    min-height: 50px;
+    height: 100%;
+}
+
+/* Contenedor del captcha */
+.captcha-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Centrado del icono MdBookmarkRemove */
+.miscelaneo-table th div.interactive-icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+
+/* Modal */
+.miscelaneo-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.miscelaneo-modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.miscelaneo-modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.miscelaneo-modal-form label {
+    display: block;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.miscelaneo-modal-form input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+

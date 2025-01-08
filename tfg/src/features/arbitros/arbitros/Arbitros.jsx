@@ -46,7 +46,7 @@ const Arbitros = () => {
     const [showLicencias, setShowLicencias] = useState(false);
     const [showExportar, setShowExportar] = useState(false);
 
-    const [forceRender, setForceRender] = useState(false);
+    const [forceRender] = useState(false);
 
     const categoryOptions = {
         arbitro: [
