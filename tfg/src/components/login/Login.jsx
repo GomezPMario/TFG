@@ -4,8 +4,8 @@ import logo from '../../assets/images/LogoCAAB.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-export const baseURL = 'https://tfg-ojja.onrender.com';
-// export const baseURL = 'http://localhost:5000';
+// export const baseURL = 'https://tfg-ojja.onrender.com';
+export const baseURL = 'http://localhost:5000';
 
 const Login = ({ onLogin }) => {
     const [username, setUsername] = useState('');
@@ -32,6 +32,7 @@ const Login = ({ onLogin }) => {
                 const arbitro = response.data.arbitro;
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('arbitro', JSON.stringify(arbitro));
+                localStorage.setItem('arbitroId', arbitro.id);
                 console.log(arbitro);
 
                 // Verifica que la respuesta tenga el arbitro

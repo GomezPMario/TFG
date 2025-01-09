@@ -6,6 +6,267 @@ import { IoMdAlarm } from "react-icons/io";
 import { PiPrinterFill } from "react-icons/pi";
 import { TbScoreboard } from "react-icons/tb";
 
+const ModalFormStep = ({ isOpen, onClose, onSubmit }) => {
+    const [currentStep, setCurrentStep] = useState(1); // Paso actual
+    const [selectedOptions, setSelectedOptions] = useState([]); // "Variable", "Fija" o ["Variable", "Fija"]
+    const [selectedDays, setSelectedDays] = useState([]); // Días seleccionados
+    const [currentDayIndex, setCurrentDayIndex] = useState(0); // Índice del día actual
+    const [availabilityType, setAvailabilityType] = useState(""); // Variable o Fija
+    const [hourRangeVariable, setHourRangeVariable] = useState({ start: "", end: "" }); // Horas para disponibilidad variable
+    const [hourRangeFija, setHourRangeFija] = useState({ start: "", end: "" }); // Horas para disponibilidad fija
+    const [availabilityData, setAvailabilityData] = useState({ Variable: [], Fija: [] }); // Almacena los datos de disponibilidad por tipo
+
+    const dayNames = {
+        L: "LUNES",
+        M: "MARTES",
+        X: "MIÉRCOLES",
+        J: "JUEVES",
+        V: "VIERNES",
+        S: "SÁBADO",
+        D: "DOMINGO",
+    };
+
+    const handleOptionClick = (option) => {
+        if (option === "Ambas") {
+            setSelectedOptions(["Variable", "Fija"]);
+        } else {
+            setSelectedOptions([option]);
+        }
+    };
+
+    const handleDayClick = (day) => {
+        setSelectedDays((prev) =>
+            prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+        );
+        console.log('Días seleccionados:', selectedDays);
+    };
+
+    const handleBack = () => {
+        if (currentStep === 3 && currentDayIndex > 0) {
+            setCurrentDayIndex((prev) => prev - 1); // Retrocede al día anterior
+            if (availabilityType === "Variable") setHourRangeVariable({ start: "", end: "" });
+            else setHourRangeFija({ start: "", end: "" });
+        } else if (currentStep === 3 && currentDayIndex === 0 && availabilityType === "Fija" && selectedOptions.includes("Variable")) {
+            // Cambia de "Fija" a "Variable"
+            setAvailabilityType("Variable");
+            setSelectedDays(availabilityData.Variable.map((item) => item.day)); // Restaura los días de "Variable"
+            setCurrentDayIndex(availabilityData.Variable.length - 1);
+        } else if (currentStep === 3 && availabilityType === "Variable" && selectedOptions.includes("Fija")) {
+            // Cambia al paso de selección de días para "Fija"
+            setSelectedDays([]); // Resetea los días seleccionados
+            setAvailabilityType("Fija");
+            setCurrentStep(2);
+        } else if (currentStep === 2) {
+            setSelectedDays([]); // Resetea los días seleccionados
+            setCurrentStep(1); // Regresa al paso 1
+        }
+    };
+
+    const handleSubmit = () => {
+        if (currentStep === 1) {
+            setCurrentStep(2); // Avanza al paso 2
+            setAvailabilityType(selectedOptions[0]); // Define el primer tipo de disponibilidad
+        } else if (currentStep === 2) {
+            setCurrentStep(3); // Avanza al paso 3
+        } else if (currentStep === 3) {
+            const currentHourRange = availabilityType === "Variable" ? hourRangeVariable : hourRangeFija;
+
+            const currentDayAvailability = {
+                type: availabilityType,
+                day: selectedDays[currentDayIndex],
+                start: currentHourRange.start,
+                end: currentHourRange.end,
+            };
+
+            // Generar una copia actualizada
+            const updatedAvailabilityData = {
+                ...availabilityData,
+                [availabilityType]: [...availabilityData[availabilityType], currentDayAvailability],
+            };
+
+            console.log('Datos acumulados antes del envío:', updatedAvailabilityData);
+
+            if (currentDayIndex < selectedDays.length - 1) {
+                setCurrentDayIndex((prev) => prev + 1); // Avanza al siguiente día
+                if (availabilityType === "Variable") setHourRangeVariable({ start: "", end: "" });
+                else setHourRangeFija({ start: "", end: "" });
+            } else if (availabilityType === "Variable" && selectedOptions.includes("Fija")) {
+                // Cambia a "Fija" después de completar "Variable"
+                setAvailabilityType("Fija");
+                setSelectedDays([]); // Resetea los días seleccionados
+                setCurrentStep(2); // Regresa al paso 2 para seleccionar los días de "Fija"
+            } else {
+                // Finaliza la iteración
+                const arbitroId = parseInt(localStorage.getItem('arbitroId'), 10);
+
+                if (!arbitroId) {
+                    console.error('Error: No se encontró el ID del árbitro en localStorage.');
+                    return; // Detén el proceso si falta el ID
+                }
+
+                if (!updatedAvailabilityData.Variable.length && !updatedAvailabilityData.Fija.length) {
+                    console.error('Error: No hay datos de disponibilidad para enviar.');
+                    return; // Detén el proceso si los datos están vacíos
+                }
+
+                const dataToSubmit = {
+                    arbitro_id: arbitroId,
+                    availabilityData: updatedAvailabilityData,
+                };
+
+                fetch(`${baseURL}/api/disponibilidad`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataToSubmit),
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then((result) => {
+                        if (result.success) {
+                            console.log('Disponibilidad guardada correctamente:', result.message);
+                            onClose(); // Cierra el modal después de guardar
+                        } else {
+                            console.error('Error al guardar disponibilidad:', result.message);
+                        }
+                    })
+                    .catch((error) => console.error('Error en la solicitud:', error));
+            }
+        }
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="modal-step-overlay">
+            <div className="modal-step-content">
+                <span className="modal-step-close" onClick={onClose}>&times;</span>
+                {currentStep === 1 && (
+                    <>
+                        <h2 className="modal-step-title">Añadir Disponibilidad</h2>
+                        <div className="modal-step-availability-options">
+                            {["Variable", "Fija", "Ambas"].map((option, index) => (
+                                <div
+                                    key={index}
+                                    className={`modal-step-option-row ${(option === "Ambas" &&
+                                        selectedOptions.includes("Variable") &&
+                                        selectedOptions.includes("Fija")) ||
+                                        selectedOptions.includes(option)
+                                        ? "selected"
+                                        : ""
+                                    }`}
+                            onClick={() => handleOptionClick(option)}
+                                >
+                            {option.toUpperCase()}
+                        </div>
+                            ))}
+                    </div>
+                <button
+                    className="modal-step-submit-button"
+                    onClick={handleSubmit}
+                    disabled={selectedOptions.length === 0}
+                >
+                    Continuar
+                </button>
+            </>
+                )}
+            {currentStep === 2 && (
+                <>
+                    <h2 className="modal-step-title">
+                        Selecciona los Días (<span className="modal-step-underline">{availabilityType.toUpperCase()}</span>)
+                    </h2>
+                    <div className="modal-step-days-container">
+                        {Object.keys(dayNames).map((day, index) => (
+                            <div
+                                key={index}
+                                className={`modal-step-day-checkbox ${selectedDays.includes(day) ? "selected" : ""}`}
+                        onClick={() => handleDayClick(day)}
+                                >
+                        {day}
+                    </div>
+                            ))}
+                </div>
+            <div className="modal-step-button-container">
+                <button className="modal-step-back-button" onClick={handleBack}>
+                    Atrás
+                </button>
+                <button
+                    className="modal-step-submit-button"
+                    onClick={handleSubmit}
+                    disabled={selectedDays.length === 0}
+                >
+                    Continuar
+                </button>
+            </div>
+        </>
+    )
+}
+{
+    currentStep === 3 && (
+        <>
+            <h2 className="modal-step-title">
+                D. {availabilityType.charAt(0).toUpperCase() + availabilityType.slice(1)}: {dayNames[selectedDays[currentDayIndex]]}
+            </h2>
+            <p>
+                <strong>Mañanas:</strong> 9:00 a 14:00 <br />
+                <strong>Tardes:</strong> 14:01 a 22:00 <br />
+                <strong>Noches:</strong> 22:01 a 8:59
+            </p>
+            <div className="modal-step-time-inputs">
+                <label>
+                    Hora Inicio
+                    <input
+                        type="time"
+                        value={availabilityType === "Variable" ? hourRangeVariable.start : hourRangeFija.start}
+                        onChange={(e) =>
+                            availabilityType === "Variable"
+                                ? setHourRangeVariable((prev) => ({ ...prev, start: e.target.value }))
+                                : setHourRangeFija((prev) => ({ ...prev, start: e.target.value }))
+                        }
+                    />
+                </label>
+                <label>
+                    Hora Fin
+                    <input
+                        type="time"
+                        value={availabilityType === "Variable" ? hourRangeVariable.end : hourRangeFija.end}
+                        onChange={(e) =>
+                            availabilityType === "Variable"
+                                ? setHourRangeVariable((prev) => ({ ...prev, end: e.target.value }))
+                                : setHourRangeFija((prev) => ({ ...prev, end: e.target.value }))
+                        }
+                    />
+                </label>
+            </div>
+            <div className="modal-step-button-container">
+                <button className="modal-step-back-button" onClick={handleBack}>
+                    Atrás
+                </button>
+                <button
+                    className="modal-step-submit-button"
+                    onClick={handleSubmit}
+                    disabled={
+                        !(availabilityType === "Variable"
+                            ? hourRangeVariable.start && hourRangeVariable.end
+                            : hourRangeFija.start && hourRangeFija.end)
+                    }
+                >
+                    {currentDayIndex === selectedDays.length - 1 &&
+                        !(availabilityType === "Variable" && selectedOptions.includes("Fija"))
+                        ? "Guardar"
+                        : "Continuar"}
+                </button>
+            </div>
+        </>
+    )}
+            </div >
+        </div >
+    );
+};
+
 const formatDate = (dateString) => {
     if (!dateString) return "Fecha no válida";
     try {
@@ -45,6 +306,8 @@ const Consultas = () => {
     const [selectedPartido, setSelectedPartido] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
+    // Modal Form-Step
+    const [isModalFormOpen, setIsModalFormOpen] = useState(false);
 
     const handlePrint = () => {
         window.print();
@@ -128,6 +391,19 @@ const Consultas = () => {
         fetchPartidos();
     }, []);
 
+    const handleAddDisponibilityClick = () => {
+        setIsModalFormOpen(true);
+    };
+
+    const closeModalForm = () => {
+        setIsModalFormOpen(false);
+    };
+
+    const handleFormSubmit = (selectedOptions) => {
+        console.log("Opciones seleccionadas:", selectedOptions);
+        // Aquí puedes agregar la lógica para manejar las opciones seleccionadas
+    };
+
     if (isLoading) {
         return <p>Cargando partidos...</p>;
     }
@@ -137,8 +413,8 @@ const Consultas = () => {
             <h1 className="consultas-title">Partidos a Arbitrar</h1>
 
             <div className="button-container">
-                <button className="button">
-                    <IoMdAlarm /> Añadir disponibilidad
+                <button className="button" onClick={handleAddDisponibilityClick}>
+                    <IoMdAlarm /> Añadir NO disponibilidad
                 </button>
                 <button className="button" onClick={handlePrint}>
                     <PiPrinterFill /> Imprimir partidos
@@ -218,77 +494,87 @@ const Consultas = () => {
                             <tr>
                                 <td colSpan="4">
                                     <button
-                                        className={`edit-button ${partido.resultado_a === 0 && partido.resultado_b === 0 ? "edit-button-yellow" : "edit-button-green"
-                                            }`}
-                                        onClick={() => handleEditClick(partido.partido_id)}
+                                        className={`edit-button ${partido.resultado_a === 0 && partido.resultado_b === 0 ? "edit-button-yellow" : "edit-button-green"}`}
+                                    onClick={() => handleEditClick(partido.partido_id)}
                                     >
-                                        {partido.resultado_a === 0 && partido.resultado_b === 0 ? "Añadir resultado" : "Editar resultado"}
-                                    </button>
-                                    <span className="resultado-actual">
-                                        <TbScoreboard />{partido.resultado_a} - {partido.resultado_b}
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    {partido.resultado_a === 0 && partido.resultado_b === 0 ? "Añadir resultado" : "Editar resultado"}
+                                </button>
+                                <span className="resultado-actual">
+                                    <TbScoreboard />{partido.resultado_a} - {partido.resultado_b}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 </div>
-            )) : <p>No hay partidos designados para usted.</p>}
+    )) : <p>No hay partidos designados para usted.</p>
+}
 
-            {isModalOpen && (
-                <div className="consulta-modal">
-                    <div className="consulta-modal-content">
-                        <span className="consulta-modal-close" onClick={closeModal}>&times;</span>
-                        <div className="consulta-modal-profile-photo">
-                            {fotoPerfil ? (
-                                <img src={fotoPerfil} alt="Foto de perfil" />
-                            ) : (
-                                <img src="../../../assets/images/LogoCAAB.png" alt="Foto de perfil" />
-                            )}
-                        </div>
-                        <h2>{selectedCompanero.alias}</h2>
-                        <p>{selectedCompanero.nombre} {selectedCompanero.apellido}</p>
-                        <p><strong>{selectedCompanero.telefono}</strong></p>
-                        <p>{selectedCompanero.funcion}</p>
-                    </div>
+{
+    isModalOpen && (
+        <div className="consulta-modal">
+            <div className="consulta-modal-content">
+                <span className="consulta-modal-close" onClick={closeModal}>&times;</span>
+                <div className="consulta-modal-profile-photo">
+                    {fotoPerfil ? (
+                        <img src={fotoPerfil} alt="Foto de perfil" />
+                    ) : (
+                        <img src="../../../assets/images/LogoCAAB.png" alt="Foto de perfil" />
+                    )}
                 </div>
-            )}
-
-            {isEditModalOpen && selectedPartido && (
-                <div className="edit-modal">
-                    <div className="edit-modal-content">
-                        <span className="edit-modal-close" onClick={() => setIsEditModalOpen(false)}>&times;</span>
-                        <h2>Añadir Resultado</h2>
-                        <form>
-                            <label>
-                                Equipo A:
-                                <input
-                                    type="number"
-                                    value={selectedPartido.resultado_a || 0}
-                                    onChange={(e) =>
-                                        setSelectedPartido({ ...selectedPartido, resultado_a: parseInt(e.target.value, 10) || 0 })
-                                    }
-                                />
-                            </label>
-                            <label>
-                                Equipo B:
-                                <input
-                                    type="number"
-                                    value={selectedPartido.resultado_b || 0}
-                                    onChange={(e) =>
-                                        setSelectedPartido({ ...selectedPartido, resultado_b: parseInt(e.target.value, 10) || 0 })
-                                    }
-                                />
-                            </label>
-                            <button type="button" onClick={saveChanges}>
-                                Guardar cambios
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            )}
-
-
+                <h2>{selectedCompanero.alias}</h2>
+                <p>{selectedCompanero.nombre} {selectedCompanero.apellido}</p>
+                <p><strong>{selectedCompanero.telefono}</strong></p>
+                <p>{selectedCompanero.funcion}</p>
+            </div>
         </div>
+    )
+}
+
+{
+    isEditModalOpen && selectedPartido && (
+        <div className="edit-modal">
+            <div className="edit-modal-content">
+                <span className="edit-modal-close" onClick={() => setIsEditModalOpen(false)}>&times;</span>
+                <h2>Añadir Resultado</h2>
+                <form>
+                    <label>
+                        Equipo A:
+                        <input
+                            type="number"
+                            value={selectedPartido.resultado_a || 0}
+                            onChange={(e) =>
+                                setSelectedPartido({ ...selectedPartido, resultado_a: parseInt(e.target.value, 10) || 0 })
+                            }
+                        />
+                    </label>
+                    <label>
+                        Equipo B:
+                        <input
+                            type="number"
+                            value={selectedPartido.resultado_b || 0}
+                            onChange={(e) =>
+                                setSelectedPartido({ ...selectedPartido, resultado_b: parseInt(e.target.value, 10) || 0 })
+                            }
+                        />
+                    </label>
+                    <button type="button" onClick={saveChanges}>
+                        Guardar cambios
+                    </button>
+                </form>
+            </div>
+        </div>
+    )
+}
+
+{/* Modal Form-Step */ }
+<ModalFormStep
+    isOpen={isModalFormOpen}
+    onClose={closeModalForm}
+    onSubmit={handleFormSubmit}
+/>
+
+        </div >
     );
 };
 

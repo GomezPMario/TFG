@@ -1,0 +1,45 @@
+/* ====== Contenedor Principal ====== */
+.disponibilidad-container {
+    margin: 20px;
+    text-align: center;
+}
+
+/* ====== Título ====== */
+.disponibilidad-title {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* ====== Botones ====== */
+.button {
+    margin: 15px 25px 30px 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #ff5aa4;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #ff96c5;
+}
+
+.button svg {
+    margin-right: 8px;
+}
+
+/* ====== Botones Contenedor ====== */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

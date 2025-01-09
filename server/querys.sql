@@ -866,3 +866,15 @@ INSERT INTO miscelaneo (nombre, importe) VALUES
 ('Desp. +10Km', 11.00),
 ('Dietas (fueras de hora)', 10.00),
 ('Suspendido', 3.00);
+
+CREATE TABLE disponibilidad (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    arbitro_id INT NOT NULL,
+    tipo_disponibilidad ENUM('fija', 'variable') NOT NULL,
+    dia_semana ENUM('lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo') NOT NULL,
+    hora_inicio TIME DEFAULT NULL,
+    hora_fin TIME DEFAULT NULL,
+    franja ENUM('mañana', 'tarde') DEFAULT NULL,
+    fecha DATE DEFAULT NULL,
+    FOREIGN KEY (arbitro_id) REFERENCES arbitros(id)
+);

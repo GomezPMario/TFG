@@ -6,6 +6,7 @@ import LogoCAAB from '../../assets/images/LogoCAAB.png'
 // Iconos
 import { FaUserGear } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
+import { FaRegClock } from "react-icons/fa6";
 import { GiPriceTag } from "react-icons/gi";
 import { IoDocumentsOutline } from "react-icons/io5";
 import { GiWhistle } from "react-icons/gi";
@@ -49,6 +50,9 @@ const Sidebar = ({ onLogout }) => {
                     </li>
                     <li className={location.pathname === '/nominas' ? 'active' : ''}>
                         <Link to="/nominas"><GiPriceTag />Mostrar Nóminas</Link>
+                    </li>
+                    <li className={location.pathname === '/disponibilidad' ? 'active' : ''}>
+                        <Link to="/disponibilidad"><FaRegClock />NO Disponibilidad</Link>
                     </li>
                     <li className={location.pathname === '/informes' ? 'active' : ''}>
                         <Link to="/informes"><IoDocumentsOutline />Informes</Link>

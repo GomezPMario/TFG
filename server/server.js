@@ -14,6 +14,7 @@ const camposRoutes = require('./campos');
 const categoriasRoutes = require('./categorias');
 const equiposRoutes = require('./equipos');
 const miscelaneoRoutes = require('./miscelaneo');
+const disponibilidadRoutes = require('./disponibilidad');
 
 // Cargar configuración de entorno
 dotenv.config();
@@ -59,6 +60,7 @@ app.use('/api/campos', camposRoutes);
 app.use('/api/categorias', categoriasRoutes);
 app.use('/api/equipos', equiposRoutes);
 app.use('/api/miscelaneo', miscelaneoRoutes);
+app.use('/api/disponibilidad', disponibilidadRoutes);
 
 // Endpoint para iniciar sesión
 app.post('/login', async (req, res) => {
@@ -116,6 +118,12 @@ app.post('/login', async (req, res) => {
         console.error(error);
         res.status(500).json({ success: false, message: 'Error del servidor' });
     }
+});
+
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ success: false, message: 'Error interno del servidor' });
 });
 
 

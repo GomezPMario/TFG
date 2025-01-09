@@ -16,6 +16,7 @@ import Equipos from './features/equipos/equipos/Equipos';
 import Tarifas from './features/configuracion/tarifas/Tarifas';
 import Partidos from './features/partidos/partidos/Partidos';
 import Miscelaneo from './features/configuracion/miscelaneo/Miscelaneo';
+import Disponibilidad from './features/partidos/disponibilidad/Disponibilidad';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -97,6 +98,7 @@ function App() {
               <Route path="/consultas" element={<Consultas arbitroId={arbitroId} />} />
               <Route path="/perfil" element={<Perfil />} />
               <Route path="/nominas" element={<Nominas arbitroId={arbitroId} />} />
+              <Route path="/disponibilidad" element={<Disponibilidad arbitroId={arbitroId} />} />
               <Route path="/informes" element={<Informes arbitroId={arbitroId} />} />
               <Route
                 path="/arbitros"
