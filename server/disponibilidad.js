@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db_setup');
+const cron = require('node-cron');
 
 const dayMapping = {
     l: 'lunes',
@@ -107,5 +108,15 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+// Trabajo programado para eliminar disponibilidades variables cada martes a las 12:00 PM
+cron.schedule('0 12 * * 2', async () => {
+    console.log('Eliminando disponibilidades variables...');
+    try {
+        const [result] = await db.query(`DELETE FROM disponibilidad WHERE tipo_disponibilidad = 'variable'`);
+        console.log(`Disponibilidades variables eliminadas: ${result.affectedRows}`);
+    } catch (error) {
+        console.error('Error al eliminar disponibilidades variables:', error);
+    }
+});
 
 module.exports = router;
