@@ -86,12 +86,21 @@ const ModalFormStep = ({ isOpen, onClose, onSubmit }) => {
 
             console.log('Datos acumulados antes del envío:', updatedAvailabilityData);
 
+            // Guardar los datos temporalmente
+            setAvailabilityData(updatedAvailabilityData);
+
             if (currentDayIndex < selectedDays.length - 1) {
                 setCurrentDayIndex((prev) => prev + 1); // Avanza al siguiente día
                 if (availabilityType === "Variable") setHourRangeVariable({ start: "", end: "" });
                 else setHourRangeFija({ start: "", end: "" });
             } else if (availabilityType === "Variable" && selectedOptions.includes("Fija")) {
-                // Cambia a "Fija" después de completar "Variable"
+                // Guarda los datos de "Variable" antes de cambiar a "Fija"
+                setAvailabilityData({
+                    ...updatedAvailabilityData,
+                    Variable: [...updatedAvailabilityData.Variable],
+                });
+
+                // Cambia a "Fija"
                 setAvailabilityType("Fija");
                 setSelectedDays([]); // Resetea los días seleccionados
                 setCurrentStep(2); // Regresa al paso 2 para seleccionar los días de "Fija"
