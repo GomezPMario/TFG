@@ -75,4 +75,37 @@ const calcularFechaVariable = (dia) => {
     return fechaVariable.toISOString().split('T')[0]; // Retorna la fecha en formato YYYY-MM-DD
 };
 
+// Ruta para obtener disponibilidades por árbitro
+router.get('/:arbitroId', async (req, res) => {
+    const { arbitroId } = req.params;
+
+    try {
+        const [result] = await db.query(
+            `SELECT id, tipo_disponibilidad, dia_semana, fecha, hora_inicio, hora_fin
+             FROM disponibilidad
+             WHERE arbitro_id = ?`,
+            [arbitroId]
+        );
+
+        res.status(200).json(result);
+    } catch (error) {
+        console.error('Error al obtener las disponibilidades:', error);
+        res.status(500).json({ success: false, message: 'Error al obtener las disponibilidades.' });
+    }
+});
+
+// Ruta para eliminar una disponibilidad
+router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        await db.query(`DELETE FROM disponibilidad WHERE id = ?`, [id]);
+        res.status(200).json({ success: true, message: 'Disponibilidad eliminada correctamente.' });
+    } catch (error) {
+        console.error('Error al eliminar la disponibilidad:', error);
+        res.status(500).json({ success: false, message: 'Error al eliminar la disponibilidad.' });
+    }
+});
+
+
 module.exports = router;
