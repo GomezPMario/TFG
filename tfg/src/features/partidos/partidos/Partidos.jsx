@@ -550,7 +550,7 @@ const Partidos = () => {
                         </label>
                         <br /><br />
                         <label>
-                            <strong>Categoría:</strong>
+                            <strong style={{ marginRight: '10px' }}>Categoría:</strong>
                             <select
                                 value={selectedPartido?.categoria_id || ''}
                                 onChange={(e) => handleUpdateField('categoria_id', e.target.value)}
@@ -563,9 +563,10 @@ const Partidos = () => {
                                 ))}
                             </select>
                         </label>
+
                         <br /><br />
                         <label>
-                            <strong>Equipo Local:</strong>
+                            <strong style={{ marginRight: '10px' }}>Equipo Local:</strong>
                             <select
                                 value={selectedPartido?.equipo_local_id || ''}
                                 onChange={(e) => handleUpdateField('equipo_local_id', e.target.value)}
@@ -580,7 +581,7 @@ const Partidos = () => {
                         </label>
                         <br /><br />
                         <label>
-                            <strong>Equipo Visitante:</strong>
+                            <strong style={{ marginRight: '10px' }}>Equipo Visitante:</strong>
                             <select
                                 value={selectedPartido?.equipo_visitante_id || ''}
                                 onChange={(e) => handleUpdateField('equipo_visitante_id', e.target.value)}
@@ -595,7 +596,7 @@ const Partidos = () => {
                         </label>
                         <br /><br />
                         <label>
-                            <strong>Campo:</strong>
+                            <strong style={{ marginRight: '10px' }}>Campo:</strong>
                             <select
                                 value={selectedPartido?.campo_id || ''}
                                 onChange={(e) => handleUpdateField('campo_id', e.target.value)}
