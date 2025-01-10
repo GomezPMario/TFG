@@ -10,7 +10,7 @@ const Partidos = () => {
     const [file, setFile] = useState(null);
     const [partidos, setPartidos] = useState([]); // Estado para almacenar los datos de la tabla
     const [selectedPartidoId, setSelectedPartidoId] = useState(null);
-    const [arbitroId, setArbitroId] = useState(null);
+    // const [arbitroId, setArbitroId] = useState(null);
 
     const [isCreateInformeModalOpen, setIsCreateInformeModalOpen] = useState(false);
     const [arbitrosDelPartido, setArbitrosDelPartido] = useState([]);
@@ -99,32 +99,32 @@ const Partidos = () => {
         setSelectedPartidoId(partidoId);
     };
 
-    const handleCreateInforme = async () => {
-        console.log('selectedPartidoId antes de la validación:', selectedPartidoId); // Depuración
+    // const handleCreateInforme = async () => {
+    //     console.log('selectedPartidoId antes de la validación:', selectedPartidoId); // Depuración
 
-        if (selectedPartidoId === null || selectedPartidoId === undefined) {
-            alert('Por favor, selecciona un partido antes de continuar.');
-            return;
-        }
+    //     if (selectedPartidoId === null || selectedPartidoId === undefined) {
+    //         alert('Por favor, selecciona un partido antes de continuar.');
+    //         return;
+    //     }
 
-        console.log('Creando informe para partido ID:', selectedPartidoId); // Depuración
+    //     console.log('Creando informe para partido ID:', selectedPartidoId); // Depuración
 
-        try {
-            const response = await fetch(`${baseURL}/api/informes`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ partido_id: selectedPartidoId, arbitro_id: arbitroId }),
-            });
+    //     try {
+    //         const response = await fetch(`${baseURL}/api/informes`, {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({ partido_id: selectedPartidoId, arbitro_id: arbitroId }),
+    //         });
 
-            if (response.ok) {
-                alert('Informe creado con éxito.');
-            } else {
-                alert('Error al crear el informe.');
-            }
-        } catch (error) {
-            console.error('Error al crear el informe:', error);
-        }
-    };
+    //         if (response.ok) {
+    //             alert('Informe creado con éxito.');
+    //         } else {
+    //             alert('Error al crear el informe.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error al crear el informe:', error);
+    //     }
+    // };
 
     const openCreateInformeModal = async () => {
         if (!selectedPartidoId) {
@@ -373,7 +373,7 @@ const Partidos = () => {
                 <thead>
                     <tr>
                         <th>
-                            <HiDocumentAdd className="interactive-icon" onClick={openCreateInformeModal}/>
+                            <HiDocumentAdd className="interactive-icon" onClick={openCreateInformeModal} />
                         </th>
                         <th>Técnico</th>
                         <th>Árbitro(s)</th>

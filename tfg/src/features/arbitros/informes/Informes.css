@@ -89,10 +89,26 @@
 
 
 /* Ajustar la tabla dentro del modal */
-.modal-content .informes-table {
-    width: 100%; /* Asegurar que la tabla ocupa todo el ancho del modal */
+/* .modal-content .informes-table {
+    width: 100%; /* Asegurar que la tabla ocupa todo el ancho del modal 
     margin: 0;
     border-collapse: collapse;
+} */
+
+/* Contenedor de la tabla dentro del modal */
+.modal-content .informes-table {
+    width: 100%; /* La tabla ocupará todo el ancho disponible */
+    table-layout: fixed; /* Permite que las celdas se ajusten automáticamente */
+    word-wrap: break-word; /* Asegura que el texto no se desborde */
+    overflow-x: auto; /* Habilita el desplazamiento horizontal si es necesario */
+}
+
+.modal-content .informes-table th,
+.modal-content .informes-table td {
+    font-size: 14px; /* Ajusta el tamaño de letra según sea necesario */
+    overflow: hidden; /* Evita que el contenido se desborde */
+    text-overflow: ellipsis; /* Añade puntos suspensivos si el contenido es muy largo */
+    white-space: nowrap; /* Evita que el texto se parta en varias líneas */
 }
 
 /* Detalles adicionales del informe */

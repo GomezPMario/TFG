@@ -91,6 +91,7 @@
     margin: 0 auto; /* Centrar horizontalmente */
     scrollbar-width: none;
     -ms-overflow-style: none;
+    word-wrap: break-word;
 }
 
 /* Contenedor de la tabla dentro del modal */
