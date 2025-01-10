@@ -71,7 +71,7 @@ app.post('/login', async (req, res) => {
             `SELECT arbitros.*, escala.categoria, escala.nivel 
             FROM arbitros 
             JOIN escala ON arbitros.categoria_id = escala.id 
-            WHERE username = ? AND password = ?`,
+            WHERE BINARY username = ? AND BINARY password = ?`,
             [username, password]
         );
 
@@ -119,7 +119,6 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error del servidor' });
     }
 });
-
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
