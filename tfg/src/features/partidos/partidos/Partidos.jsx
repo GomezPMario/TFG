@@ -89,10 +89,6 @@ const Partidos = () => {
         fetchCategorias();
         fetchEquipos();
         fetchCampos();
-
-        console.log("Categorías:", categorias);
-        console.log("Equipos:", equipos);
-        console.log("Campos:", campos);
     }, []);
 
     const fetchPartidos = async () => {
@@ -235,13 +231,13 @@ const Partidos = () => {
             if (response.ok) {
                 const data = await response.json();
 
-                // Buscar los IDs correspondientes en las listas de categorías, equipos y campos
+                // Buscar IDs de relaciones
                 const categoria = categorias.find(cat => cat.nombre === data.categoria);
                 const equipoLocal = equipos.find(equipo => equipo.nombre === data.equipo_local);
                 const equipoVisitante = equipos.find(equipo => equipo.nombre === data.equipo_visitante);
                 const campo = campos.find(c => c.nombre === data.campo);
 
-                // Crear el objeto con los IDs
+                // Crear el objeto completo con los IDs
                 const partidoConIds = {
                     ...data,
                     categoria_id: categoria?.id || null,
@@ -250,12 +246,13 @@ const Partidos = () => {
                     campo_id: campo?.id || null,
                 };
 
-                console.log("Partido con IDs:", partidoConIds); // Depuración
+                console.log("Partido con IDs y Fecha:", partidoConIds); // Depuración
                 setSelectedPartido(partidoConIds); // Actualizar estado
             } else {
                 alert("No se pudieron obtener los detalles del partido.");
             }
         } catch (error) {
+            console.error("Error al conectar con la API:", error);
             alert("Error al conectar con la API.");
         }
     };
@@ -264,15 +261,22 @@ const Partidos = () => {
     const handleUpdateField = async (field, value) => {
         if (!selectedPartido) return;
 
+        let updatedField = { [field]: value };
+
+        // Si el campo actualizado es `fecha_partido`, descomponerlo en `dia` y `hora`
+        if (field === 'fecha_partido') {
+            const [dia, hora] = value.split('T');
+            updatedField = { dia, hora };
+        }
+
         try {
             const response = await fetch(`${baseURL}/api/partidos/${selectedPartido.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ [field]: value }),
+                body: JSON.stringify(updatedField),
             });
 
             if (response.ok) {
-                // Actualiza el estado local
                 setSelectedPartido((prev) => ({
                     ...prev,
                     [field]: value,
@@ -284,6 +288,7 @@ const Partidos = () => {
             console.error(`Error al actualizar ${field}:`, error);
         }
     };
+
     
     useEffect(() => {
         console.log("Estado de selectedPartido actualizado:", selectedPartido);
@@ -522,37 +527,28 @@ const Partidos = () => {
                             <strong>Fecha:</strong>
                             <input
                                 type="date"
-                                value={
-                                    selectedPartido?.fecha_partido
-                                        ? selectedPartido.fecha_partido.split('T')[0]
-                                        : '' // Mostrar vacío si no hay fecha
-                                }
+                                value={selectedPartido?.fecha_encuentro?.split(' ')[0].split('/').reverse().join('-') || ''} // Formatea la fecha de dd/mm/yyyy a yyyy-mm-dd
                                 onChange={(e) => {
-                                    const nuevaFecha = e.target.value;
-                                    const horaActual = selectedPartido?.fecha_partido?.split('T')[1] || '00:00:00';
-                                    handleUpdateField('fecha_partido', `${nuevaFecha}T${horaActual}`);
+                                    const nuevaFecha = e.target.value.split('-').reverse().join('/'); // Convierte yyyy-mm-dd a dd/mm/yyyy
+                                    const horaActual = selectedPartido?.fecha_encuentro?.split(' ')[1] || '00:00';
+                                    handleUpdateField('fecha_encuentro', `${nuevaFecha} ${horaActual}`);
                                 }}
                             />
                         </label>
-
+                        <br /><br />
                         <label>
                             <strong>Hora:</strong>
                             <input
                                 type="time"
-                                value={
-                                    selectedPartido?.fecha_partido
-                                        ? selectedPartido.fecha_partido.split('T')[1]?.slice(0, 5) // Tomar sólo HH:mm
-                                        : '00:00' // Mostrar '00:00' si no hay hora
-                                }
+                                value={selectedPartido?.fecha_encuentro?.split(' ')[1]?.slice(0, 5) || '00:00'} // Toma la hora de "hh:mm:ss" o "hh:mm"
                                 onChange={(e) => {
                                     const nuevaHora = e.target.value;
-                                    const fechaActual = selectedPartido?.fecha_partido?.split('T')[0] || '1970-01-01';
-                                    handleUpdateField('fecha_partido', `${fechaActual}T${nuevaHora}:00`);
+                                    const fechaActual = selectedPartido?.fecha_encuentro?.split(' ')[0] || '01/01/1970';
+                                    handleUpdateField('fecha_encuentro', `${fechaActual} ${nuevaHora}`);
                                 }}
                             />
                         </label>
-
-                        <br />
+                        <br /><br />
                         <label>
                             <strong>Categoría:</strong>
                             <select
@@ -567,7 +563,7 @@ const Partidos = () => {
                                 ))}
                             </select>
                         </label>
-                        <br />
+                        <br /><br />
                         <label>
                             <strong>Equipo Local:</strong>
                             <select
@@ -582,7 +578,7 @@ const Partidos = () => {
                                 ))}
                             </select>
                         </label>
-                        <br />
+                        <br /><br />
                         <label>
                             <strong>Equipo Visitante:</strong>
                             <select
@@ -597,7 +593,7 @@ const Partidos = () => {
                                 ))}
                             </select>
                         </label>
-                        <br />
+                        <br /><br />
                         <label>
                             <strong>Campo:</strong>
                             <select
@@ -612,9 +608,6 @@ const Partidos = () => {
                                 ))}
                             </select>
                         </label>
-
-
-
 
                         <h3>Árbitros</h3>
                         {selectedPartido.arbitros?.length > 0 ? (
