@@ -100,33 +100,6 @@ const Partidos = () => {
         setSelectedPartidoId(partidoId);
     };
 
-    // const handleCreateInforme = async () => {
-    //     console.log('selectedPartidoId antes de la validación:', selectedPartidoId); // Depuración
-
-    //     if (selectedPartidoId === null || selectedPartidoId === undefined) {
-    //         alert('Por favor, selecciona un partido antes de continuar.');
-    //         return;
-    //     }
-
-    //     console.log('Creando informe para partido ID:', selectedPartidoId); // Depuración
-
-    //     try {
-    //         const response = await fetch(`${baseURL}/api/informes`, {
-    //             method: 'POST',
-    //             headers: { 'Content-Type': 'application/json' },
-    //             body: JSON.stringify({ partido_id: selectedPartidoId, arbitro_id: arbitroId }),
-    //         });
-
-    //         if (response.ok) {
-    //             alert('Informe creado con éxito.');
-    //         } else {
-    //             alert('Error al crear el informe.');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error al crear el informe:', error);
-    //     }
-    // };
-
     const openCreateInformeModal = async () => {
         if (!selectedPartidoId) {
             alert("Por favor, selecciona un partido antes de continuar.");
@@ -406,49 +379,6 @@ const Partidos = () => {
                         <th>Fecha Informe</th>
                     </tr>
                 </thead>
-                {/* <tbody>
-                    {partidos.length > 0 ? (
-                        partidos.map((partido, index) => (
-                            <tr key={index}>
-                                <td>
-                                    <div className="radio-container">
-                                        <input
-                                            type="radio"
-                                            name="partido"
-                                            value={partido.partido_id || ''} // Evita valores inesperados
-                                            onChange={handleRadioChange}
-                                        />
-                                    </div>
-                                </td>
-                                <td>{partido.tecnico}</td>
-                                <td className="arbitros-cell">
-                                    {partido.arbitros ? (
-                                        partido.arbitros.split(',').map((arbitro, idx) => {
-                                            const [alias, nombre, apellido] = arbitro.trim().split(' ');
-                                            return (
-                                                <div key={idx}>
-                                                    ({alias || '--'}) - {nombre || '--'} {apellido || '--'}
-                                                </div>
-                                            );
-                                        })
-                                    ) : (
-                                        <div style={{ textAlign: 'center' }}>--</div>
-                                    )}
-                                </td>
-
-
-                                <td>{partido.categoria}</td>
-                                <td>{partido.equipos}</td>
-                                <td>{formatFecha(partido.fecha_partido, true)}</td>
-                                <td>{formatFecha(partido.fecha_informe)}</td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="6">No hay partidos disponibles</td>
-                        </tr>
-                    )}
-                </tbody> */}
                 <tbody>
                     {partidos.length > 0 ? (
                         partidos.map((partido, index) => (
@@ -457,7 +387,10 @@ const Partidos = () => {
                                 onClick={() => handlePartidoClick(partido.partido_id)} // Llama a la función con el ID del partido
                                 style={{ cursor: 'pointer' }} // Cambia el cursor para indicar interactividad
                             >
-                                <td>
+                                {/* Primera columna: Aquí se detiene la propagación del clic */}
+                                <td
+                                    onClick={(event) => event.stopPropagation()}
+                                >
                                     <div className="radio-container">
                                         <input
                                             type="radio"
