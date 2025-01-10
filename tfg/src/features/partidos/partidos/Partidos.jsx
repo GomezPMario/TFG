@@ -22,6 +22,7 @@ const Partidos = () => {
     const [controlPartido, setControlPartido] = useState('');
     const [valoracion, setValoracion] = useState('');
 
+    const [selectedPartido, setSelectedPartido] = useState(null);
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => {
@@ -209,6 +210,28 @@ const Partidos = () => {
         }
     };
 
+    const handlePartidoClick = async (partidoId) => {
+        console.log("Intentando obtener detalles del partido con ID:", partidoId);
+        try {
+            const response = await fetch(`${baseURL}/api/partidos/${partidoId}/detalles`);
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Detalles del partido obtenidos:", data);
+                setSelectedPartido(data); // Actualiza el estado con los detalles del partido
+            } else {
+                console.error("Error al obtener los detalles del partido:", response.statusText);
+                alert("No se pudieron obtener los detalles del partido.");
+            }
+        } catch (error) {
+            console.error("Error al conectar con la API:", error);
+            alert("Error al conectar con la API.");
+        }
+    };
+    
+    useEffect(() => {
+        console.log("Estado de selectedPartido actualizado:", selectedPartido);
+    }, [selectedPartido]);
+
     useEffect(() => {
         console.log('Estado de selectedPartidoId:', selectedPartidoId);
     }, [selectedPartidoId]);
@@ -383,7 +406,7 @@ const Partidos = () => {
                         <th>Fecha Informe</th>
                     </tr>
                 </thead>
-                <tbody>
+                {/* <tbody>
                     {partidos.length > 0 ? (
                         partidos.map((partido, index) => (
                             <tr key={index}>
@@ -425,8 +448,100 @@ const Partidos = () => {
                             <td colSpan="6">No hay partidos disponibles</td>
                         </tr>
                     )}
+                </tbody> */}
+                <tbody>
+                    {partidos.length > 0 ? (
+                        partidos.map((partido, index) => (
+                            <tr
+                                key={index}
+                                onClick={() => handlePartidoClick(partido.partido_id)} // Llama a la función con el ID del partido
+                                style={{ cursor: 'pointer' }} // Cambia el cursor para indicar interactividad
+                            >
+                                <td>
+                                    <div className="radio-container">
+                                        <input
+                                            type="radio"
+                                            name="partido"
+                                            value={partido.partido_id || ''} // Evita valores inesperados
+                                            onChange={handleRadioChange}
+                                        />
+                                    </div>
+                                </td>
+                                <td>{partido.tecnico}</td>
+                                <td className="arbitros-cell">
+                                    {partido.arbitros ? (
+                                        partido.arbitros.split(',').map((arbitro, idx) => {
+                                            const [alias, nombre, apellido] = arbitro.trim().split(' ');
+                                            return (
+                                                <div key={idx}>
+                                                    ({alias || '--'}) - {nombre || '--'} {apellido || '--'}
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        <div style={{ textAlign: 'center' }}>--</div>
+                                    )}
+                                </td>
+                                <td>{partido.categoria}</td>
+                                <td>{partido.equipos}</td>
+                                <td>{formatFecha(partido.fecha_partido, true)}</td>
+                                <td>{formatFecha(partido.fecha_informe)}</td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="6">No hay partidos disponibles</td>
+                        </tr>
+                    )}
                 </tbody>
             </table>
+
+            {selectedPartido && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <span className="close" onClick={() => setSelectedPartido(null)}>&times;</span>
+                        <h2>Detalles del Partido</h2>
+                        <p><strong>Fecha y Hora:</strong> {selectedPartido.fecha_encuentro || 'Sin fecha'}</p>
+                        <p><strong>Categoría:</strong> {selectedPartido.categoria || 'Sin categoría'}</p>
+                        <p><strong>Equipo Local:</strong> {selectedPartido.equipo_local || 'Sin equipo local'}</p>
+                        <p><strong>Equipo Visitante:</strong> {selectedPartido.equipo_visitante || 'Sin equipo visitante'}</p>
+                        <p><strong>Campo:</strong> {selectedPartido.campo || 'Sin campo'}</p>
+                        <h3>Árbitros</h3>
+                        {selectedPartido.arbitros?.length > 0 ? (
+                            <ul style={{ listStyleType: 'none', paddingLeft: '20px' }}>
+                                {selectedPartido.arbitros
+                                    .sort((a, b) => {
+                                        const order = {
+                                            "Principal": 1,
+                                            "Auxiliar 1": 2,
+                                            "Auxiliar 2": 3,
+                                            "Anotador": 4,
+                                            "Cronometrador": 5,
+                                            "24 segundos": 6,
+                                            "Ayudante de Anotador": 7,
+                                        };
+
+                                        return (order[a.funcion] || 999) - (order[b.funcion] || 999);
+                                    })
+                                    .map((arbitro, idx) => (
+                                        <li
+                                            key={idx}
+                                            style={{
+                                                marginBottom: '10px',
+                                                textAlign: 'left',
+                                                paddingLeft: '10px'
+                                            }}
+                                        >
+                                            - <strong>{arbitro.funcion || 'Sin función'}</strong> - {arbitro.alias || '--'} - {arbitro.nombre || '--'} {arbitro.apellido || '--'} - {arbitro.telefono || 'Sin teléfono'}
+                                        </li>
+                                    ))}
+                            </ul>
+                        ) : (
+                            <p>No hay árbitros asignados</p>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

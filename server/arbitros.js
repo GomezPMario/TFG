@@ -104,6 +104,8 @@ router.get('/', async (req, res) => {
     }
 });
 
+
+
 router.delete('/', async (req, res) => {
     const { ids } = req.body;
 
@@ -395,7 +397,6 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-
 // Ruta para actualizar el perfil
 router.put('/:id', async (req, res) => {
     const id = req.params.id;
@@ -437,7 +438,6 @@ router.put('/:id', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error al actualizar el perfil' });
     }
 });
-
 
 // Ruta para actualizar la foto de perfil
 // router.put('/:id/foto', async (req, res) => {
@@ -499,7 +499,6 @@ router.put('/:id/foto', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error al guardar la foto de perfil' });
     }
 });
-
 
 // Ruta para obtener la foto de perfil de un árbitro específico
 // router.get('/foto/:arbitroId', async (req, res) => {

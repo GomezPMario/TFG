@@ -153,7 +153,9 @@ router.get('/:partidoId/detalles', async (req, res) => {
                         'id', ar.id,
                         'alias', ar.alias,
                         'nombre', ar.nombre,
-                        'apellido', ar.apellido
+                        'apellido', ar.apellido,
+                        'funcion', f.nombre,
+                        'telefono', ar.telefono
                     )
                 ) AS arbitros
             FROM partidos p
@@ -165,6 +167,7 @@ router.get('/:partidoId/detalles', async (req, res) => {
             LEFT JOIN arbitros ae ON i.evaluador_id = ae.id
             LEFT JOIN partidos_arbitros pa ON p.id = pa.partido_id
             LEFT JOIN arbitros ar ON pa.arbitro_id = ar.id
+            LEFT JOIN funciones f ON pa.funcion_id = f.id -- Unión para obtener la función del árbitro
             WHERE p.id = ?
             GROUP BY p.id, c.nombre, ea.nombre, eb.nombre, ca.nombre;
         `;
