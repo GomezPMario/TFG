@@ -78,19 +78,19 @@
 
 
 /* Modal para crear informe */
-/* Modal para crear informe */
 .modal-content {
-    position: relative;
-    margin: auto;
+    position: relative; /* Asegura que los elementos hijos posicionados se ubiquen dentro de este contenedor */
+    background-color: white;
     padding: 20px;
-    width: 90%; /* Ampliamos el ancho al 90% de la pantalla */
-    max-width: 1200px; /* Mayor límite de ancho para tablas grandes */
-    max-height: 90vh; /* Limita la altura máxima al 90% de la ventana */
-    background-color: #fff;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    overflow-y: auto; /* Habilita scroll vertical si es necesario */
-    display: block; /* Cambia a bloque para evitar problemas de flexbox */
+    width: 90%; /* Ancho del modal */
+    max-width: 1000px; /* Ancho máximo del modal */
+    text-align: left;
+    max-height: 90%; /* Limitar la altura para evitar overflow */
+    overflow-y: auto; /* Scroll en caso de contenido largo */
+    margin: 0 auto; /* Centrar horizontalmente */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 /* Contenedor de la tabla dentro del modal */

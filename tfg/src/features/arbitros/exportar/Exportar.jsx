@@ -8,6 +8,7 @@ const Exportar = ({ onClose }) => {
     const fields = [
         { label: 'Usuario', value: 'username' },
         { label: 'Contraseña', value: 'password' },
+        { label: 'Disponibilidad', value: 'disponibilidad' },
         { label: 'Nombre', value: 'nombre' },
         { label: 'Apellidos', value: 'apellido' },
         { label: 'Domicilio', value: 'domicilio' },
@@ -84,6 +85,38 @@ const Exportar = ({ onClose }) => {
             };
         });
 
+        // data.forEach(row => {
+        //     const rowData = selectedFields.map(field => {
+        //         if (field === 'permiso') {
+        //             return permisoMap[row[field]] || row[field];
+        //         } else if (field === 'cargo') {
+        //             return cargoMap[row[field]] || row[field];
+        //         } else if (field === 'vehiculo') {
+        //             return vehiculoMap[row[field]] || row[field];
+        //         } else if (field === 'fecha_nacimiento') {
+        //             const originalDate = new Date(row[field]);
+        //             const modifiedDate = new Date(originalDate.getTime() + 24 * 60 * 60 * 1000); // Sumar un día
+        //             return modifiedDate;
+        //         }
+        //         return row[field] || '';
+        //     });
+
+        //     const newRow = worksheet.addRow(rowData);
+
+        //     // Aplicar borde inferior gris claro y fino en cada celda de la fila
+        //     newRow.eachCell((cell) => {
+        //         cell.border = {
+        //             bottom: { style: 'thin', color: { argb: 'FFD3D3D3' } } // Línea fina gris claro
+        //         };
+        //     });
+
+        //     // Aplicar formato de fecha solo a la columna de "Fecha de Nacimiento"
+        //     if (selectedFields.includes('fecha_nacimiento')) {
+        //         const dateColumnIndex = selectedFields.indexOf('fecha_nacimiento') + 1;
+        //         newRow.getCell(dateColumnIndex).numFmt = 'dd/mm/yyyy';
+        //     }
+        // });
+
         data.forEach(row => {
             const rowData = selectedFields.map(field => {
                 if (field === 'permiso') {
@@ -96,20 +129,20 @@ const Exportar = ({ onClose }) => {
                     const originalDate = new Date(row[field]);
                     const modifiedDate = new Date(originalDate.getTime() + 24 * 60 * 60 * 1000); // Sumar un día
                     return modifiedDate;
+                } else if (field === 'disponibilidad') {
+                    return row[field] || 'No disponible';
                 }
                 return row[field] || '';
             });
 
             const newRow = worksheet.addRow(rowData);
 
-            // Aplicar borde inferior gris claro y fino en cada celda de la fila
             newRow.eachCell((cell) => {
                 cell.border = {
-                    bottom: { style: 'thin', color: { argb: 'FFD3D3D3' } } // Línea fina gris claro
+                    bottom: { style: 'thin', color: { argb: 'FFD3D3D3' } }
                 };
             });
 
-            // Aplicar formato de fecha solo a la columna de "Fecha de Nacimiento"
             if (selectedFields.includes('fecha_nacimiento')) {
                 const dateColumnIndex = selectedFields.indexOf('fecha_nacimiento') + 1;
                 newRow.getCell(dateColumnIndex).numFmt = 'dd/mm/yyyy';

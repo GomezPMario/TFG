@@ -455,7 +455,7 @@ const Consultas = () => {
                             <tr>
                                 <td><strong>Campo</strong></td>
                                 <td colSpan="3">
-                                    {partido.campo || "No se sabe"} - {partido.direccion || "En algún lugar del mundo"} - [
+                                    {partido.campo || "--"} - {partido.direccion || "--"} - [
                                     {partido.ubicacion && (
                                         <a
                                             href={partido.ubicacion}

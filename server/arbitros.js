@@ -288,6 +288,40 @@ router.delete('/licencia/:numero_colegiado', async (req, res) => {
     }
 });
 
+// router.post('/export', async (req, res) => {
+//     const { fields } = req.body;
+
+//     if (!fields || fields.length === 0) {
+//         return res.status(400).json({ error: 'No se seleccionaron campos para exportar.' });
+//     }
+
+//     try {
+//         // Genera la lista de columnas seleccionadas según los checkboxes
+//         let columns = fields.join(', ');
+
+//         // Incluye 'categoria' o 'nivel' en la consulta si han sido seleccionados individualmente
+//         if (fields.includes('categoria')) {
+//             columns += ', e.categoria';
+//         }
+//         if (fields.includes('nivel')) {
+//             columns += ', e.nivel';
+//         }
+
+//         // Ejecuta el JOIN solo si 'categoria' o 'nivel' están seleccionados
+//         const query = `
+//             SELECT ${columns}
+//             FROM arbitros a
+//             ${fields.includes('categoria') || fields.includes('nivel') ? 'JOIN escala e ON a.categoria_id = e.id' : ''}
+//         `;
+
+//         const [results] = await db.query(query);
+//         res.json(results);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Error al exportar los datos.' });
+//     }
+// });
+
 router.post('/export', async (req, res) => {
     const { fields } = req.body;
 
@@ -297,27 +331,36 @@ router.post('/export', async (req, res) => {
 
     try {
         // Genera la lista de columnas seleccionadas según los checkboxes
-        let columns = fields.join(', ');
+        let columns = fields.map(field => {
+            if (field === 'disponibilidad') {
+                return `
+                    GROUP_CONCAT(
+                        CONCAT(d.tipo_disponibilidad, ': ', d.dia_semana, ' ', d.hora_inicio, '-', d.hora_fin, COALESCE(CONCAT(' (', d.fecha, ')'), ''))
+                        SEPARATOR '; '
+                    ) AS disponibilidad
+                `;
+            } else if (field === 'categoria') {
+                return 'e.categoria';
+            } else if (field === 'nivel') {
+                return 'e.nivel';
+            }
+            return `a.${field}`;
+        }).join(', ');
 
-        // Incluye 'categoria' o 'nivel' en la consulta si han sido seleccionados individualmente
-        if (fields.includes('categoria')) {
-            columns += ', e.categoria';
-        }
-        if (fields.includes('nivel')) {
-            columns += ', e.nivel';
-        }
-
-        // Ejecuta el JOIN solo si 'categoria' o 'nivel' están seleccionados
+        // Construir la consulta SQL
         const query = `
             SELECT ${columns}
             FROM arbitros a
-            ${fields.includes('categoria') || fields.includes('nivel') ? 'JOIN escala e ON a.categoria_id = e.id' : ''}
+            ${fields.includes('categoria') || fields.includes('nivel') ? 'LEFT JOIN escala e ON a.categoria_id = e.id' : ''}
+            ${fields.includes('disponibilidad') ? 'LEFT JOIN disponibilidad d ON a.id = d.arbitro_id' : ''}
+            ${fields.includes('disponibilidad') ? 'GROUP BY a.id' : ''}
         `;
 
+        // Ejecutar la consulta
         const [results] = await db.query(query);
         res.json(results);
     } catch (error) {
-        console.error(error);
+        console.error('Error al exportar los datos:', error);
         res.status(500).json({ error: 'Error al exportar los datos.' });
     }
 });
