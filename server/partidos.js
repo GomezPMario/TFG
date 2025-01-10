@@ -141,14 +141,14 @@ router.get('/:partidoId/detalles', async (req, res) => {
 
     try {
         const query = `
-            SELECT 
+            SELECT
                 CONCAT(DATE_FORMAT(p.dia, '%d/%m/%Y'), ' ', TIME_FORMAT(p.hora, '%H:%i')) AS fecha_encuentro,
                 c.nombre AS categoria,
                 ea.nombre AS equipo_local,
                 eb.nombre AS equipo_visitante,
                 COALESCE(ca.nombre, 'Sin campo asignado') AS campo,
                 COALESCE(MAX(ae.alias), 'Sin técnico asignado') AS tecnico,
-                COALESCE(DATE_FORMAT(MAX(i.fecha), '%d/%m/%Y'), 'Sin fecha') AS fecha_informe, -- Formatea la fecha del informe
+                COALESCE(DATE_FORMAT(MAX(i.fecha), '%d/%m/%Y'), 'Sin fecha') AS fecha_informe,
                 JSON_ARRAYAGG(
                     JSON_OBJECT(
                         'id', ar.id,
@@ -156,7 +156,12 @@ router.get('/:partidoId/detalles', async (req, res) => {
                         'nombre', ar.nombre,
                         'apellido', ar.apellido,
                         'funcion', f.nombre,
-                        'telefono', ar.telefono
+                        'telefono', ar.telefono,
+                        'imagen', i.imagen,
+                        'mecanica', i.mecanica,
+                        'criterio', i.criterio,
+                        'control_partido', i.control_partido,
+                        'valoracion', i.valoracion
                     )
                 ) AS arbitros
             FROM partidos p
@@ -164,11 +169,11 @@ router.get('/:partidoId/detalles', async (req, res) => {
             LEFT JOIN equipos ea ON p.equipo_a_id = ea.id
             LEFT JOIN equipos eb ON p.equipo_b_id = eb.id
             LEFT JOIN campos ca ON p.campo_id = ca.id
-            LEFT JOIN informes i ON p.id = i.partido_id
-            LEFT JOIN arbitros ae ON i.evaluador_id = ae.id
             LEFT JOIN partidos_arbitros pa ON p.id = pa.partido_id
-            LEFT JOIN arbitros ar ON pa.arbitro_id = ar.id
-            LEFT JOIN funciones f ON pa.funcion_id = f.id -- Unión para obtener la función del árbitro
+            LEFT JOIN arbitros ar ON pa.arbitro_id = ar.id -- Aquí se define 'ar'
+            LEFT JOIN informes i ON p.id = i.partido_id AND ar.id = i.arbitro_id -- Ahora 'ar.id' es válido
+            LEFT JOIN arbitros ae ON i.evaluador_id = ae.id
+            LEFT JOIN funciones f ON pa.funcion_id = f.id
             WHERE p.id = ?
             GROUP BY p.id, c.nombre, ea.nombre, eb.nombre, ca.nombre;
         `;
@@ -185,7 +190,6 @@ router.get('/:partidoId/detalles', async (req, res) => {
         res.status(500).json({ error: "Error al obtener los detalles del partido" });
     }
 });
-
 
 // aqui falta cambiarlo por nominas o algo asi 
 router.get('/:arbitroId', async (req, res) => {

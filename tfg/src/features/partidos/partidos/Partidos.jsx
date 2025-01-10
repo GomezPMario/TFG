@@ -490,7 +490,7 @@ const Partidos = () => {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="6">No hay partidos disponibles</td>
+                            <td colSpan="7">No hay partidos disponibles</td>
                         </tr>
                     )}
                 </tbody>
@@ -594,64 +594,94 @@ const Partidos = () => {
                                     Informe realizado por <strong>{selectedPartido.tecnico || 'Sin técnico'} </strong>
                                     el día <strong>{selectedPartido.fecha_informe || 'Sin fecha'}</strong>
                                 </h3>
-                                {(() => {
-                                    // Filtramos los árbitros que tienen las funciones relevantes
-                                    const funcionesRelevantes = ["Principal", "Auxiliar 1", "Auxiliar 2"];
-                                    const arbitrosRelevantes = selectedPartido.arbitros.filter(arbitro =>
-                                        funcionesRelevantes.includes(arbitro.funcion)
-                                    );
+                                {selectedPartido.arbitros?.length > 0 ? (
+                                    (() => {
+                                        const arbitrosRelevantes = selectedPartido.arbitros.filter(
+                                            (arbitro) =>
+                                                arbitro.funcion === "Principal" ||
+                                                arbitro.funcion === "Auxiliar 1" ||
+                                                arbitro.funcion === "Auxiliar 2"
+                                        );
 
-                                    // Verificamos si todos los informes están vacíos
-                                    const noHayInformes = arbitrosRelevantes.every(arbitro =>
-                                        !arbitro.mecanica && !arbitro.criterio && !arbitro.control_partido && !arbitro.valoracion
-                                    );
+                                        const tieneInformes = arbitrosRelevantes.some(
+                                            (arbitro) =>
+                                                arbitro.imagen ||
+                                                arbitro.mecanica ||
+                                                arbitro.criterio ||
+                                                arbitro.control_partido ||
+                                                arbitro.valoracion
+                                        );
 
-                                    // Si no hay informes, mostramos un mensaje
-                                    if (noHayInformes) {
-                                        return <p>No se ha realizado informes para ninguno de los colegiados.</p>;
-                                    }
+                                        if (!tieneInformes) {
+                                            return <p>No se ha realizado informes para ninguno de los colegiados.</p>;
+                                        }
 
-                                    // Si hay informes, renderizamos la tabla
-                                    return (
-                                        <table style={{ width: '100%', marginTop: '20px', borderCollapse: 'collapse' }}>
-                                            <thead>
-                                                <tr>
-                                                    {arbitrosRelevantes.map((arbitro, idx) => (
-                                                        <th
-                                                            key={idx}
-                                                            style={{
-                                                                border: '1px solid #ddd',
-                                                                padding: '8px',
-                                                                textAlign: 'center',
-                                                            }}
-                                                        >
-                                                            Informe de {arbitro.alias || '--'}
-                                                        </th>
-                                                    ))}
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    {arbitrosRelevantes.map((arbitro, idx) => (
-                                                        <td
-                                                            key={idx}
-                                                            style={{
-                                                                border: '1px solid #ddd',
-                                                                padding: '8px',
-                                                                textAlign: 'left',
-                                                            }}
-                                                        >
-                                                            <p><strong>Mecánica:</strong> {arbitro.mecanica || 'Sin datos'}</p>
-                                                            <p><strong>Criterio:</strong> {arbitro.criterio || 'Sin datos'}</p>
-                                                            <p><strong>Control de Partido:</strong> {arbitro.control_partido || 'Sin datos'}</p>
-                                                            <p><strong>Valoración:</strong> {arbitro.valoracion || 'Sin datos'}</p>
-                                                        </td>
-                                                    ))}
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    );
-                                })()}
+                                        return (
+                                            <div className="informes-container">
+                                                <table
+                                                    style={{
+                                                        width: '100%',
+                                                        marginTop: '20px',
+                                                        borderCollapse: 'collapse',
+                                                        tableLayout: 'fixed', // Fuerza las celdas a respetar el ancho disponible
+                                                        wordWrap: 'break-word', // Envuelve el contenido en las celdas
+                                                    }}
+                                                >
+                                                    <thead>
+                                                        <tr>
+                                                            {arbitrosRelevantes.map((arbitro) => (
+                                                                <th
+                                                                    key={arbitro.id}
+                                                                    style={{
+                                                                        border: '1px solid #ddd',
+                                                                        padding: '8px',
+                                                                        textAlign: 'center',
+                                                                        backgroundColor: '#f2f2f2',
+                                                                    }}
+                                                                >
+                                                                    {arbitro.alias || "Sin alias"}
+                                                                </th>
+                                                            ))}
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            {arbitrosRelevantes.map((arbitro) => (
+                                                                <td
+                                                                    key={arbitro.id}
+                                                                    style={{
+                                                                        border: '1px solid #ddd',
+                                                                        padding: '8px',
+                                                                        textAlign: 'left',
+                                                                        wordBreak: 'break-word', // Rompe las palabras largas en varias líneas
+                                                                    }}
+                                                                >
+                                                                    <p style={{ marginBottom: '10px' }}>
+                                                                        <strong>Imagen:</strong> {arbitro.imagen || "Sin datos"}
+                                                                    </p>
+                                                                    <p style={{ marginBottom: '10px' }}>
+                                                                        <strong>Mecánica:</strong> {arbitro.mecanica || "Sin datos"}
+                                                                    </p>
+                                                                    <p style={{ marginBottom: '10px' }}>
+                                                                        <strong>Criterio:</strong> {arbitro.criterio || "Sin datos"}
+                                                                    </p>
+                                                                    <p style={{ marginBottom: '10px' }}>
+                                                                        <strong>Control de Partido:</strong> {arbitro.control_partido || "Sin datos"}
+                                                                    </p>
+                                                                    <p style={{ marginBottom: '10px' }}>
+                                                                        <strong>Valoración:</strong> {arbitro.valoracion || "Sin datos"}
+                                                                    </p>
+                                                                </td>
+                                                            ))}
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        );
+                                    })()
+                                ) : (
+                                    <p>No hay árbitros asignados</p>
+                                )}
 
                             </>
                         ) : (
