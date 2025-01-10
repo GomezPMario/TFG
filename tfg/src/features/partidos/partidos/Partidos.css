@@ -9,30 +9,6 @@
     text-align: center;
 }
 
-.button {
-    margin: 15px 25px 30px 5px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px 15px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    background-color: #ff5aa4;
-    color: white;
-    transition: background-color 0.3s;
-}
-
-.button:hover {
-    background-color: #ff96c5;
-}
-
-.button svg {
-    margin-right: 8px;
-}
-
 .partidos-table {
     width: 100%;
     border-collapse: collapse;
@@ -65,4 +41,118 @@
 /* Alinea solo las celdas del cuerpo de la columna "Árbitro(s)" a la derecha */
 .arbitros-cell div{
     text-align: right;
+}
+
+
+/* Modal para crear infomre */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.dropdown-arbitros {
+    margin: 10px 0;
+    padding: 5px;
+    width: 100%;
+}
+
+.tabla-datos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.tabla-datos th,
+.tabla-datos td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 8px;
+}
+
+.tabla-datos th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+
+/* Modal para crear informe */
+/* Modal para crear informe */
+.modal-content {
+    position: relative;
+    margin: auto;
+    padding: 20px;
+    width: 90%; /* Ampliamos el ancho al 90% de la pantalla */
+    max-width: 1200px; /* Mayor límite de ancho para tablas grandes */
+    max-height: 90vh; /* Limita la altura máxima al 90% de la ventana */
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow-y: auto; /* Habilita scroll vertical si es necesario */
+    display: block; /* Cambia a bloque para evitar problemas de flexbox */
+}
+
+/* Contenedor de la tabla dentro del modal */
+.table-container {
+    width: 100%; /* Asegura que ocupa todo el ancho */
+    overflow-x: auto; /* Habilita scroll horizontal si es estrictamente necesario */
+    margin-top: 20px;
+}
+
+/* Tabla dentro del modal */
+.tabla-datos {
+    width: 100%; /* La tabla ocupa todo el ancho del contenedor */
+    border-collapse: collapse;
+    margin: 0; /* Sin margen alrededor de la tabla */
+}
+
+.tabla-datos th,
+.tabla-datos td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 8px;
+    word-wrap: break-word; /* Ajusta el texto automáticamente si es muy largo */
+}
+
+.tabla-datos th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+/* Contenedor para los campos debajo de la tabla */
+.form-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espaciado entre los campos */
+}
+
+/* Estilo para los inputs grandes */
+.input-large {
+    width: 98%;
+    height: 100px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    resize: none; /* Evita que se redimensionen los inputs */
+}
+
+/* Botón de guardar */
+.save-button {
+    margin: auto;
+    width: 15%; /* Ajusta el tamaño del botón */
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.save-button:hover {
+    background-color: #45a049;
 }

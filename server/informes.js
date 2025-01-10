@@ -45,4 +45,34 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.post('/', async (req, res) => {
+    const { partido_id, arbitro_id, evaluador_id, fecha, imagen, mecanica, criterio, control_partido, valoracion } = req.body;
+
+    if (!partido_id || !arbitro_id || !evaluador_id || !fecha) {
+        return res.status(400).json({ error: 'Faltan datos obligatorios.' });
+    }
+
+    try {
+        const query = `
+            INSERT INTO informes (partido_id, arbitro_id, evaluador_id, fecha, imagen, mecanica, criterio, control_partido, valoracion)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+        `;
+        await db.query(query, [
+            partido_id,
+            arbitro_id,
+            evaluador_id,
+            fecha,
+            imagen || null,
+            mecanica || null,
+            criterio || null,
+            control_partido || null,
+            valoracion || null,
+        ]);
+        res.status(201).json({ message: 'Informe creado con éxito.' });
+    } catch (error) {
+        console.error('Error al crear informe:', error);
+        res.status(500).json({ error: 'Error al crear informe.' });
+    }
+});
+
 module.exports = router;
