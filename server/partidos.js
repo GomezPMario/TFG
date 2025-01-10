@@ -148,6 +148,7 @@ router.get('/:partidoId/detalles', async (req, res) => {
                 eb.nombre AS equipo_visitante,
                 COALESCE(ca.nombre, 'Sin campo asignado') AS campo,
                 COALESCE(MAX(ae.alias), 'Sin técnico asignado') AS tecnico,
+                COALESCE(DATE_FORMAT(MAX(i.fecha), '%d/%m/%Y'), 'Sin fecha') AS fecha_informe, -- Formatea la fecha del informe
                 JSON_ARRAYAGG(
                     JSON_OBJECT(
                         'id', ar.id,
