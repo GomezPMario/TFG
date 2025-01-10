@@ -24,6 +24,10 @@ const Partidos = () => {
 
     const [selectedPartido, setSelectedPartido] = useState(null);
 
+    const [categorias, setCategorias] = useState([]);
+    const [equipos, setEquipos] = useState([]);
+    const [campos, setCampos] = useState([]);
+
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => {
         setIsModalOpen(false);
@@ -79,6 +83,18 @@ const Partidos = () => {
         return `${dia}/${mes}/${anio}`;
     };
 
+    // Fetch inicial
+    useEffect(() => {
+        fetchPartidos();
+        fetchCategorias();
+        fetchEquipos();
+        fetchCampos();
+
+        console.log("Categorías:", categorias);
+        console.log("Equipos:", equipos);
+        console.log("Campos:", campos);
+    }, []);
+
     const fetchPartidos = async () => {
         try {
             const response = await fetch(`${baseURL}/api/partidos`);
@@ -91,6 +107,36 @@ const Partidos = () => {
             }
         } catch (error) {
             console.error("Error al conectar con la API:", error);
+        }
+    };
+
+    const fetchCategorias = async () => {
+        try {
+            const response = await fetch(`${baseURL}/api/categorias`);
+            const data = await response.json();
+            setCategorias(data);
+        } catch (error) {
+            console.error("Error al obtener las categorías:", error);
+        }
+    };
+
+    const fetchEquipos = async () => {
+        try {
+            const response = await fetch(`${baseURL}/api/equipos`);
+            const data = await response.json();
+            setEquipos(data);
+        } catch (error) {
+            console.error("Error al obtener los equipos:", error);
+        }
+    };  
+
+    const fetchCampos = async () => {
+        try {
+            const response = await fetch(`${baseURL}/api/campos`);
+            const data = await response.json();
+            setCampos(data);
+        } catch (error) {
+            console.error("Error al obtener los campos:", error);
         }
     };
 
@@ -184,20 +230,58 @@ const Partidos = () => {
     };
 
     const handlePartidoClick = async (partidoId) => {
-        console.log("Intentando obtener detalles del partido con ID:", partidoId);
         try {
             const response = await fetch(`${baseURL}/api/partidos/${partidoId}/detalles`);
             if (response.ok) {
                 const data = await response.json();
-                console.log("Detalles del partido obtenidos:", data);
-                setSelectedPartido(data); // Actualiza el estado con los detalles del partido
+
+                // Buscar los IDs correspondientes en las listas de categorías, equipos y campos
+                const categoria = categorias.find(cat => cat.nombre === data.categoria);
+                const equipoLocal = equipos.find(equipo => equipo.nombre === data.equipo_local);
+                const equipoVisitante = equipos.find(equipo => equipo.nombre === data.equipo_visitante);
+                const campo = campos.find(c => c.nombre === data.campo);
+
+                // Crear el objeto con los IDs
+                const partidoConIds = {
+                    ...data,
+                    categoria_id: categoria?.id || null,
+                    equipo_local_id: equipoLocal?.id || null,
+                    equipo_visitante_id: equipoVisitante?.id || null,
+                    campo_id: campo?.id || null,
+                };
+
+                console.log("Partido con IDs:", partidoConIds); // Depuración
+                setSelectedPartido(partidoConIds); // Actualizar estado
             } else {
-                console.error("Error al obtener los detalles del partido:", response.statusText);
                 alert("No se pudieron obtener los detalles del partido.");
             }
         } catch (error) {
-            console.error("Error al conectar con la API:", error);
             alert("Error al conectar con la API.");
+        }
+    };
+
+
+    const handleUpdateField = async (field, value) => {
+        if (!selectedPartido) return;
+
+        try {
+            const response = await fetch(`${baseURL}/api/partidos/${selectedPartido.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ [field]: value }),
+            });
+
+            if (response.ok) {
+                // Actualiza el estado local
+                setSelectedPartido((prev) => ({
+                    ...prev,
+                    [field]: value,
+                }));
+            } else {
+                console.error(`Error al actualizar ${field}:`, await response.text());
+            }
+        } catch (error) {
+            console.error(`Error al actualizar ${field}:`, error);
         }
     };
     
@@ -434,11 +518,104 @@ const Partidos = () => {
                     <div className="modal-content">
                         <span className="close" onClick={() => setSelectedPartido(null)}>&times;</span>
                         <h2>Detalles del Partido</h2>
-                        <p><strong>Fecha y Hora:</strong> {selectedPartido.fecha_encuentro || 'Sin fecha'}</p>
-                        <p><strong>Categoría:</strong> {selectedPartido.categoria || 'Sin categoría'}</p>
-                        <p><strong>Equipo Local:</strong> {selectedPartido.equipo_local || 'Sin equipo local'}</p>
-                        <p><strong>Equipo Visitante:</strong> {selectedPartido.equipo_visitante || 'Sin equipo visitante'}</p>
-                        <p><strong>Campo:</strong> {selectedPartido.campo || 'Sin campo'}</p>
+                        <label>
+                            <strong>Fecha:</strong>
+                            <input
+                                type="date"
+                                value={
+                                    selectedPartido?.fecha_partido
+                                        ? selectedPartido.fecha_partido.split('T')[0]
+                                        : '' // Mostrar vacío si no hay fecha
+                                }
+                                onChange={(e) => {
+                                    const nuevaFecha = e.target.value;
+                                    const horaActual = selectedPartido?.fecha_partido?.split('T')[1] || '00:00:00';
+                                    handleUpdateField('fecha_partido', `${nuevaFecha}T${horaActual}`);
+                                }}
+                            />
+                        </label>
+
+                        <label>
+                            <strong>Hora:</strong>
+                            <input
+                                type="time"
+                                value={
+                                    selectedPartido?.fecha_partido
+                                        ? selectedPartido.fecha_partido.split('T')[1]?.slice(0, 5) // Tomar sólo HH:mm
+                                        : '00:00' // Mostrar '00:00' si no hay hora
+                                }
+                                onChange={(e) => {
+                                    const nuevaHora = e.target.value;
+                                    const fechaActual = selectedPartido?.fecha_partido?.split('T')[0] || '1970-01-01';
+                                    handleUpdateField('fecha_partido', `${fechaActual}T${nuevaHora}:00`);
+                                }}
+                            />
+                        </label>
+
+                        <br />
+                        <label>
+                            <strong>Categoría:</strong>
+                            <select
+                                value={selectedPartido?.categoria_id || ''}
+                                onChange={(e) => handleUpdateField('categoria_id', e.target.value)}
+                            >
+                                <option value="" disabled>Selecciona una categoría</option>
+                                {categorias.map((categoria) => (
+                                    <option key={categoria.id} value={categoria.id}>
+                                        {categoria.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                        <br />
+                        <label>
+                            <strong>Equipo Local:</strong>
+                            <select
+                                value={selectedPartido?.equipo_local_id || ''}
+                                onChange={(e) => handleUpdateField('equipo_local_id', e.target.value)}
+                            >
+                                <option value="" disabled>Selecciona un equipo</option>
+                                {equipos.map((equipo) => (
+                                    <option key={equipo.id} value={equipo.id}>
+                                        {equipo.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                        <br />
+                        <label>
+                            <strong>Equipo Visitante:</strong>
+                            <select
+                                value={selectedPartido?.equipo_visitante_id || ''}
+                                onChange={(e) => handleUpdateField('equipo_visitante_id', e.target.value)}
+                            >
+                                <option value="" disabled>Selecciona un equipo</option>
+                                {equipos.map((equipo) => (
+                                    <option key={equipo.id} value={equipo.id}>
+                                        {equipo.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                        <br />
+                        <label>
+                            <strong>Campo:</strong>
+                            <select
+                                value={selectedPartido?.campo_id || ''}
+                                onChange={(e) => handleUpdateField('campo_id', e.target.value)}
+                            >
+                                <option value="" disabled>Selecciona un campo</option>
+                                {campos.map((campo) => (
+                                    <option key={campo.id} value={campo.id}>
+                                        {campo.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+
+
+
+
                         <h3>Árbitros</h3>
                         {selectedPartido.arbitros?.length > 0 ? (
                             <>
