@@ -238,7 +238,10 @@
 /* Sección de correo electrónico con scroll horizontal oculto */
 .email-section {
     white-space: nowrap;
-    overflow-x: auto;
+    overflow: auto;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
     max-width: 100%;
     background-color: transparent;
     border: none;
@@ -250,4 +253,15 @@
 
 .email-section::-webkit-scrollbar {
     display: none;
+}
+
+.editable-email {
+    width: 100%; /* O ajusta según tus necesidades */
+    padding: 5px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    white-space: normal; /* Permite líneas múltiples si es necesario */
+    overflow: visible; /* Asegura que no haya truncamiento */
 }
