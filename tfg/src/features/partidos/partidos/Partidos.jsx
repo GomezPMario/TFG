@@ -240,13 +240,14 @@ const Partidos = () => {
                 // Crear el objeto completo con los IDs
                 const partidoConIds = {
                     ...data,
+                    id: partidoId, // Asegúrate de incluir el ID aquí
                     categoria_id: categoria?.id || null,
                     equipo_local_id: equipoLocal?.id || null,
                     equipo_visitante_id: equipoVisitante?.id || null,
                     campo_id: campo?.id || null,
                 };
 
-                console.log("Partido con IDs y Fecha:", partidoConIds); // Depuración
+                console.log("Partido seleccionado:", partidoConIds); // Verificar los datos seleccionados
                 setSelectedPartido(partidoConIds); // Actualizar estado
             } else {
                 alert("No se pudieron obtener los detalles del partido.");
@@ -257,16 +258,17 @@ const Partidos = () => {
         }
     };
 
-
     const handleUpdateField = async (field, value) => {
         if (!selectedPartido) return;
 
+        // Crear objeto para enviar al backend
         let updatedField = { [field]: value };
 
-        // Si el campo actualizado es `fecha_partido`, descomponerlo en `dia` y `hora`
-        if (field === 'fecha_partido') {
-            const [dia, hora] = value.split('T');
-            updatedField = { dia, hora };
+        // Si es fecha_encuentro, descomponer en dia (YYYY-MM-DD) y hora (HH:MM:SS)
+        if (field === 'fecha_encuentro') {
+            const [dia, hora] = value.split(' '); // Separar fecha y hora
+            const diaFormateado = dia.split('/').reverse().join('-'); // Convertir DD/MM/YYYY -> YYYY-MM-DD
+            updatedField = { dia: diaFormateado, hora }; // Enviar campos separados
         }
 
         try {
@@ -288,7 +290,6 @@ const Partidos = () => {
             console.error(`Error al actualizar ${field}:`, error);
         }
     };
-
     
     useEffect(() => {
         console.log("Estado de selectedPartido actualizado:", selectedPartido);
@@ -527,20 +528,29 @@ const Partidos = () => {
                             <strong>Fecha:</strong>
                             <input
                                 type="date"
-                                value={selectedPartido?.fecha_encuentro?.split(' ')[0].split('/').reverse().join('-') || ''} // Formatea la fecha de dd/mm/yyyy a yyyy-mm-dd
+                                value={
+                                    selectedPartido?.fecha_encuentro
+                                        ? selectedPartido.fecha_encuentro.split(' ')[0].split('/').reverse().join('-') // Formato dd/mm/yyyy -> yyyy-mm-dd
+                                        : '' // Vacío si no existe
+                                }
                                 onChange={(e) => {
-                                    const nuevaFecha = e.target.value.split('-').reverse().join('/'); // Convierte yyyy-mm-dd a dd/mm/yyyy
+                                    const nuevaFecha = e.target.value.split('-').reverse().join('/'); // yyyy-mm-dd -> dd/mm/yyyy
                                     const horaActual = selectedPartido?.fecha_encuentro?.split(' ')[1] || '00:00';
                                     handleUpdateField('fecha_encuentro', `${nuevaFecha} ${horaActual}`);
                                 }}
                             />
                         </label>
+
                         <br /><br />
                         <label>
                             <strong>Hora:</strong>
                             <input
                                 type="time"
-                                value={selectedPartido?.fecha_encuentro?.split(' ')[1]?.slice(0, 5) || '00:00'} // Toma la hora de "hh:mm:ss" o "hh:mm"
+                                value={
+                                    selectedPartido?.fecha_encuentro
+                                        ? selectedPartido.fecha_encuentro.split(' ')[1]?.slice(0, 5) // hh:mm:ss -> hh:mm
+                                        : '00:00' // Por defecto
+                                }
                                 onChange={(e) => {
                                     const nuevaHora = e.target.value;
                                     const fechaActual = selectedPartido?.fecha_encuentro?.split(' ')[0] || '01/01/1970';
@@ -548,6 +558,7 @@ const Partidos = () => {
                                 }}
                             />
                         </label>
+
                         <br /><br />
                         <label>
                             <strong style={{ marginRight: '10px' }}>Categoría:</strong>

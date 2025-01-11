@@ -106,35 +106,112 @@ router.get('/intervalo/:arbitroId', async (req, res) => {
 });
 
 // Actualizar resultados de un partido
+// router.put('/:id', async (req, res) => {
+//     const { id } = req.params;
+//     const { resultado_a, resultado_b } = req.body;
+
+//     console.log("Valores recibidos:", { id, resultado_a, resultado_b }); // Verifica los valores
+
+//     if (resultado_a === undefined || resultado_b === undefined) {
+//         return res.status(400).json({ error: "Faltan valores para resultado_a y resultado_b" });
+//     }
+
+//     try {
+//         const query = `
+//             UPDATE partidos
+//             SET resultado_a = ?, resultado_b = ?
+//             WHERE id = ?;
+//         `;
+
+//         const [result] = await db.query(query, [resultado_a, resultado_b, id]);
+
+//         if (result.affectedRows === 0) {
+//             return res.status(404).json({ error: "Partido no encontrado" });
+//         }
+
+//         res.json({ message: "Resultados actualizados correctamente" });
+//     } catch (error) {
+//         console.error("Error al actualizar resultados:", error);
+//         res.status(500).json({ error: "Error al actualizar resultados" });
+//     }
+// });
+
+// Actualizar fecha y hora de un partido
+// Actualizar datos del partido
 router.put('/:id', async (req, res) => {
-    const { id } = req.params;
-    const { resultado_a, resultado_b } = req.body;
+    const { id } = req.params; // ID del partido desde la URL
+    const { dia, hora, categoria_id, equipo_local_id, equipo_visitante_id, campo_id, resultado_a, resultado_b } = req.body;
 
-    console.log("Valores recibidos:", { id, resultado_a, resultado_b }); // Verifica los valores
-
-    if (resultado_a === undefined || resultado_b === undefined) {
-        return res.status(400).json({ error: "Faltan valores para resultado_a y resultado_b" });
+    // Validar que al menos un campo exista
+    if (!id || Object.keys(req.body).length === 0) {
+        return res.status(400).json({ error: "No hay datos para actualizar o falta el ID del partido" });
     }
 
     try {
+        // Construir la consulta dinámica
+        const campos = [];
+        const valores = [];
+
+        if (dia) {
+            campos.push('dia = ?');
+            valores.push(dia);
+        }
+        if (hora) {
+            campos.push('hora = ?');
+            valores.push(hora);
+        }
+        if (categoria_id) {
+            campos.push('categoria_id = ?');
+            valores.push(categoria_id);
+        }
+        if (equipo_local_id) {
+            campos.push('equipo_a_id = ?');
+            valores.push(equipo_local_id);
+        }
+        if (equipo_visitante_id) {
+            campos.push('equipo_b_id = ?');
+            valores.push(equipo_visitante_id);
+        }
+        if (campo_id) {
+            campos.push('campo_id = ?');
+            valores.push(campo_id);
+        }
+        if (resultado_a !== undefined) {
+            campos.push('resultado_a = ?');
+            valores.push(resultado_a);
+        }
+        if (resultado_b !== undefined) {
+            campos.push('resultado_b = ?');
+            valores.push(resultado_b);
+        }
+
+        // Si no hay campos válidos, devolver error
+        if (campos.length === 0) {
+            return res.status(400).json({ error: "No hay campos válidos para actualizar" });
+        }
+
+        valores.push(id); // Agregar el ID al final
+
         const query = `
             UPDATE partidos
-            SET resultado_a = ?, resultado_b = ?
+            SET ${campos.join(', ')}
             WHERE id = ?;
         `;
 
-        const [result] = await db.query(query, [resultado_a, resultado_b, id]);
+        const [result] = await db.query(query, valores);
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: "Partido no encontrado" });
         }
 
-        res.json({ message: "Resultados actualizados correctamente" });
+        res.json({ message: "Partido actualizado correctamente" });
     } catch (error) {
-        console.error("Error al actualizar resultados:", error);
-        res.status(500).json({ error: "Error al actualizar resultados" });
+        console.error("Error al actualizar el partido:", error);
+        res.status(500).json({ error: "Error al actualizar el partido" });
     }
 });
+
+
 
 router.get('/:partidoId/detalles', async (req, res) => {
     const { partidoId } = req.params;
