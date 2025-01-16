@@ -11,36 +11,73 @@ const { getCategoriaId, getEquipoId, getCampoId, getArbitroId } = require('./dbH
 // listado de partidos
 router.get('/', async (req, res) => {
     try {
+        // const query = `
+        //     SELECT
+        //         p.id AS partido_id,
+        //         CONCAT(ea.nombre, ' - ', eb.nombre) AS equipos,
+        //         c.nombre AS categoria,
+        //         CONCAT(p.dia, ' ', p.hora) AS fecha_partido,
+        //         IFNULL(MAX(i.fecha), '--') AS fecha_informe,
+        //         IFNULL(MAX(ae.alias), '--') AS tecnico,
+        //         GROUP_CONCAT(DISTINCT CONCAT(ar.alias, ' ', ar.nombre, ' ', ar.apellido)) AS arbitros
+        //     FROM
+        //         partidos p
+        //     LEFT JOIN
+        //         equipos ea ON p.equipo_a_id = ea.id
+        //     LEFT JOIN
+        //         equipos eb ON p.equipo_b_id = eb.id
+        //     LEFT JOIN
+        //         categorias c ON p.categoria_id = c.id
+        //     LEFT JOIN
+        //         informes i ON p.id = i.partido_id
+        //     LEFT JOIN
+        //         arbitros ae ON i.evaluador_id = ae.id
+        //     LEFT JOIN
+        //         partidos_arbitros pa ON p.id = pa.partido_id
+        //     LEFT JOIN
+        //         arbitros ar ON pa.arbitro_id = ar.id AND ar.cargo = 1  -- Filtra árbitros con cargo 1
+        //     GROUP BY
+        //         p.id;
+        // `;
+
         const query = `
-            SELECT
-                p.id AS partido_id,
-                CONCAT(ea.nombre, ' - ', eb.nombre) AS equipos,
-                c.nombre AS categoria,
-                CONCAT(p.dia, ' ', p.hora) AS fecha_partido,
-                IFNULL(MAX(i.fecha), '--') AS fecha_informe,
-                IFNULL(MAX(ae.alias), '--') AS tecnico,
-                GROUP_CONCAT(DISTINCT CONCAT(ar.alias, ' ', ar.nombre, ' ', ar.apellido)) AS arbitros
-            FROM
-                partidos p
-            LEFT JOIN
-                equipos ea ON p.equipo_a_id = ea.id
-            LEFT JOIN
-                equipos eb ON p.equipo_b_id = eb.id
-            LEFT JOIN
-                categorias c ON p.categoria_id = c.id
-            LEFT JOIN
-                informes i ON p.id = i.partido_id
-            LEFT JOIN
-                arbitros ae ON i.evaluador_id = ae.id
-            LEFT JOIN
-                partidos_arbitros pa ON p.id = pa.partido_id
-            LEFT JOIN
-                arbitros ar ON pa.arbitro_id = ar.id AND ar.cargo = 1  -- Filtra árbitros con cargo 1
-            GROUP BY
-                p.id;
+    SELECT
+        p.id AS partido_id,
+        CONCAT(ea.nombre, ' - ', eb.nombre) AS equipos,
+        c.nombre AS categoria,
+        CONCAT(p.dia, ' ', p.hora) AS fecha_partido,
+        IFNULL(MAX(i.fecha), '--') AS fecha_informe,
+        IFNULL(MAX(ae.alias), '--') AS tecnico,
+        GROUP_CONCAT(DISTINCT CONCAT(ar.alias, ' ', ar.nombre, ' ', ar.apellido)
+                     ORDER BY
+                         CASE pa.funcion_id
+                             WHEN 1 THEN 1  -- Principal
+                             WHEN 2 THEN 2  -- Auxiliar 1
+                             WHEN 3 THEN 3  -- Auxiliar 2
+                             ELSE 4
+                         END
+                     SEPARATOR ', ') AS arbitros
+    FROM
+        partidos p
+    LEFT JOIN
+        equipos ea ON p.equipo_a_id = ea.id
+    LEFT JOIN
+        equipos eb ON p.equipo_b_id = eb.id
+    LEFT JOIN
+        categorias c ON p.categoria_id = c.id
+    LEFT JOIN
+        informes i ON p.id = i.partido_id
+    LEFT JOIN
+        arbitros ae ON i.evaluador_id = ae.id
+    LEFT JOIN
+        partidos_arbitros pa ON p.id = pa.partido_id
+    LEFT JOIN
+        arbitros ar ON pa.arbitro_id = ar.id
+    WHERE pa.funcion_id IN (1, 2, 3)  -- Filtra por Principal, Auxiliar 1, Auxiliar 2
+    GROUP BY
+        p.id;
+`;
 
-
-        `;
 
         const [results] = await db.query(query);
         res.setHeader('Content-Type', 'application/json');
