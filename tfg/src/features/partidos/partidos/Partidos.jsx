@@ -28,6 +28,8 @@ const Partidos = () => {
     const [equipos, setEquipos] = useState([]);
     const [campos, setCampos] = useState([]);
 
+    const [dietaEstado, setDietaEstado] = useState({}); // Manejar el estado de los checkboxes
+
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => {
         setIsModalOpen(false);
@@ -96,8 +98,16 @@ const Partidos = () => {
             const response = await fetch(`${baseURL}/api/partidos`);
             if (response.ok) {
                 const data = await response.json();
-                console.log("Datos de partidos:", data); // Depuración
-                setPartidos(data);
+                console.log("Datos de partidos:", data);
+
+                // Establecer el estado inicial de las dietas
+                const dietaInicial = {};
+                data.forEach((partido) => {
+                    dietaInicial[partido.partido_id] = partido.dieta === 1; // Sincroniza con el backend
+                });
+                setDietaEstado(dietaInicial); // Actualiza el estado con los valores correctos
+
+                setPartidos(data); // Establece los datos de los partidos
             } else {
                 console.error("Error al obtener los datos de los partidos");
             }
@@ -225,6 +235,39 @@ const Partidos = () => {
         }
     };
 
+    // const handlePartidoClick = async (partidoId) => {
+    //     try {
+    //         const response = await fetch(`${baseURL}/api/partidos/${partidoId}/detalles`);
+    //         if (response.ok) {
+    //             const data = await response.json();
+
+    //             // Buscar IDs de relaciones
+    //             const categoria = categorias.find(cat => cat.nombre === data.categoria);
+    //             const equipoLocal = equipos.find(equipo => equipo.nombre === data.equipo_local);
+    //             const equipoVisitante = equipos.find(equipo => equipo.nombre === data.equipo_visitante);
+    //             const campo = campos.find(c => c.nombre === data.campo);
+
+    //             // Crear el objeto completo con los IDs
+    //             const partidoConIds = {
+    //                 ...data,
+    //                 id: partidoId, // Asegúrate de incluir el ID aquí
+    //                 categoria_id: categoria?.id || null,
+    //                 equipo_local_id: equipoLocal?.id || null,
+    //                 equipo_visitante_id: equipoVisitante?.id || null,
+    //                 campo_id: campo?.id || null,
+    //             };
+
+    //             console.log("Partido seleccionado:", partidoConIds); // Verificar los datos seleccionados
+    //             setSelectedPartido(partidoConIds); // Actualizar estado
+    //         } else {
+    //             alert("No se pudieron obtener los detalles del partido.");
+    //         }
+    //     } catch (error) {
+    //         console.error("Error al conectar con la API:", error);
+    //         alert("Error al conectar con la API.");
+    //     }
+    // };
+
     const handlePartidoClick = async (partidoId) => {
         try {
             const response = await fetch(`${baseURL}/api/partidos/${partidoId}/detalles`);
@@ -247,8 +290,13 @@ const Partidos = () => {
                     campo_id: campo?.id || null,
                 };
 
+                // Actualizar el estado de dieta para los árbitros del partido seleccionado
+                const dietaInicial = data.dieta === 1;
+                setSelectedPartido(data); // Actualiza el partido seleccionado
+                setDietaEstado({ [partidoId]: dietaInicial }); // Sincroniza el estado del checkbox con los datos del backend
+
                 console.log("Partido seleccionado:", partidoConIds); // Verificar los datos seleccionados
-                setSelectedPartido(partidoConIds); // Actualizar estado
+                setSelectedPartido(partidoConIds); // Actualizar estado del partido seleccionado
             } else {
                 alert("No se pudieron obtener los detalles del partido.");
             }
@@ -257,6 +305,7 @@ const Partidos = () => {
             alert("Error al conectar con la API.");
         }
     };
+
 
     const handleUpdateField = async (field, value) => {
         if (!selectedPartido) return;
@@ -288,6 +337,42 @@ const Partidos = () => {
             }
         } catch (error) {
             console.error(`Error al actualizar ${field}:`, error);
+        }
+    };
+
+    const handleDietaChange = async (partidoId) => {
+        if (!partidoId) {
+            console.error('ID del partido no definido');
+            return;
+        }
+
+        const nuevoEstado = !dietaEstado[partidoId]; // Invertir el estado actual
+
+        // Actualizar el estado local
+        setDietaEstado((prevEstado) => ({
+            ...prevEstado,
+            [partidoId]: nuevoEstado,
+        }));
+
+        try {
+            const response = await fetch(`${baseURL}/api/partidos/${partidoId}/dieta`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ dieta: nuevoEstado ? 1 : 0 }), // Actualiza dieta en la base de datos
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al actualizar la dieta en la base de datos');
+            }
+
+            console.log(`Dieta actualizada para el partido ${partidoId}`);
+        } catch (error) {
+            console.error(error);
+            // Revertir el cambio en caso de error
+            setDietaEstado((prevEstado) => ({
+                ...prevEstado,
+                [partidoId]: !nuevoEstado,
+            }));
         }
     };
     
@@ -698,6 +783,8 @@ const Partidos = () => {
                                                         marginLeft: 'auto',
                                                         marginRight: 'auto',
                                                     }}
+                                                    checked={dietaEstado[selectedPartido.id] || false} // Usa el estado sincronizado
+                                                    onChange={() => handleDietaChange(selectedPartido.id)} // Llama a la función de manejo
                                                 />
                                             </td>
                                         </tr>

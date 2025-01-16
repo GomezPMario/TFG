@@ -95,6 +95,87 @@ const Nominas = ({ arbitroId }) => {
         }
     };
 
+    // const renderTabla = (partidos, titulo) => (
+    //     <table className="tabla-nominas">
+    //         <thead>
+    //             <tr>
+    //                 <th colSpan="10" className="tabla-titulo">{titulo}</th>
+    //             </tr>
+    //             <tr>
+    //                 <th>Día</th>
+    //                 <th>Hora</th>
+    //                 <th>Función</th>
+    //                 <th>Categoría</th>
+    //                 <th>Equipo A</th>
+    //                 <th>Equipo B</th>
+    //                 <th>Importe</th>
+    //                 <th>Desplazamiento</th>
+    //                 <th>Dietas</th>
+    //                 <th>Total</th>
+    //             </tr>
+    //         </thead>
+    //         <tbody>
+    //             {partidos.map((partido, idx) => {
+    //                 const importe = parseFloat(partido.importe) || 0;
+    //                 const dietas = parseFloat(partido.dietas) || 0;
+    //                 const desplazamiento = parseFloat(partido.desplazamiento) || 0;
+
+    //             const dietaFormatted = dietas === 0 ? '--' : `${dietas.toFixed(2)} €`;
+    //             const desplazamientoFormatted = desplazamiento === 0 ? '--' : `${desplazamiento.toFixed(2)} €`;
+    //             const total = importe + dietas + desplazamiento;
+
+    //             return (
+    //             <tr key={idx}>
+    //                 <td>{formatDia(partido.dia)}</td>
+    //                 <td>{formatHora(partido.hora)}</td>
+    //                 <td>{partido.funcion}</td>
+    //                 <td>{partido.categoria}</td>
+    //                 <td>{partido.equipoA}</td>
+    //                 <td>{partido.equipoB}</td>
+    //                 <td>{importe.toFixed(2)} €</td>
+    //                 <td>{desplazamientoFormatted}</td>
+    //                 <td>{dietaFormatted}</td>
+    //                 <td>{total.toFixed(2)}</td>
+    //             </tr>
+    //             );
+    //             })}
+    //         </tbody>
+    //         <tfoot>
+    //             <tr>
+    //                 <td colSpan="6" className="tabla-footer texto-derecha">
+    //                     <span className="texto-a-cobrar">A cobrar:</span>
+    //                 </td>
+    //                 <td>
+    //                     {partidos.reduce((sum, partido) => {
+    //                         const importe = parseFloat(partido.importe) || 0;
+    //                         return sum + importe;
+    //                     }, 0).toFixed(2)} €
+    //                 </td>
+    //                 <td>
+    //                     {partidos.reduce((sum, partido) => {
+    //                         const desplazamiento = parseFloat(partido.desplazamiento) || 0;
+    //                         return sum + desplazamiento;
+    //                     }, 0).toFixed(2)} €
+    //                 </td>
+    //                 <td>
+    //                     {partidos.reduce((sum, partido) => {
+    //                         const dietas = parseFloat(partido.dietas) || 0;
+    //                         return sum + dietas;
+    //                     }, 0).toFixed(2)} €
+    //                 </td>
+    //                 <td className="tabla-total">
+    //                     {partidos.reduce((sum, partido) => {
+    //                         const importe = parseFloat(partido.importe) || 0;
+    //                         const desplazamiento = parseFloat(partido.desplazamiento) || 0;
+    //                         const dietas = parseFloat(partido.dietas) || 0;
+    //                         return sum + importe + desplazamiento + dietas;
+    //                     }, 0).toFixed(2)} €
+    //                 </td>
+    //             </tr>
+    //         </tfoot>
+    //     </table>
+    // );
+
     const renderTabla = (partidos, titulo) => (
         <table className="tabla-nominas">
             <thead>
@@ -120,24 +201,25 @@ const Nominas = ({ arbitroId }) => {
                     const dietas = parseFloat(partido.dietas) || 0;
                     const desplazamiento = parseFloat(partido.desplazamiento) || 0;
 
-                const dietaFormatted = dietas === 0 ? '--' : `${dietas.toFixed(2)} €`;
-                const desplazamientoFormatted = desplazamiento === 0 ? '--' : `${desplazamiento.toFixed(2)} €`;
-                const total = importe + dietas + desplazamiento;
+                    // Formatear las dietas
+                    const dietaFormatted = dietas === 0 ? '--' : `${dietas.toFixed(2)} €`;
+                    const desplazamientoFormatted = desplazamiento === 0 ? '--' : `${desplazamiento.toFixed(2)} €`;
+                    const total = importe + dietas + desplazamiento;
 
-                return (
-                <tr key={idx}>
-                    <td>{formatDia(partido.dia)}</td>
-                    <td>{formatHora(partido.hora)}</td>
-                    <td>{partido.funcion}</td>
-                    <td>{partido.categoria}</td>
-                    <td>{partido.equipoA}</td>
-                    <td>{partido.equipoB}</td>
-                    <td>{importe.toFixed(2)} €</td>
-                    <td>{desplazamientoFormatted}</td>
-                    <td>{dietaFormatted}</td>
-                    <td>{total.toFixed(2)}</td>
-                </tr>
-                );
+                    return (
+                        <tr key={idx}>
+                            <td>{formatDia(partido.dia)}</td>
+                            <td>{formatHora(partido.hora)}</td>
+                            <td>{partido.funcion}</td>
+                            <td>{partido.categoria}</td>
+                            <td>{partido.equipoA}</td>
+                            <td>{partido.equipoB}</td>
+                            <td>{importe.toFixed(2)} €</td>
+                            <td>{desplazamientoFormatted}</td>
+                            <td>{dietaFormatted}</td>
+                            <td>{total.toFixed(2)} €</td>
+                        </tr>
+                    );
                 })}
             </tbody>
             <tfoot>
@@ -146,35 +228,27 @@ const Nominas = ({ arbitroId }) => {
                         <span className="texto-a-cobrar">A cobrar:</span>
                     </td>
                     <td>
-                        {partidos.reduce((sum, partido) => {
-                            const importe = parseFloat(partido.importe) || 0;
-                            return sum + importe;
-                        }, 0).toFixed(2)} €
+                        {partidos.reduce((sum, partido) => sum + (parseFloat(partido.importe) || 0), 0).toFixed(2)} €
                     </td>
                     <td>
-                        {partidos.reduce((sum, partido) => {
-                            const desplazamiento = parseFloat(partido.desplazamiento) || 0;
-                            return sum + desplazamiento;
-                        }, 0).toFixed(2)} €
+                        {partidos.reduce((sum, partido) => sum + (parseFloat(partido.desplazamiento) || 0), 0).toFixed(2)} €
                     </td>
                     <td>
-                        {partidos.reduce((sum, partido) => {
-                            const dietas = parseFloat(partido.dietas) || 0;
-                            return sum + dietas;
-                        }, 0).toFixed(2)} €
+                        {partidos.reduce((sum, partido) => sum + (parseFloat(partido.dietas) || 0), 0).toFixed(2)} €
                     </td>
                     <td className="tabla-total">
                         {partidos.reduce((sum, partido) => {
                             const importe = parseFloat(partido.importe) || 0;
-                            const desplazamiento = parseFloat(partido.desplazamiento) || 0;
                             const dietas = parseFloat(partido.dietas) || 0;
-                            return sum + importe + desplazamiento + dietas;
+                            const desplazamiento = parseFloat(partido.desplazamiento) || 0;
+                            return sum + importe + dietas + desplazamiento;
                         }, 0).toFixed(2)} €
                     </td>
                 </tr>
             </tfoot>
         </table>
     );
+
 
     return (
         <div className="nominas-container">

@@ -136,7 +136,6 @@ router.get('/intervalo/:arbitroId', async (req, res) => {
 //     }
 // });
 
-// Actualizar fecha y hora de un partido
 // Actualizar datos del partido
 router.put('/:id', async (req, res) => {
     const { id } = req.params; // ID del partido desde la URL
@@ -213,6 +212,61 @@ router.put('/:id', async (req, res) => {
 
 
 
+// router.get('/:partidoId/detalles', async (req, res) => {
+//     const { partidoId } = req.params;
+
+//     try {
+//         const query = `
+//             SELECT
+//                 CONCAT(DATE_FORMAT(p.dia, '%d/%m/%Y'), ' ', TIME_FORMAT(p.hora, '%H:%i')) AS fecha_encuentro,
+//                 c.nombre AS categoria,
+//                 ea.nombre AS equipo_local,
+//                 eb.nombre AS equipo_visitante,
+//                 COALESCE(ca.nombre, 'Sin campo asignado') AS campo,
+//                 COALESCE(MAX(ae.alias), 'Sin técnico asignado') AS tecnico,
+//                 COALESCE(DATE_FORMAT(MAX(i.fecha), '%d/%m/%Y'), 'Sin fecha') AS fecha_informe,
+//                 JSON_ARRAYAGG(
+//                     JSON_OBJECT(
+//                         'id', ar.id,
+//                         'alias', ar.alias,
+//                         'nombre', ar.nombre,
+//                         'apellido', ar.apellido,
+//                         'funcion', f.nombre,
+//                         'telefono', ar.telefono,
+//                         'imagen', i.imagen,
+//                         'mecanica', i.mecanica,
+//                         'criterio', i.criterio,
+//                         'control_partido', i.control_partido,
+//                         'valoracion', i.valoracion
+//                     )
+//                 ) AS arbitros
+//             FROM partidos p
+//             LEFT JOIN categorias c ON p.categoria_id = c.id
+//             LEFT JOIN equipos ea ON p.equipo_a_id = ea.id
+//             LEFT JOIN equipos eb ON p.equipo_b_id = eb.id
+//             LEFT JOIN campos ca ON p.campo_id = ca.id
+//             LEFT JOIN partidos_arbitros pa ON p.id = pa.partido_id
+//             LEFT JOIN arbitros ar ON pa.arbitro_id = ar.id -- Aquí se define 'ar'
+//             LEFT JOIN informes i ON p.id = i.partido_id AND ar.id = i.arbitro_id -- Ahora 'ar.id' es válido
+//             LEFT JOIN arbitros ae ON i.evaluador_id = ae.id
+//             LEFT JOIN funciones f ON pa.funcion_id = f.id
+//             WHERE p.id = ?
+//             GROUP BY p.id, c.nombre, ea.nombre, eb.nombre, ca.nombre;
+//         `;
+
+//         const [result] = await db.query(query, [partidoId]);
+
+//         if (result.length === 0) {
+//             return res.status(404).json({ error: "Partido no encontrado" });
+//         }
+
+//         res.json(result[0]);
+//     } catch (error) {
+//         console.error("Error al obtener los detalles del partido:", error);
+//         res.status(500).json({ error: "Error al obtener los detalles del partido" });
+//     }
+// });
+
 router.get('/:partidoId/detalles', async (req, res) => {
     const { partidoId } = req.params;
 
@@ -240,7 +294,8 @@ router.get('/:partidoId/detalles', async (req, res) => {
                         'control_partido', i.control_partido,
                         'valoracion', i.valoracion
                     )
-                ) AS arbitros
+                ) AS arbitros,
+                MAX(pa.dieta) AS dieta -- Aquí obtenemos el estado global de dieta
             FROM partidos p
             LEFT JOIN categorias c ON p.categoria_id = c.id
             LEFT JOIN equipos ea ON p.equipo_a_id = ea.id
@@ -261,12 +316,13 @@ router.get('/:partidoId/detalles', async (req, res) => {
             return res.status(404).json({ error: "Partido no encontrado" });
         }
 
-        res.json(result[0]);
+        res.json(result[0]); // Devolver el resultado con el estado de dieta incluido
     } catch (error) {
         console.error("Error al obtener los detalles del partido:", error);
         res.status(500).json({ error: "Error al obtener los detalles del partido" });
     }
 });
+
 
 // aqui falta cambiarlo por nominas o algo asi 
 router.get('/:arbitroId', async (req, res) => {
@@ -318,12 +374,68 @@ router.get('/:arbitroId', async (req, res) => {
     }
 });
 
-// filtrar por federados y escolares en funcion del mes y año 
+// filtrar por federados y escolares en funcion del mes y año
+// router.get('/federados/:arbitroId/:mes/:year', async (req, res) => {
+//     const { arbitroId, mes, year } = req.params;
+
+//     try {
+//         // Mapeo de meses en español a números
+//         const meses = {
+//             Enero: 1,
+//             Febrero: 2,
+//             Marzo: 3,
+//             Abril: 4,
+//             Mayo: 5,
+//             Junio: 6,
+//             Julio: 7,
+//             Agosto: 8,
+//             Septiembre: 9,
+//             Octubre: 10,
+//             Noviembre: 11,
+//             Diciembre: 12,
+//         };
+
+//         const monthNumber = meses[mes];
+//         if (!monthNumber) throw new Error(`Mes no válido: ${mes}`);
+
+//         const query = `
+//             SELECT
+//                 p.dia,
+//                 p.hora,
+//                 c.nombre AS categoria,
+//                 ea.nombre AS equipoA,
+//                 eb.nombre AS equipoB,
+//                 pa.dieta,
+//                 pa.desplazamiento,
+//                 (pa.dieta + pa.desplazamiento) AS total,
+//                 t.importe,
+//                 f.nombre AS funcion
+//             FROM partidos p
+//             JOIN categorias c ON p.categoria_id = c.id
+//             JOIN equipos ea ON p.equipo_a_id = ea.id
+//             JOIN equipos eb ON p.equipo_b_id = eb.id
+//             JOIN partidos_arbitros pa ON p.id = pa.partido_id
+//             JOIN funciones f ON pa.funcion_id = f.id
+//             JOIN tarifas t ON p.categoria_id = t.categoria_id AND pa.funcion_id = t.funcion_id
+//             WHERE pa.arbitro_id = ?
+//               AND MONTH(p.dia) = ?
+//               AND YEAR(p.dia) = ?
+//               AND c.padre = 37
+//               AND TIMESTAMP(p.dia, p.hora) <= NOW() - INTERVAL 3 HOUR;
+//         `;
+
+//         const [results] = await db.query(query, [arbitroId, monthNumber, year]);
+//         res.json(results);
+//     } catch (error) {
+//         console.error('Error al obtener partidos federados:', error);
+//         res.status(500).json({ error: 'Error al obtener los partidos federados' });
+//     }
+// });
+
 router.get('/federados/:arbitroId/:mes/:year', async (req, res) => {
     const { arbitroId, mes, year } = req.params;
 
     try {
-        // Mapeo de meses en español a números
         const meses = {
             Enero: 1,
             Febrero: 2,
@@ -351,7 +463,8 @@ router.get('/federados/:arbitroId/:mes/:year', async (req, res) => {
                 eb.nombre AS equipoB,
                 pa.dieta,
                 pa.desplazamiento,
-                (pa.dieta + pa.desplazamiento) AS total,
+                IF(pa.dieta = 1, m.importe, 0) AS dietas,
+                (pa.desplazamiento + IF(pa.dieta = 1, m.importe, 0)) AS total,
                 t.importe,
                 f.nombre AS funcion
             FROM partidos p
@@ -361,20 +474,98 @@ router.get('/federados/:arbitroId/:mes/:year', async (req, res) => {
             JOIN partidos_arbitros pa ON p.id = pa.partido_id
             JOIN funciones f ON pa.funcion_id = f.id
             JOIN tarifas t ON p.categoria_id = t.categoria_id AND pa.funcion_id = t.funcion_id
+            LEFT JOIN miscelaneo m ON m.id = 4
             WHERE pa.arbitro_id = ?
               AND MONTH(p.dia) = ?
               AND YEAR(p.dia) = ?
-              AND c.padre = 37
-              AND TIMESTAMP(p.dia, p.hora) <= NOW() - INTERVAL 3 HOUR;
+              AND TIMESTAMP(p.dia, p.hora) <= NOW() - INTERVAL 3 HOUR
+              AND c.padre = 37;
         `;
 
         const [results] = await db.query(query, [arbitroId, monthNumber, year]);
+        console.log('Resultados de la consulta:', results); // Añade este log
         res.json(results);
     } catch (error) {
         console.error('Error al obtener partidos federados:', error);
         res.status(500).json({ error: 'Error al obtener los partidos federados' });
     }
 });
+
+
+// router.get('/escolares/:arbitroId/:mes/:year', async (req, res) => {
+//     const { arbitroId, mes, year } = req.params;
+
+//     try {
+//         const meses = {
+//             Enero: 1,
+//             Febrero: 2,
+//             Marzo: 3,
+//             Abril: 4,
+//             Mayo: 5,
+//             Junio: 6,
+//             Julio: 7,
+//             Agosto: 8,
+//             Septiembre: 9,
+//             Octubre: 10,
+//             Noviembre: 11,
+//             Diciembre: 12,
+//         };
+
+//         const monthNumber = meses[mes];
+//         if (!monthNumber) throw new Error(`Mes no válido: ${mes}`);
+
+//         const query = `
+//             WITH RECURSIVE categorias_escolares AS (
+//                 SELECT id, padre
+//                 FROM categorias
+//                 WHERE id = 36
+//                 UNION ALL
+//                 SELECT c.id, c.padre
+//                 FROM categorias c
+//                 INNER JOIN categorias_escolares ce ON c.padre = ce.id
+//             )
+//             SELECT DISTINCT
+//                 p.id AS partido_id,
+//                 p.dia,
+//                 p.hora,
+//                 c.nombre AS categoria,
+//                 ea.nombre AS equipoA,
+//                 eb.nombre AS equipoB,
+//                 pa.dieta,
+//                 pa.desplazamiento,
+//                 (pa.dieta + pa.desplazamiento) AS total,
+//                 (
+//                     SELECT t.importe
+//                     FROM tarifas t
+//                     WHERE t.categoria_id IN (
+//                         SELECT id FROM categorias_escolares
+//                     )
+//                     AND t.funcion_id = pa.funcion_id
+//                     LIMIT 1
+//                 ) AS importe,
+//                 f.nombre AS funcion
+//             FROM partidos p
+//             JOIN categorias c ON p.categoria_id = c.id
+//             LEFT JOIN equipos ea ON p.equipo_a_id = ea.id
+//             LEFT JOIN equipos eb ON p.equipo_b_id = eb.id
+//             JOIN partidos_arbitros pa ON p.id = pa.partido_id
+//             JOIN funciones f ON pa.funcion_id = f.id
+//             WHERE pa.arbitro_id = ?
+//               AND MONTH(p.dia) = ?
+//               AND YEAR(p.dia) = ?
+//               AND TIMESTAMP(p.dia, p.hora) <= NOW() - INTERVAL 3 HOUR
+//               AND p.categoria_id IN (
+//                   SELECT id FROM categorias_escolares
+//               );
+//         `;
+
+//         const [results] = await db.query(query, [arbitroId, monthNumber, year]);
+//         res.json(results);
+//     } catch (error) {
+//         console.error('Error al obtener partidos escolares:', error);
+//         res.status(500).json({ error: 'Error al obtener los partidos escolares' });
+//     }
+// });
 
 router.get('/escolares/:arbitroId/:mes/:year', async (req, res) => {
     const { arbitroId, mes, year } = req.params;
@@ -417,7 +608,8 @@ router.get('/escolares/:arbitroId/:mes/:year', async (req, res) => {
                 eb.nombre AS equipoB,
                 pa.dieta,
                 pa.desplazamiento,
-                (pa.dieta + pa.desplazamiento) AS total,
+                IF(pa.dieta = 1, m.importe, 0) AS dietas, -- Obtener el importe de la tabla miscelaneo si dieta = 1
+                (pa.desplazamiento + IF(pa.dieta = 1, m.importe, 0)) AS total,
                 (
                     SELECT t.importe
                     FROM tarifas t
@@ -434,6 +626,7 @@ router.get('/escolares/:arbitroId/:mes/:year', async (req, res) => {
             LEFT JOIN equipos eb ON p.equipo_b_id = eb.id
             JOIN partidos_arbitros pa ON p.id = pa.partido_id
             JOIN funciones f ON pa.funcion_id = f.id
+            LEFT JOIN miscelaneo m ON m.id = 4 -- Usar la entrada específica de dietas (id=4)
             WHERE pa.arbitro_id = ?
               AND MONTH(p.dia) = ?
               AND YEAR(p.dia) = ?
@@ -444,10 +637,39 @@ router.get('/escolares/:arbitroId/:mes/:year', async (req, res) => {
         `;
 
         const [results] = await db.query(query, [arbitroId, monthNumber, year]);
+        console.log('Resultados de partidos escolares:', results); // Log para verificar datos
         res.json(results);
     } catch (error) {
         console.error('Error al obtener partidos escolares:', error);
         res.status(500).json({ error: 'Error al obtener los partidos escolares' });
+    }
+});
+
+
+router.put('/:partidoId/dieta', async (req, res) => {
+    const { partidoId } = req.params;
+    const { dieta } = req.body;
+
+    if (typeof dieta !== 'number') {
+        return res.status(400).json({ error: 'Dieta debe ser un número (0 o 1)' });
+    }
+
+    try {
+        const query = `
+            UPDATE partidos_arbitros
+            SET dieta = ?
+            WHERE partido_id = ?
+        `;
+        const [result] = await db.query(query, [dieta, partidoId]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Partido no encontrado o sin árbitros asociados' });
+        }
+
+        res.json({ message: 'Dieta actualizada correctamente' });
+    } catch (error) {
+        console.error('Error al actualizar dieta:', error);
+        res.status(500).json({ error: 'Error al actualizar dieta' });
     }
 });
 
