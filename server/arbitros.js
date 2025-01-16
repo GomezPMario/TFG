@@ -403,50 +403,157 @@ router.get('/:id', async (req, res) => {
 
 // Ruta para actualizar el perfil
 
+// router.put('/:id', async (req, res) => {
+//     const id = req.params.id;
+//     const updatedData = req.body;
+
+//     try {
+//         // Eliminar el campo "foto" de updatedData, si existe
+//         delete updatedData.foto;
+
+//         // Si existe el campo password, hashearlo
+//         if (updatedData.password) {
+//             const saltRounds = 10;
+//             updatedData.password = await bcrypt.hash(updatedData.password, saltRounds);
+//         }
+
+//         // Obtener el categoría_id basado en categoría y nivel
+//         const categoriaId = await obtenerCategoriaId(updatedData.categoria, updatedData.nivel);
+//         if (!categoriaId) {
+//             return res.status(404).json({ success: false, message: 'Categoría o subcategoría no encontrada' });
+//         }
+//         updatedData.categoria_id = categoriaId;
+
+//         // Actualizar el perfil del árbitro
+//         await db.query(
+//             `UPDATE arbitros
+//              SET username = ?, password = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria_id = ?, numero_colegiado = ?, alias = ?, fecha_nacimiento = ?, vehiculo = ?
+//              WHERE id = ?`,
+//             [
+//                 updatedData.username,
+//                 updatedData.password,
+//                 updatedData.nombre,
+//                 updatedData.apellido,
+//                 updatedData.domicilio,
+//                 updatedData.telefono,
+//                 updatedData.email,
+//                 updatedData.cuenta,
+//                 updatedData.permiso,
+//                 updatedData.categoria_id,
+//                 updatedData.numero_colegiado,
+//                 updatedData.alias,
+//                 updatedData.fecha_nacimiento,
+//                 updatedData.vehiculo,
+//                 id
+//             ]
+//         );
+
+//         res.json({ success: true, message: 'Perfil actualizado correctamente' });
+//     } catch (error) {
+//         console.error('Error al actualizar el perfil:', error);
+//         res.status(500).json({ success: false, message: 'Error al actualizar el perfil' });
+//     }
+// });
+
+// router.put('/:id', async (req, res) => {
+//     const id = req.params.id;
+//     const updatedData = req.body;
+
+//     try {
+//         // Eliminar el campo "foto" de updatedData, si existe
+//         delete updatedData.foto;
+
+//         // Manejo de la contraseña (solo actualizar si está presente)
+//         if (updatedData.password) {
+//             const saltRounds = 12;
+//             updatedData.password = await bcrypt.hash(updatedData.password, saltRounds);
+//         } else {
+//             delete updatedData.password; // No incluir contraseña vacía
+//         }
+
+//         // Actualizar el perfil del árbitro
+//         await db.query(
+//             `UPDATE arbitros
+//              SET username = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria_id = ?, numero_colegiado = ?, alias = ?, fecha_nacimiento = ?, vehiculo = ? ${updatedData.password ? ', password = ?' : ''
+//             }
+//              WHERE id = ?`,
+//             [
+//                 updatedData.username,
+//                 updatedData.nombre,
+//                 updatedData.apellido,
+//                 updatedData.domicilio,
+//                 updatedData.telefono,
+//                 updatedData.email,
+//                 updatedData.cuenta,
+//                 updatedData.permiso,
+//                 updatedData.categoria_id,
+//                 updatedData.numero_colegiado,
+//                 updatedData.alias,
+//                 updatedData.fecha_nacimiento,
+//                 updatedData.vehiculo,
+//                 ...(updatedData.password ? [updatedData.password] : []),
+//                 id,
+//             ]
+//         );
+
+//         res.json({ success: true, message: 'Perfil actualizado correctamente' });
+//     } catch (error) {
+//         console.error('Error al actualizar el perfil:', error);
+//         res.status(500).json({ success: false, message: 'Error al actualizar el perfil' });
+//     }
+// });
+
 router.put('/:id', async (req, res) => {
     const id = req.params.id;
     const updatedData = req.body;
 
     try {
-        // Eliminar el campo "foto" de updatedData, si existe
-        delete updatedData.foto;
-
-        // Si existe el campo password, hashearlo
+        // Manejo de la contraseña (solo actualizar si está presente)
         if (updatedData.password) {
             const saltRounds = 12;
             updatedData.password = await bcrypt.hash(updatedData.password, saltRounds);
+        } else {
+            delete updatedData.password; // Eliminar el campo si no está presente
         }
 
-        // Obtener el categoría_id basado en categoría y nivel
-        const categoriaId = await obtenerCategoriaId(updatedData.categoria, updatedData.nivel);
-        if (!categoriaId) {
-            return res.status(404).json({ success: false, message: 'Categoría o subcategoría no encontrada' });
-        }
-        updatedData.categoria_id = categoriaId;
+        // Construcción de la consulta SQL dinámicamente
+        const fields = [
+            'username',
+            'nombre',
+            'apellido',
+            'domicilio',
+            'telefono',
+            'email',
+            'cuenta',
+            'permiso',
+            'categoria_id',
+            'numero_colegiado',
+            'alias',
+            'fecha_nacimiento',
+            'vehiculo',
+        ];
 
-        // Actualizar el perfil del árbitro
-        await db.query(
-            `UPDATE arbitros 
-             SET username = ?, password = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria_id = ?, numero_colegiado = ?, alias = ?, fecha_nacimiento = ?, vehiculo = ? 
-             WHERE id = ?`,
-            [
-                updatedData.username,
-                updatedData.password,
-                updatedData.nombre,
-                updatedData.apellido,
-                updatedData.domicilio,
-                updatedData.telefono,
-                updatedData.email,
-                updatedData.cuenta,
-                updatedData.permiso,
-                updatedData.categoria_id,
-                updatedData.numero_colegiado,
-                updatedData.alias,
-                updatedData.fecha_nacimiento,
-                updatedData.vehiculo,
-                id
-            ]
-        );
+        let query = `UPDATE arbitros SET `;
+        const values = [];
+
+        fields.forEach((field) => {
+            if (updatedData[field] !== undefined) {
+                query += `${field} = ?, `;
+                values.push(updatedData[field]);
+            }
+        });
+
+        // Agregar la contraseña solo si está presente
+        if (updatedData.password) {
+            query += `password = ?, `;
+            values.push(updatedData.password);
+        }
+
+        // Eliminar la última coma y agregar la cláusula WHERE
+        query = query.slice(0, -2) + ` WHERE id = ?`;
+        values.push(id);
+
+        await db.query(query, values);
 
         res.json({ success: true, message: 'Perfil actualizado correctamente' });
     } catch (error) {
@@ -520,7 +627,7 @@ router.put('/:id/reset-password', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const saltRounds = 12;
+        const saltRounds = 10;
         const hashedPassword = await bcrypt.hash('12345', saltRounds);
 
         await db.query(

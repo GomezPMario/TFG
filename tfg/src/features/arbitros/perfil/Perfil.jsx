@@ -180,24 +180,31 @@ const Perfil = ({ arbitroId, isAdminView = false }) => {
         setPassword(e.target.value); // Actualiza solo si el usuario escribe algo
     };
 
-    const actualizarPerfil = async () => {
+    const actualizarPerfil = async (id) => {
         try {
-            // Prepara los datos para enviar
-            const dataToSend = { ...updatedData };
+            // Crear un clon de los datos actualizados
+            const dataToSend = { ...updatedData, fecha_nacimiento: fechaNacimiento };
 
-            // Si se introdujo una nueva contraseña, agrégala al payload
-            if (password) {
-                dataToSend.password = password;
+            // Verificar si el campo de contraseña tiene un valor válido
+            if (password.trim()) {
+                dataToSend.password = password; // Incluir la contraseña solo si no está vacía
+            } else {
+                delete dataToSend.password; // Eliminar el campo si está vacío
             }
 
-            await axios.put(`${baseURL}/arbitros/${arbitro.id}`, dataToSend, {
+            // Realizar la solicitud PUT
+            await axios.put(`${baseURL}/arbitros/${id}`, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
             });
 
-            alert('Perfil actualizado correctamente.');
+            // Finalizar la edición y limpiar los estados
             setIsEditing(false);
+            setArbitro(dataToSend);
+            setPassword(''); // Limpia el estado del input de contraseña
+            localStorage.setItem('arbitro', JSON.stringify(dataToSend));
+            alert('Perfil actualizado correctamente.');
         } catch (error) {
-            console.error('Error al actualizar el perfil:', error);
+            console.error('Error al actualizar el perfil:', error.response ? error.response.data : error.message);
             alert('Error al actualizar el perfil.');
         }
     };
