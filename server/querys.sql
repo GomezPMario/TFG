@@ -878,3 +878,42 @@ CREATE TABLE disponibilidad (
     fecha DATE DEFAULT NULL,
     FOREIGN KEY (arbitro_id) REFERENCES arbitros(id)
 );
+
+INSERT INTO arbitros (username, password, nombre, apellido, domicilio, cuenta, alias, numero_colegiado, permiso, categoria_id, telefono, email, cargo, orden, vehiculo, fecha_nacimiento) VALUES
+('PEREZ', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre1', 'Apellido1', 'Calle 1', '1234567890', 'PEREZ', 1001, '1', 1, '600000001', 'perez@example.com', '1', 1, '1', '1980-01-01'),
+('PAMPLONA', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre2', 'Apellido2', 'Calle 2', '1234567891', 'PAMPLONA', 1002, '2', 2, '600000002', 'pamplona@example.com', '2', 2, '0', '1981-02-02'),
+('SARA', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre3', 'Apellido3', 'Calle 3', '1234567892', 'SARA', 1003, '1', 3, '600000003', 'sara@example.com', '1', 3, '2', '1982-03-03'),
+('CONTE', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre4', 'Apellido4', 'Calle 4', '1234567893', 'CONTE', 1004, '2', 4, '600000004', 'conte@example.com', '2', 4, '3', '1983-04-04'),
+('TRINCHAN', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre5', 'Apellido5', 'Calle 5', '1234567894', 'TRINCHAN', 1005, '1', 5, '600000005', 'trinchan@example.com', '1', 5, '1', '1984-05-05'),
+('LUNA', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre6', 'Apellido6', 'Calle 6', '1234567895', 'LUNA', 1006, '2', 6, '600000006', 'luna@example.com', '2', 6, '0', '1985-06-06'),
+('ROYO', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre7', 'Apellido7', 'Calle 7', '1234567896', 'ROYO', 1007, '1', 7, '600000007', 'royo@example.com', '1', 7, '1', '1986-07-07'),
+('MONEO', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre8', 'Apellido8', 'Calle 8', '1234567897', 'MONEO', 1008, '2', 8, '600000008', 'moneo@example.com', '2', 8, '2', '1987-08-08'),
+('PABLO', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre9', 'Apellido9', 'Calle 9', '1234567898', 'PABLO', 1009, '1', 9, '600000009', 'pablo@example.com', '1', 9, '3', '1988-09-09'),
+('VICTOR', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre10', 'Apellido10', 'Calle 10', '1234567899', 'VICTOR', 1010, '2', 10, '600000010', 'victor@example.com', '2', 10, '0', '1989-10-10'),
+('SANDRA', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre11', 'Apellido11', 'Calle 11', '1234567811', 'SANDRA', 1011, '1', 11, '600000011', 'sandra@example.com', '1', 11, '1', '1990-01-01'),
+('BLANZACO', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre12', 'Apellido12', 'Calle 12', '1234567812', 'BLANZACO', 1012, '2', 12, '600000012', 'blanzaco@example.com', '2', 12, '2', '1991-01-01'),
+('LAHOZ', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre13', 'Apellido13', 'Calle 13', '1234567813', 'LAHOZ', 1013, '1', 13, '600000013', 'lahoz@example.com', '1', 13, '3', '1992-01-01'),
+('MARTIN', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre14', 'Apellido14', 'Calle 14', '1234567814', 'MARTIN', 1014, '2', 14, '600000014', 'martin@example.com', '2', 14, '0', '1993-01-01'),
+('CONTINENTE', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre15', 'Apellido15', 'Calle 15', '1234567815', 'CONTINENTE', 1015, '1', 15, '600000015', 'continente@example.com', '1', 15, '1', '1994-01-01'),
+('NAJERA', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre16', 'Apellido16', 'Calle 16', '1234567816', 'NAJERA', 1016, '2', 16, '600000016', 'najera@example.com', '2', 16, '2', '1995-01-01'),
+('OCEJO', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre17', 'Apellido17', 'Calle 17', '1234567817', 'OCEJO', 1017, '1', 17, '600000017', 'ocejo@example.com', '1', 17, '3', '1996-01-01'),
+('SHEILA', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre18', 'Apellido18', 'Calle 18', '1234567818', 'SHEILA', 1018, '2', 18, '600000018', 'sheila@example.com', '2', 18, '0', '1997-01-01'),
+('SIMON', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre19', 'Apellido19', 'Calle 19', '1234567819', 'SIMON', 1019, '1', 19, '600000019', 'simon@example.com', '1', 19, '1', '1998-01-01'),
+('TEJEDOR', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre20', 'Apellido20', 'Calle 20', '1234567820', 'TEJEDOR', 1020, '2', 20, '600000020', 'tejedor@example.com', '2', 20, '2', '1999-01-01'),
+('LLOPIS', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre21', 'Apellido21', 'Calle 21', '1234567821', 'LLOPIS', 1021, '1', 21, '600000021', 'llopis@example.com', '1', 21, '3', '2000-01-01'),
+('MIMBIELA', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre22', 'Apellido22', 'Calle 22', '1234567822', 'MIMBIELA', 1022, '2', 22, '600000022', 'mimbiela@example.com', '2', 22, '0', '2001-01-01'),
+('MASETE', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre23', 'Apellido23', 'Calle 23', '1234567823', 'MASETE', 1023, '1', 23, '600000023', 'masete@example.com', '1', 23, '1', '2002-01-01'),
+('MATEU', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre24', 'Apellido24', 'Calle 24', '1234567824', 'MATEU', 1024, '2', 24, '600000024', 'mateu@example.com', '2', 24, '2', '2003-01-01'),
+('BLAS', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre25', 'Apellido25', 'Calle 25', '1234567825', 'BLAS', 1025, '1', 25, '600000025', 'blas@example.com', '1', 25, '3', '2004-01-01'),
+('LOBOTTI', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre26', 'Apellido26', 'Calle 26', '1234567826', 'LOBOTTI', 1026, '2', 26, '600000026', 'lobotti@example.com', '2', 26, '0', '2005-01-01'),
+('ORTEGA', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre27', 'Apellido27', 'Calle 27', '1234567827', 'ORTEGA', 1027, '1', 27, '600000027', 'ortega@example.com', '1', 27, '1', '2006-01-01'),
+('CHECA', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre28', 'Apellido28', 'Calle 28', '1234567828', 'CHECA', 1028, '2', 28, '600000028', 'checa@example.com', '2', 28, '2', '2007-01-01'),
+('AGUDO', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre29', 'Apellido29', 'Calle 29', '1234567829', 'AGUDO', 1029, '1', 29, '600000029', 'agudo@example.com', '1', 29, '3', '2008-01-01'),
+('BLAS', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre30', 'Apellido30', 'Calle 30', '1234567830', 'BLAS', 1030, '2', 30, '600000030', 'blas2@example.com', '2', 30, '0', '2009-01-01'),
+('BOLLULLO', '$2a$10$.YwUQl2sKKLc0RXSoc4p0un6ROyEDbIE4W.f4gkJ3sN7rr8oAFC2u', 'Nombre31', 'Apellido31', 'Calle 31', '1234567831', 'BOLLULLO', 1031, '1', 31, '600000031', 'bollullo@example.com', '1', 31, '1', '2010-01-01');
+
+
+
+SELECT equipos.nombre, categorias.nombre
+FROM equipos
+JOIN categorias ON equipos.categoria_id = categorias.id;

@@ -47,17 +47,21 @@ const Partidos = () => {
 
     const handleFileUpload = async () => {
         if (file) {
+            if (!file.name.match(/\.(xls|xlsx)$/)) {
+                alert("Por favor, selecciona un archivo Excel válido (.xls o .xlsx).");
+                return;
+            }
             const formData = new FormData();
             formData.append("file", file);
 
             try {
-                const response = await fetch("/api/partidos/importar", {
+                const response = await fetch(`${baseURL}/api/partidos/importar`, {
                     method: "POST",
                     body: formData,
                 });
                 if (response.ok) {
                     alert("Archivo importado con éxito");
-                    fetchPartidos(); // Refresca los datos de la tabla después de la importación
+                    fetchPartidos(); // Actualizar la tabla de partidos
                 } else {
                     alert("Error al importar el archivo");
                 }

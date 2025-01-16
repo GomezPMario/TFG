@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db_setup');
 
+const xlsx = require('xlsx');
+const multer = require('multer');
+const upload = multer();
+
+const { getCategoriaId, getEquipoId, getCampoId, getArbitroId } = require('./dbHelpers');
+
 // listado de partidos
 router.get('/', async (req, res) => {
     try {
@@ -209,7 +215,6 @@ router.put('/:id', async (req, res) => {
         res.status(500).json({ error: "Error al actualizar el partido" });
     }
 });
-
 
 
 // router.get('/:partidoId/detalles', async (req, res) => {
@@ -672,5 +677,157 @@ router.put('/:partidoId/dieta', async (req, res) => {
         res.status(500).json({ error: 'Error al actualizar dieta' });
     }
 });
+
+// Función para normalizar encabezados
+// Normalizar encabezados y datos
+const normalizeHeaders = (sheet) => {
+    const data = xlsx.utils.sheet_to_json(sheet, { header: 1 });
+    const [headers, ...rows] = data;
+
+    if (!headers) throw new Error("El archivo Excel no tiene encabezados.");
+
+    // Normalizar encabezados
+    const normalizedHeaders = headers.map(header =>
+        header?.trim().toLowerCase().replace(/\s+/g, "_").replace(/"/g, "") || ""
+    );
+
+    console.log("Encabezados normalizados:", normalizedHeaders);
+
+    // Crear datos normalizados
+    return rows.map(row => {
+        // Si la fila tiene menos columnas, completa con valores nulos
+        const fullRow = Array.from({ length: normalizedHeaders.length }, (_, i) => row[i] || null);
+        return Object.fromEntries(normalizedHeaders.map((header, i) => [header, fullRow[i]]));
+    });
+};
+
+// Endpoint para importar archivo Excel
+router.post("/importar", upload.single("file"), async (req, res) => {
+    try {
+        const file = req.file;
+        if (!file) {
+            return res.status(400).json({ error: "No se proporcionó ningún archivo." });
+        }
+
+        // Leer el archivo Excel
+        const workbook = xlsx.read(file.buffer, { type: "buffer" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+
+        // Normalizar encabezados y obtener datos
+        const data = normalizeHeaders(sheet);
+
+        console.log("Contenido del Excel normalizado:", data);
+
+        // Procesar cada fila
+        for (const row of data) {
+            const {
+                categoria,
+                local,
+                visitante,
+                hora,
+                fecha,
+                campo,
+                arbitro_principal,
+                arbitro_auxiliar,
+                anotador,
+                cronometrador,
+                operador_24,
+                ayudante_anotador
+            } = row;
+
+            if (!categoria) {
+                console.error("La fila no tiene categoría:", row);
+                continue; // Omite esta fila
+            }
+
+            try {
+                const categoriaId = await getCategoriaId(categoria);
+                const equipoLocalId = await getEquipoId(local, categoriaId);
+                const equipoVisitanteId = await getEquipoId(visitante, categoriaId);
+                const campoId = await getCampoId(campo);
+
+                const partidoId = await insertarPartido({
+                    dia: formatDate(fecha),
+                    hora,
+                    categoria_id: categoriaId,
+                    equipo_a_id: equipoLocalId,
+                    equipo_b_id: equipoVisitanteId,
+                    campo_id: campoId,
+                });
+
+                await insertarArbitros(partidoId, {
+                    "Arbitro Principal": arbitro_principal,
+                    "Arbitro Auxiliar": arbitro_auxiliar,
+                    "Anotador": anotador,
+                    "Cronometrador": cronometrador,
+                    "Operador 24\"": operador_24,
+                    "Ayudante Anotador": ayudante_anotador,
+                });
+            } catch (error) {
+                console.error("Error al procesar la fila:", row, error.message);
+            }
+        }
+
+        res.json({ success: true, message: "Archivo procesado exitosamente" });
+    } catch (error) {
+        console.error("Error al procesar el archivo:", error);
+        res.status(500).json({ error: "Error al procesar el archivo." });
+    }
+});
+
+// Función para insertar un partido
+async function insertarPartido(data) {
+    const query = `
+        INSERT INTO partidos (dia, hora, categoria_id, equipo_a_id, equipo_b_id, campo_id)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `;
+    const [result] = await db.query(query, [
+        data.dia, data.hora, data.categoria_id, data.equipo_a_id, data.equipo_b_id, data.campo_id,
+    ]);
+    return result.insertId;
+}
+
+// Función para insertar árbitros en la tabla partidos_arbitros
+async function insertarArbitros(partidoId, arbitros) {
+    const funciones = [
+        { columna: "Arbitro Principal", funcion: 1 },
+        { columna: "Arbitro Auxiliar", funcion: 2 },
+        { columna: "Anotador", funcion: 3 },
+        { columna: "Cronometrador", funcion: 5 },
+        { columna: "Operador 24\"", funcion: 6 },
+        { columna: "Ayudante Anotador", funcion: 7 },
+    ];
+
+    for (const { columna, funcion } of funciones) {
+        const alias = arbitros[columna];
+        if (alias) {
+            const arbitroId = await getArbitroId(alias);
+            await db.query(`
+                INSERT INTO partidos_arbitros (partido_id, arbitro_id, funcion_id, dieta, desplazamiento)
+                VALUES (?, ?, ?, 0, 0)
+            `, [partidoId, arbitroId, funcion]);
+        }
+    }
+}
+
+// Función para formatear fechas
+const formatDate = (fecha) => {
+    if (!fecha) return null;
+
+    if (typeof fecha === "string") {
+        // Caso: fecha en formato "DD/MM/YYYY"
+        const [day, month, year] = fecha.split("/");
+        return `${year}-${month}-${day}`; // Convertir a "YYYY-MM-DD"
+    }
+
+    if (typeof fecha === "number") {
+        // Caso: fecha como número (formato Excel)
+        const excelDate = new Date((fecha - 25569) * 86400 * 1000);
+        return excelDate.toISOString().split("T")[0]; // Convertir a "YYYY-MM-DD"
+    }
+
+    return null;
+};
 
 module.exports = router;
