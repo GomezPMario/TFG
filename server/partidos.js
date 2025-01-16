@@ -701,7 +701,17 @@ const normalizeHeaders = (sheet) => {
     });
 };
 
+const excelToTime = (excelHour) => {
+    if (!excelHour) return '00:00:00'; // Manejar valores nulos o vacíos
+    const totalSeconds = Math.round(excelHour * 86400); // Convertir a segundos del día
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return [hours, minutes, seconds].map(v => String(v).padStart(2, '0')).join(':');
+};
+
 // Endpoint para importar archivo Excel
+// Endpoint para importar el archivo Excel
 router.post("/importar", upload.single("file"), async (req, res) => {
     try {
         const file = req.file;
@@ -714,9 +724,8 @@ router.post("/importar", upload.single("file"), async (req, res) => {
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
 
-        // Normalizar encabezados y obtener datos
+        // Normalizar datos del Excel
         const data = normalizeHeaders(sheet);
-
         console.log("Contenido del Excel normalizado:", data);
 
         // Procesar cada fila
@@ -736,26 +745,29 @@ router.post("/importar", upload.single("file"), async (req, res) => {
                 ayudante_anotador
             } = row;
 
-            if (!categoria) {
-                console.error("La fila no tiene categoría:", row);
-                continue; // Omite esta fila
+            if (!categoria || !local || !visitante || !hora || !fecha || !campo) {
+                console.warn("Fila incompleta, omitiendo:", row);
+                continue;
             }
 
             try {
+                // Obtener IDs de la base de datos
                 const categoriaId = await getCategoriaId(categoria);
                 const equipoLocalId = await getEquipoId(local, categoriaId);
                 const equipoVisitanteId = await getEquipoId(visitante, categoriaId);
                 const campoId = await getCampoId(campo);
 
+                // Insertar partido
                 const partidoId = await insertarPartido({
                     dia: formatDate(fecha),
-                    hora,
+                    hora: excelToTime(hora), // Convertir la hora
                     categoria_id: categoriaId,
                     equipo_a_id: equipoLocalId,
                     equipo_b_id: equipoVisitanteId,
                     campo_id: campoId,
                 });
 
+                // Insertar árbitros en la tabla partidos_arbitros
                 await insertarArbitros(partidoId, {
                     "Arbitro Principal": arbitro_principal,
                     "Arbitro Auxiliar": arbitro_auxiliar,
@@ -764,6 +776,8 @@ router.post("/importar", upload.single("file"), async (req, res) => {
                     "Operador 24\"": operador_24,
                     "Ayudante Anotador": ayudante_anotador,
                 });
+
+                console.log(`Partido insertado correctamente con ID: ${partidoId}`);
             } catch (error) {
                 console.error("Error al procesar la fila:", row, error.message);
             }
