@@ -50,8 +50,8 @@ const Arbitros = () => {
 
     const categoryOptions = {
         arbitro: [
-            "ACB - Escuela",
-            "Escuela - ACB",
+            // "ACB - Escuela",
+            // "Escuela - ACB",
             "ACB",
             "1ª FEB",
             "2ª FEB",
@@ -66,8 +66,8 @@ const Arbitros = () => {
             "Escuela",
         ],
         oficial: [
-            "ACB - P3",
-            "P3 - ACB",
+            // "ACB - P3",
+            // "P3 - ACB",
             "ACB",
             "LF",
             "EBA",

@@ -143,7 +143,7 @@ const NuevoArbitro = ({ onClose = null, isPublic = false, isManual = false, onAr
     return (
         <div className="nuevo-arbitro-container">
             {isPublic ? (
-                <h2>Bienvenido al Comité de Árbitro Aragoneses de Baloncesto</h2>
+                <h2>Bienvenido al Comité de Árbitros Aragoneses de Baloncesto</h2>
             ) : (
                 <h2>Registrar Nuevo Árbitro</h2>
             )}

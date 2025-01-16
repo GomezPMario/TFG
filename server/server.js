@@ -3,6 +3,7 @@ const mysql = require('mysql2/promise');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+const bcrypt = require('bcrypt');
 
 // Importar módulos
 const db = require('./db_setup');
@@ -63,55 +64,122 @@ app.use('/api/miscelaneo', miscelaneoRoutes);
 app.use('/api/disponibilidad', disponibilidadRoutes);
 
 // Endpoint para iniciar sesión
+// app.post('/login', async (req, res) => {
+//     const { username, password } = req.body;
+
+//     try {
+//         const [rows] = await db.query(
+//             `SELECT arbitros.*, escala.categoria, escala.nivel
+//             FROM arbitros
+//             JOIN escala ON arbitros.categoria_id = escala.id
+//             WHERE BINARY username = ? AND BINARY password = ?`,
+//             [username, password]
+//         );
+
+//         if (rows.length > 0) {
+//             const arbitro = rows[0];
+
+//             // Nueva consulta para obtener la foto del árbitro
+//             const [fotoRows] = await db.query(
+//                 `SELECT foto FROM foto_arbitros WHERE arbitro_id = ? LIMIT 1`,
+//                 [arbitro.id]
+//             );
+
+//             // Si existe una foto, conviértela a base64
+//             const fotoBase64 = fotoRows.length > 0 ? fotoRows[0].foto.toString('base64') : null;
+//             res.json({
+//                 success: true,
+//                 message: 'Inicio de sesión exitoso',
+//                 arbitro: {
+//                     id: arbitro.id,
+//                     username: arbitro.username,
+//                     password: arbitro.password,
+//                     nombre: arbitro.nombre,
+//                     apellido: arbitro.apellido,
+//                     domicilio: arbitro.domicilio,
+//                     telefono: arbitro.telefono,
+//                     email: arbitro.email,
+//                     cuenta: arbitro.cuenta,
+//                     alias: arbitro.alias,
+//                     numero_colegiado: arbitro.numero_colegiado,
+//                     permiso: arbitro.permiso,
+//                     cargo: arbitro.cargo,
+//                     categoria_id: arbitro.categoria_id,
+//                     categoria: arbitro.categoria,
+//                     nivel: arbitro.nivel,
+//                     vehiculo: arbitro.vehiculo,
+//                     fecha_nacimiento: arbitro.fecha_nacimiento,
+//                     foto: fotoBase64,  // Agregar la foto en formato base64
+//                 }
+//             });
+//         } else {
+//             res.status(401).json({ success: false, message: 'Usuario o contraseña incorrectos' });
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ success: false, message: 'Error del servidor' });
+//     }
+// });
+
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
+        // Obtener al usuario por su username
         const [rows] = await db.query(
             `SELECT arbitros.*, escala.categoria, escala.nivel 
             FROM arbitros 
             JOIN escala ON arbitros.categoria_id = escala.id 
-            WHERE BINARY username = ? AND BINARY password = ?`,
-            [username, password]
+            WHERE BINARY username = ?`,
+            [username]
         );
 
         if (rows.length > 0) {
             const arbitro = rows[0];
 
-            // Nueva consulta para obtener la foto del árbitro
-            const [fotoRows] = await db.query(
-                `SELECT foto FROM foto_arbitros WHERE arbitro_id = ? LIMIT 1`,
-                [arbitro.id]
-            );
+            // Comparar la contraseña ingresada con el hash almacenado
+            const isMatch = await bcrypt.compare(password, arbitro.password);
 
-            // Si existe una foto, conviértela a base64
-            const fotoBase64 = fotoRows.length > 0 ? fotoRows[0].foto.toString('base64') : null;
-            res.json({
-                success: true,
-                message: 'Inicio de sesión exitoso',
-                arbitro: {
-                    id: arbitro.id,
-                    username: arbitro.username,
-                    password: arbitro.password,
-                    nombre: arbitro.nombre,
-                    apellido: arbitro.apellido,
-                    domicilio: arbitro.domicilio,
-                    telefono: arbitro.telefono,
-                    email: arbitro.email,
-                    cuenta: arbitro.cuenta,
-                    alias: arbitro.alias,
-                    numero_colegiado: arbitro.numero_colegiado,
-                    permiso: arbitro.permiso,
-                    cargo: arbitro.cargo,
-                    categoria_id: arbitro.categoria_id,
-                    categoria: arbitro.categoria,
-                    nivel: arbitro.nivel,
-                    vehiculo: arbitro.vehiculo,
-                    fecha_nacimiento: arbitro.fecha_nacimiento,
-                    foto: fotoBase64,  // Agregar la foto en formato base64
-                }
-            });
+            if (isMatch) {
+                // Nueva consulta para obtener la foto del árbitro
+                const [fotoRows] = await db.query(
+                    `SELECT foto FROM foto_arbitros WHERE arbitro_id = ? LIMIT 1`,
+                    [arbitro.id]
+                );
+
+                // Si existe una foto, conviértela a base64
+                const fotoBase64 = fotoRows.length > 0 ? fotoRows[0].foto.toString('base64') : null;
+
+                res.json({
+                    success: true,
+                    message: 'Inicio de sesión exitoso',
+                    arbitro: {
+                        id: arbitro.id,
+                        username: arbitro.username,
+                        nombre: arbitro.nombre,
+                        apellido: arbitro.apellido,
+                        domicilio: arbitro.domicilio,
+                        telefono: arbitro.telefono,
+                        email: arbitro.email,
+                        cuenta: arbitro.cuenta,
+                        alias: arbitro.alias,
+                        numero_colegiado: arbitro.numero_colegiado,
+                        permiso: arbitro.permiso,
+                        cargo: arbitro.cargo,
+                        categoria_id: arbitro.categoria_id,
+                        categoria: arbitro.categoria,
+                        nivel: arbitro.nivel,
+                        vehiculo: arbitro.vehiculo,
+                        fecha_nacimiento: arbitro.fecha_nacimiento,
+                        foto: fotoBase64,  // Agregar la foto en formato base64
+                    }
+                });
+            } else {
+                // Contraseña incorrecta
+                res.status(401).json({ success: false, message: 'Usuario o contraseña incorrectos' });
+            }
         } else {
+            // Usuario no encontrado
             res.status(401).json({ success: false, message: 'Usuario o contraseña incorrectos' });
         }
     } catch (error) {

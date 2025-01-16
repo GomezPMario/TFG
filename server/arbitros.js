@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db_setup');
-// const { hash } = require('bcrypt');
+const { hash } = require('bcrypt');
 
 // router.get('/', async (req, res) => {
 //     let sql = 'SELECT * FROM arbitros WHERE 1=1'; // Consulta base
@@ -198,6 +198,9 @@ router.post('/nuevoarbitro', async (req, res) => {
         // Determinar cargo
         const cargoValue = cargo === 'arbitro' ? '1' : '2';
 
+        //Generar el hash de la contraseña
+        const hashedPassword = await hash('12345', 12);
+
         // Insertar el nuevo árbitro
         const sql = `
             INSERT INTO arbitros 
@@ -209,7 +212,7 @@ router.post('/nuevoarbitro', async (req, res) => {
             apellidoCompleto,
             alias,
             dni,
-            12345,  // Contraseña predeterminada
+            hashedPassword,  // Contraseña predeterminada
             correo_electronico,
             fecha_nacimiento,
             telefono,

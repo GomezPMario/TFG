@@ -155,7 +155,7 @@ const ModalFormStep = ({ isOpen, onClose, onSubmit }) => {
                 <span className="modal-step-close" onClick={onClose}>&times;</span>
                 {currentStep === 1 && (
                     <>
-                        <h2 className="modal-step-title">Añadir Disponibilidad</h2>
+                        <h2 className="modal-step-title">Añadir NO Disponibilidad</h2>
                         <div className="modal-step-availability-options">
                             {["Variable", "Fija", "Ambas"].map((option, index) => (
                                 <div
