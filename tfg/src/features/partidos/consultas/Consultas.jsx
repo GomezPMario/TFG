@@ -279,11 +279,10 @@ const ModalFormStep = ({ isOpen, onClose, onSubmit }) => {
 const formatDate = (dateString) => {
     if (!dateString) return "Fecha no válida";
     try {
-        const date = new Date(dateString);
-        let formattedDate = new Intl.DateTimeFormat('es-ES', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' })
+        const date = new Date(dateString); // Convierte el string a un objeto Date
+        return new Intl.DateTimeFormat('es-ES', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' })
             .format(date)
-            .replace('.', '');
-        return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+            .replace('.', ''); // Quita el punto del día
     } catch (error) {
         console.error("Error al formatear la fecha:", error);
         return "Fecha no válida";
@@ -294,13 +293,15 @@ const getThursdayInterval = () => {
     const today = new Date();
     const dayOfWeek = today.getDay();
 
-    const offsetToPastThursday = (dayOfWeek < 4) ? -(7 - (4 - dayOfWeek)) : -(dayOfWeek - 4);
     const pastThursday = new Date(today);
-    pastThursday.setDate(today.getDate() + offsetToPastThursday);
+    pastThursday.setDate(today.getDate() - ((dayOfWeek + 3) % 7)); // Retrocede hasta el jueves pasado
 
-    const offsetToNextThursday = (dayOfWeek <= 4) ? (4 - dayOfWeek) : (7 - (dayOfWeek - 4));
-    const nextThursday = new Date(today);
-    nextThursday.setDate(today.getDate() + offsetToNextThursday);
+    const nextThursday = new Date(pastThursday);
+    nextThursday.setDate(nextThursday.getDate() + 7); // Avanza hasta el siguiente jueves
+
+    // Normalizar las fechas a inicio del día
+    pastThursday.setHours(0, 0, 0, 0);
+    nextThursday.setHours(23, 59, 59, 999);
 
     return { pastThursday, nextThursday };
 };
@@ -369,6 +370,37 @@ const Consultas = () => {
         }
     };
 
+    // useEffect(() => {
+    //     const fetchPartidos = async () => {
+    //         const arbitro = JSON.parse(localStorage.getItem('arbitro'));
+    //         const arbitroId = arbitro?.id;
+
+    //         if (!arbitroId) {
+    //             console.error("No se encontró el ID del árbitro logueado.");
+    //             setIsLoading(false);
+    //             return;
+    //         }
+
+    //         const { pastThursday, nextThursday } = getThursdayInterval();
+    //         const startDate = pastThursday.toISOString().split('T')[0];
+    //         const endDate = nextThursday.toISOString().split('T')[0];
+
+    //         try {
+    //             const response = await axios.get(`${baseURL}/api/partidos/intervalo/${arbitroId}`, {
+    //                 params: { startDate, endDate },
+    //             });
+    //             console.log('Datos recibidos:', response.data);
+    //             setPartidos(response.data);
+    //         } catch (error) {
+    //             console.error("Error al obtener los partidos:", error);
+    //         } finally {
+    //             setIsLoading(false);
+    //         }
+    //     };
+
+    //     fetchPartidos();
+    // }, []);
+
     useEffect(() => {
         const fetchPartidos = async () => {
             const arbitro = JSON.parse(localStorage.getItem('arbitro'));
@@ -388,7 +420,7 @@ const Consultas = () => {
                 const response = await axios.get(`${baseURL}/api/partidos/intervalo/${arbitroId}`, {
                     params: { startDate, endDate },
                 });
-                console.log('Datos recibidos:', response.data);
+                console.log('Datos recibidos desde el backend:', response.data); // LOG
                 setPartidos(response.data);
             } catch (error) {
                 console.error("Error al obtener los partidos:", error);
@@ -399,6 +431,7 @@ const Consultas = () => {
 
         fetchPartidos();
     }, []);
+
 
     const handleAddDisponibilityClick = () => {
         setIsModalFormOpen(true);
