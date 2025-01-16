@@ -639,7 +639,7 @@ const Partidos = () => {
                                 </td>
                                 <td>{partido.tecnico}</td>
                                 <td className="arbitros-cell">
-                                    {partido.arbitros ? (
+                                    {partido.arbitros && partido.arbitros !== '--' ? (
                                         partido.arbitros.split(',').map((arbitro, idx) => {
                                             const [alias, nombre, apellido] = arbitro.trim().split(' ');
                                             return (
@@ -652,6 +652,7 @@ const Partidos = () => {
                                         <div style={{ textAlign: 'center' }}>--</div>
                                     )}
                                 </td>
+
 
                                 <td>{partido.categoria}</td>
                                 <td>{partido.equipos}</td>
