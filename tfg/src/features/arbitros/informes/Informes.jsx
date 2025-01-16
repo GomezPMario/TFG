@@ -3,19 +3,21 @@ import './Informes.css';
 import { baseURL } from '../../../components/login/Login';
 import { RxCross2 } from "react-icons/rx";
 
-const Informes = () => {
+const Informes = ({ arbitroId: propArbitroId, isAdminView = false }) => {
     const [informes, setInformes] = useState([]);
-    const [arbitroId, setArbitroId] = useState(null);
+    const [arbitroId, setArbitroId] = useState(propArbitroId || null);
     const [selectedInforme, setSelectedInforme] = useState(null); // Informe seleccionado para mostrar detalles
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
-        const storedArbitro = localStorage.getItem('arbitro');
-        if (storedArbitro) {
-            const parsedArbitro = JSON.parse(storedArbitro);
-            setArbitroId(parsedArbitro.id);
+        if (!propArbitroId) {
+            const storedArbitro = localStorage.getItem('arbitro');
+            if (storedArbitro) {
+                const parsedArbitro = JSON.parse(storedArbitro);
+                setArbitroId(parsedArbitro.id);
+            }
         }
-    }, []);
+    }, [propArbitroId]);
 
     useEffect(() => {
         const fetchInformes = async () => {
@@ -48,7 +50,7 @@ const Informes = () => {
 
     return (
         <div className="informes-container">
-            <h1 className="informes-title">Mis evaluaciones</h1>
+            {!isAdminView && <h1 className="informes-title">Mis evaluaciones</h1>}
             {informes.length > 0 ? (
                 <table className="informes-table">
                     <thead>

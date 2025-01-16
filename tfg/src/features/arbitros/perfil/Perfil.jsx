@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Perfil.css';
+import Informes from '../informes/Informes'
 import { baseURL } from '../../../components/login/Login';
 import { FaUser, FaEnvelope, FaPhone, FaHome, FaKey, FaTag, FaCarSide } from 'react-icons/fa';
 import { RiMotorbikeFill } from "react-icons/ri";
@@ -376,6 +377,12 @@ const Perfil = ({ arbitroId, isAdminView = false }) => {
                         </ul>
                     </div>
                 </div>
+                {isAdminView && (
+                    <div className="informes-section">
+                        <h2>Informes realizados</h2>
+                        <Informes arbitroId={arbitroId} isAdminView={true} />
+                    </div>
+                )}
             </div>
 
             {!isAdminView && (
