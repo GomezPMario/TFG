@@ -19,6 +19,8 @@ const Perfil = ({ arbitroId, isAdminView = false }) => {
     const [fechaNacimiento, setFechaNacimiento] = useState('');
     const [fotoPerfil, setFotoPerfil] = useState(null);
 
+    const [arbitroLogueado, setArbitroLogueado] = useState(null);
+
     const formatToISODate = (isoString) => {
         if (!isoString) return '';
         const date = new Date(isoString);
@@ -76,6 +78,34 @@ const Perfil = ({ arbitroId, isAdminView = false }) => {
             fetchFotoPerfil();
         }
     }, [arbitroId]);
+
+    useEffect(() => {
+        const loggedInUser = JSON.parse(localStorage.getItem('arbitro'));
+        setArbitroLogueado(loggedInUser);
+
+        const fetchArbitro = async () => {
+            try {
+                const response = await axios.get(`${baseURL}/arbitros/${arbitroId}`);
+                setArbitro(response.data);
+            } catch (error) {
+                console.error('Error al cargar el perfil:', error);
+            }
+        };
+
+        if (arbitroId) fetchArbitro();
+    }, [arbitroId]);
+
+    const handlePasswordReset = async () => {
+        try {
+            await axios.put(`${baseURL}/arbitros/${arbitro.id}/reset-password`, {
+                headers: { 'Content-Type': 'application/json' },
+            });
+            alert('Contraseña restablecida a "12345".');
+        } catch (error) {
+            console.error('Error al restablecer la contraseña:', error);
+            alert('Error al restablecer la contraseña.');
+        }
+    };
 
     if (!arbitro) {
         return <p>Loading...</p>;
@@ -222,9 +252,15 @@ const Perfil = ({ arbitroId, isAdminView = false }) => {
                                 <input type="text" name="username" value={updatedData.username} onChange={handleChange} />
                                 : arbitro.username}
                             </li>
-                            <li><FaKey className="icon" /> <strong>Contraseña:</strong> {isEditing && isEditable('password') ?
+                            <li><FaKey className="icon" /> <strong>Contraseña:</strong>
+                                {/* {isEditing && isEditable('password') ?
                                 <input type="text" name="password" value={updatedData.password} onChange={handleChange} />
-                                : arbitro.password}
+                                : arbitro.password} */}
+                                {arbitroLogueado?.id !== arbitro.id && (
+                                    <button className="restablecer-btn" onClick={handlePasswordReset}>
+                                        Restablecer
+                                    </button>
+                                )}
                             </li>
                             <li><FaTag className="icon" /> <strong>Alias:</strong> {isEditing && isEditable('alias') ?
                                 <input type="text" name="alias" value={updatedData.alias} onChange={handleChange} />

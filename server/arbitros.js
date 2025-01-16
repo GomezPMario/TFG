@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db_setup');
 const { hash } = require('bcrypt');
+const bcrypt = require('bcrypt');
 
 // router.get('/', async (req, res) => {
 //     let sql = 'SELECT * FROM arbitros WHERE 1=1'; // Consulta base
@@ -401,6 +402,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Ruta para actualizar el perfil
+
 router.put('/:id', async (req, res) => {
     const id = req.params.id;
     const updatedData = req.body;
@@ -409,13 +411,24 @@ router.put('/:id', async (req, res) => {
         // Eliminar el campo "foto" de updatedData, si existe
         delete updatedData.foto;
 
+        // Si existe el campo password, hashearlo
+        if (updatedData.password) {
+            const saltRounds = 12;
+            updatedData.password = await bcrypt.hash(updatedData.password, saltRounds);
+        }
+
+        // Obtener el categoría_id basado en categoría y nivel
         const categoriaId = await obtenerCategoriaId(updatedData.categoria, updatedData.nivel);
         if (!categoriaId) {
             return res.status(404).json({ success: false, message: 'Categoría o subcategoría no encontrada' });
         }
+        updatedData.categoria_id = categoriaId;
 
+        // Actualizar el perfil del árbitro
         await db.query(
-            'UPDATE arbitros SET username = ?, password = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria_id = ?, numero_colegiado = ?, alias = ?, fecha_nacimiento = ?, vehiculo = ? WHERE id = ?',
+            `UPDATE arbitros 
+             SET username = ?, password = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria_id = ?, numero_colegiado = ?, alias = ?, fecha_nacimiento = ?, vehiculo = ? 
+             WHERE id = ?`,
             [
                 updatedData.username,
                 updatedData.password,
@@ -426,7 +439,7 @@ router.put('/:id', async (req, res) => {
                 updatedData.email,
                 updatedData.cuenta,
                 updatedData.permiso,
-                categoriaId,
+                updatedData.categoria_id,
                 updatedData.numero_colegiado,
                 updatedData.alias,
                 updatedData.fecha_nacimiento,
@@ -500,6 +513,25 @@ router.put('/:id/foto', async (req, res) => {
     } catch (error) {
         console.error('Error al guardar la foto de perfil:', error);
         res.status(500).json({ success: false, message: 'Error al guardar la foto de perfil' });
+    }
+});
+
+router.put('/:id/reset-password', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const saltRounds = 12;
+        const hashedPassword = await bcrypt.hash('12345', saltRounds);
+
+        await db.query(
+            'UPDATE arbitros SET password = ? WHERE id = ?',
+            [hashedPassword, id]
+        );
+
+        res.json({ success: true, message: 'Contraseña restablecida correctamente.' });
+    } catch (error) {
+        console.error('Error al restablecer la contraseña:', error);
+        res.status(500).json({ success: false, message: 'Error al restablecer la contraseña.' });
     }
 });
 
