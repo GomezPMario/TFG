@@ -805,22 +805,31 @@ async function insertarPartido(data) {
 // Función para insertar árbitros en la tabla partidos_arbitros
 async function insertarArbitros(partidoId, arbitros) {
     const funciones = [
-        { columna: "Arbitro Principal", funcion: 1 },
-        { columna: "Arbitro Auxiliar", funcion: 2 },
-        { columna: "Anotador", funcion: 3 },
-        { columna: "Cronometrador", funcion: 5 },
-        { columna: "Operador 24\"", funcion: 6 },
-        { columna: "Ayudante Anotador", funcion: 7 },
+        { columna: "Arbitro Principal", funcion: "Principal" },
+        { columna: "Arbitro Auxiliar", funcion: "Auxiliar 1" },
+        { columna: "Anotador", funcion: "Anotador" },
+        { columna: "Cronometrador", funcion: "Cronometrador" },
+        { columna: "Operador 24\"", funcion: "24 segundos" },
+        { columna: "Ayudante Anotador", funcion: "Ayudante de Anotador" },
     ];
 
     for (const { columna, funcion } of funciones) {
         const alias = arbitros[columna];
         if (alias) {
-            const arbitroId = await getArbitroId(alias);
-            await db.query(`
-                INSERT INTO partidos_arbitros (partido_id, arbitro_id, funcion_id, dieta, desplazamiento)
-                VALUES (?, ?, ?, 0, 0)
-            `, [partidoId, arbitroId, funcion]);
+            try {
+                const arbitroId = await getArbitroId(alias);
+                const [funcionRow] = await db.query("SELECT id FROM funciones WHERE nombre = ?", [funcion]);
+                if (funcionRow.length === 0) {
+                    console.error(`Función no encontrada: ${funcion}`);
+                    continue;
+                }
+                await db.query(`
+                    INSERT INTO partidos_arbitros (partido_id, arbitro_id, funcion_id, dieta, desplazamiento)
+                    VALUES (?, ?, ?, 0, 0)
+                `, [partidoId, arbitroId, funcionRow[0].id]);
+            } catch (error) {
+                console.error(`Error al insertar árbitro (${alias}) con función (${funcion}):`, error.message);
+            }
         }
     }
 }
