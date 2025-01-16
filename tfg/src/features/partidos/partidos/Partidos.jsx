@@ -4,6 +4,7 @@ import { CgImport } from "react-icons/cg";
 import { baseURL } from '../../../components/login/Login';
 import './Partidos.css';
 import { HiDocumentAdd } from "react-icons/hi";
+import { AiTwotoneDelete } from "react-icons/ai";
 
 const Partidos = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,6 +30,8 @@ const Partidos = () => {
     const [campos, setCampos] = useState([]);
 
     const [dietaEstado, setDietaEstado] = useState({}); // Manejar el estado de los checkboxes
+
+    const [selectedPartidos, setSelectedPartidos] = useState([]);
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => {
@@ -379,6 +382,53 @@ const Partidos = () => {
             }));
         }
     };
+
+    const handleCheckboxChange = (event, partidoId) => {
+        const isChecked = event.target.checked;
+
+        setSelectedPartidos((prevSelected) => {
+            if (isChecked) {
+                // Agregar el partidoId al estado
+                return [...prevSelected, partidoId];
+            } else {
+                // Remover el partidoId del estado
+                return prevSelected.filter((id) => id !== partidoId);
+            }
+        });
+    };
+
+    const handleDeleteSelected = async () => {
+        if (selectedPartidos.length === 0) {
+            alert("No hay partidos seleccionados para eliminar.");
+            return;
+        }
+
+        if (!window.confirm("¿Estás seguro de que deseas eliminar los partidos seleccionados?")) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${baseURL}/api/partidos/eliminar`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ partidos: selectedPartidos }), // Enviar los IDs seleccionados
+            });
+
+            if (response.ok) {
+                alert("Partidos eliminados con éxito.");
+                // Actualiza la lista de partidos después de la eliminación
+                fetchPartidos();
+                setSelectedPartidos([]); // Limpiar los partidos seleccionados
+            } else {
+                alert("Error al eliminar los partidos.");
+            }
+        } catch (error) {
+            console.error("Error al eliminar los partidos:", error);
+            alert("Hubo un problema al eliminar los partidos.");
+        }
+    };
     
     useEffect(() => {
         console.log("Estado de selectedPartido actualizado:", selectedPartido);
@@ -556,6 +606,14 @@ const Partidos = () => {
                         <th>Equipos</th>
                         <th>Fecha Partido</th>
                         <th>Fecha Informe</th>
+                        <th>
+                            <AiTwotoneDelete
+                                className="interactive-icon"
+                                onClick={handleDeleteSelected} // Llama a la función de eliminación
+                                style={{ cursor: "pointer" }} // Asegura que el cursor cambie
+                            />
+                        </th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -599,6 +657,14 @@ const Partidos = () => {
                                 <td>{partido.equipos}</td>
                                 <td>{formatFecha(partido.fecha_partido, true)}</td>
                                 <td>{formatFecha(partido.fecha_informe)}</td>
+                                <td onClick={(event) => event.stopPropagation()}>
+                                    <input
+                                        type="checkbox"
+                                        value={partido.partido_id}
+                                        checked={selectedPartidos.includes(partido.partido_id)} // Marca el checkbox si está seleccionado
+                                        onChange={(event) => handleCheckboxChange(event, partido.partido_id)} // Manejar cambios
+                                    />
+                                </td>
                             </tr>
                         ))
                     ) : (

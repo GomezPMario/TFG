@@ -890,4 +890,33 @@ const formatDate = (fecha) => {
     return null;
 };
 
+router.delete('/eliminar', async (req, res) => {
+    const { partidos } = req.body;
+
+    if (!Array.isArray(partidos) || partidos.length === 0) {
+        return res.status(400).json({ error: "No se proporcionaron partidos para eliminar." });
+    }
+
+    try {
+        // Eliminar registros relacionados en la tabla partidos_arbitros
+        const deleteArbitrosQuery = `
+            DELETE FROM partidos_arbitros WHERE partido_id IN (?)
+        `;
+        await db.query(deleteArbitrosQuery, [partidos]);
+
+        // Eliminar los partidos en la tabla partidos
+        const deletePartidosQuery = `
+            DELETE FROM partidos WHERE id IN (?)
+        `;
+        await db.query(deletePartidosQuery, [partidos]);
+
+        res.json({ success: true, message: "Partidos eliminados con éxito." });
+    } catch (error) {
+        console.error("Error al eliminar los partidos:", error);
+        res.status(500).json({ error: "Error al eliminar los partidos." });
+    }
+});
+
+
+
 module.exports = router;
