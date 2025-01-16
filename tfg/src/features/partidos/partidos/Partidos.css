@@ -19,6 +19,21 @@
     padding: 4px;
     border: 1px solid #ddd;
     text-align: center;
+    vertical-align: middle;
+}
+
+.partidos-table td input[type="checkbox"] {
+    display: inline-block;
+    margin: 0 auto; /* Centra horizontalmente el checkbox */
+    vertical-align: middle; /* Asegura alineación vertical */
+}
+
+.interactive-icon {
+    font-size: 20px; /* Ajusta el tamaño del ícono si es necesario */
+    display: inline-block;
+    margin: auto;
+    vertical-align: middle;
+    cursor: pointer;
 }
 
 .partidos-table th {

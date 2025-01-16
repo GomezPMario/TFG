@@ -313,7 +313,6 @@ const Partidos = () => {
         }
     };
 
-
     const handleUpdateField = async (field, value) => {
         if (!selectedPartido) return;
 
@@ -652,8 +651,6 @@ const Partidos = () => {
                                         <div style={{ textAlign: 'center' }}>--</div>
                                     )}
                                 </td>
-
-
                                 <td>{partido.categoria}</td>
                                 <td>{partido.equipos}</td>
                                 <td>{formatFecha(partido.fecha_partido, true)}</td>
