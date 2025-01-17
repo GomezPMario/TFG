@@ -338,6 +338,7 @@ const Partidos = () => {
                     ...prev,
                     [field]: value,
                 }));
+                fetchPartidos(); // Actualiza la tabla de partidos
             } else {
                 console.error(`Error al actualizar ${field}:`, await response.text());
             }
@@ -523,6 +524,7 @@ const Partidos = () => {
             if (response.ok) {
                 alert('Partido creado con éxito');
                 closeCreateModal();
+                fetchPartidos(); // Actualiza la tabla de partidos
             } else {
                 const error = await response.json();
                 alert(`Error al crear el partido: ${error.error}`);
