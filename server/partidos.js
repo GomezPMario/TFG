@@ -127,8 +127,8 @@ LEFT JOIN
 GROUP BY
     p.id
 ORDER BY
-    p.dia DESC,   -- Ordenar por fecha más reciente primero
-    p.hora DESC;  -- Si la fecha es igual, ordenar por hora más reciente
+    STR_TO_DATE(p.dia, '%Y-%m-%d') DESC,  -- Ordenar por fecha (año, mes, día) más reciente primero
+    TIME_FORMAT(p.hora, '%H:%i:%s') DESC; -- Si la fecha es igual, ordenar por hora más reciente
         `
 
         const [results] = await db.query(query);
