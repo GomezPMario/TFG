@@ -490,28 +490,50 @@ const Partidos = () => {
     };
 
     // Función para enviar el formulario
-    const handleCreateSubmit = async () => {
+    const handleCreateSubmit = async (event) => {
+        event.preventDefault(); // Evita la recarga del navegador
+
+        const arbitros = {
+            Principal: formData.principal,
+            "Auxiliar 1": formData.auxiliar1,
+            "Auxiliar 2": formData.auxiliar2,
+            Anotador: formData.anotador,
+            Cronometrador: formData.cronometrador,
+            "24 segundos": formData.segundos24,
+            "Ayudante de Anotador": formData.ayudanteAnotador,
+        };
+
         try {
             const response = await fetch(`${baseURL}/api/partidos`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    fecha: formData.fecha,
+                    hora: formData.hora,
+                    categoria_id: formData.categoria,
+                    equipo_a_id: formData.equipoLocal,
+                    equipo_b_id: formData.equipoVisitante,
+                    campo_id: formData.campo,
+                    arbitros,
+                }),
             });
 
             if (response.ok) {
                 alert('Partido creado con éxito');
                 closeCreateModal();
-                // Aquí puedes agregar una llamada para actualizar la lista de partidos
             } else {
-                alert('Error al crear el partido');
+                const error = await response.json();
+                alert(`Error al crear el partido: ${error.error}`);
             }
         } catch (error) {
-            console.error('Error al crear el partido:', error);
+            console.error('Error al conectar con la API:', error);
             alert('Error al conectar con la API');
         }
     };
+
+
 
     const handleEquipoLocalChange = async (e) => {
         const equipoLocalId = e.target.value;
@@ -755,7 +777,7 @@ const Partidos = () => {
                             </label>
                             <br /><br />
                             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                <button className="save-button" onClick={handleCreateSubmit}>
+                                <button type="button" className="save-button" onClick={handleCreateSubmit}>
                                     Crear Partido
                                 </button>
                             </div>

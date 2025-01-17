@@ -95,6 +95,68 @@ GROUP BY
     }
 });
 
+router.post('/', async (req, res) => {
+    const {
+        fecha,
+        hora,
+        categoria_id,
+        equipo_a_id,
+        equipo_b_id,
+        campo_id,
+        arbitros = {} // Asignar un valor por defecto si arbitros no está definido
+    } = req.body;
+
+    // Validar campos obligatorios
+    if (!fecha || !hora || !categoria_id || !equipo_a_id || !equipo_b_id || !campo_id || !arbitros.Principal) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios.' });
+    }
+
+    const connection = await db.getConnection();
+
+    try {
+        await connection.beginTransaction();
+
+        // Insertar partido
+        const queryPartido = `
+            INSERT INTO partidos (dia, hora, categoria_id, equipo_a_id, equipo_b_id, campo_id)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `;
+        const [resultPartido] = await connection.query(queryPartido, [
+            fecha, hora, categoria_id, equipo_a_id, equipo_b_id, campo_id
+        ]);
+        const partidoId = resultPartido.insertId;
+
+        // Insertar árbitros
+        const queryArbitros = `
+            INSERT INTO partidos_arbitros (partido_id, arbitro_id, funcion_id, dieta, desplazamiento)
+            VALUES (?, ?, ?, 0, 0)
+        `;
+        for (const funcion in arbitros) {
+            const arbitroId = arbitros[funcion];
+            if (arbitroId) {
+                const [funcionRow] = await connection.query(
+                    'SELECT id FROM funciones WHERE nombre = ?',
+                    [funcion]
+                );
+                if (funcionRow.length > 0) {
+                    await connection.query(queryArbitros, [
+                        partidoId, arbitroId, funcionRow[0].id
+                    ]);
+                }
+            }
+        }
+
+        await connection.commit();
+        res.status(201).json({ message: 'Partido creado con éxito', partidoId });
+    } catch (error) {
+        await connection.rollback();
+        console.error('Error al crear el partido:', error);
+        res.status(500).json({ error: 'Error al crear el partido.' });
+    } finally {
+        connection.release();
+    }
+});
+
 // consultas
 router.get('/intervalo/:arbitroId', async (req, res) => {
     const { startDate, endDate } = req.query;
