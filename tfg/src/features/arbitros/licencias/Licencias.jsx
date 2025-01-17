@@ -13,7 +13,7 @@ const Licencias = ({ onClose }) => {
     // Función para obtener las licencias
     const fetchLicencias = async () => {
         try {
-            const response = await fetch(`${baseURL}/arbitros/licencia`);
+            const response = await fetch(`${baseURL}/api/arbitros/licencia`);
             if (!response.ok) {
                 throw new Error('Error en la respuesta de la API');
             }
@@ -31,7 +31,7 @@ const Licencias = ({ onClose }) => {
 
     const handleDelete = async (numeroColegiado) => {
         try {
-            const response = await fetch(`${baseURL}/arbitros/licencia/${numeroColegiado}`, {
+            const response = await fetch(`${baseURL}/api/arbitros/licencia/${numeroColegiado}`, {
                 method: 'DELETE'
             });
             const result = await response.json();
@@ -58,7 +58,7 @@ const Licencias = ({ onClose }) => {
         if (!newLicencia) return;
 
         try {
-            const response = await fetch(`${baseURL}/arbitros/licencia`, {
+            const response = await fetch(`${baseURL}/api/arbitros/licencia`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

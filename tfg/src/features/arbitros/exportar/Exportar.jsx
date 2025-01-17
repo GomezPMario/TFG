@@ -37,7 +37,7 @@ const Exportar = ({ onClose }) => {
 
     const handleExportXLSX = async () => {
         try {
-            const response = await fetch(`${baseURL}/arbitros/export`, {
+            const response = await fetch(`${baseURL}/api/arbitros/export`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

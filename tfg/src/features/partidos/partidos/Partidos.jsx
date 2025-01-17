@@ -428,6 +428,140 @@ const Partidos = () => {
             alert("Hubo un problema al eliminar los partidos.");
         }
     };
+
+    // Crear partido
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [equiposVisitante, setEquiposVisitante] = useState([]); // Estado para equipos de visitante
+    const [formData, setFormData] = useState({
+        fecha: '',
+        hora: '',
+        categoria: '',
+        equipoLocal: '',
+        equipoVisitante: '',
+        campo: '',
+        principal: '',
+        auxiliar1: '',
+        auxiliar2: '',
+        anotador: '',
+        cronometrador: '',
+        segundos24: '',
+        ayudanteAnotador: '',
+    });
+
+    const [arbitrosCargo1, setArbitrosCargo1] = useState([]);
+    const [arbitrosCargo2, setArbitrosCargo2] = useState([]);
+
+    // Funciones para abrir/cerrar modal
+    const openCreateModal = () => setIsCreateModalOpen(true);
+    const closeCreateModal = () => setIsCreateModalOpen(false);
+
+    // Función para manejar cambios en los inputs
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
+    // Función para actualizar equipos según la categoría seleccionada
+    const handleCategoriaChange = async (e) => {
+        const categoriaId = e.target.value;
+
+        setFormData((prevData) => ({
+            ...prevData,
+            categoria: categoriaId,
+            equipoLocal: '',
+            equipoVisitante: '',
+        }));
+
+        try {
+            const response = await fetch(`${baseURL}/api/equipos?categoria_id=${categoriaId}`);
+            if (response.ok) {
+                const data = await response.json();
+                setEquipos(data); // Todos los equipos para la categoría seleccionada
+                setEquiposVisitante(data); // Inicialmente, "Equipo Visitante" tiene todos los equipos
+            } else {
+                console.error('Error al obtener equipos:', await response.text());
+            }
+        } catch (error) {
+            console.error('Error al obtener los equipos:', error);
+        }
+    };
+
+    // Función para enviar el formulario
+    const handleCreateSubmit = async () => {
+        try {
+            const response = await fetch(`${baseURL}/api/partidos`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                alert('Partido creado con éxito');
+                closeCreateModal();
+                // Aquí puedes agregar una llamada para actualizar la lista de partidos
+            } else {
+                alert('Error al crear el partido');
+            }
+        } catch (error) {
+            console.error('Error al crear el partido:', error);
+            alert('Error al conectar con la API');
+        }
+    };
+
+    const handleEquipoLocalChange = async (e) => {
+        const equipoLocalId = e.target.value;
+
+        setFormData((prevData) => ({
+            ...prevData,
+            equipoLocal: equipoLocalId,
+            equipoVisitante: '',
+        }));
+
+        try {
+            const response = await fetch(`${baseURL}/api/equipos?categoria_id=${formData.categoria}&exclude_id=${equipoLocalId}`);
+            if (response.ok) {
+                const data = await response.json();
+                setEquiposVisitante(data); // Filtra equipos para "Equipo Visitante"
+            } else {
+                console.error('Error al filtrar equipos para visitante:', await response.text());
+            }
+        } catch (error) {
+            console.error('Error al filtrar equipos para visitante:', error);
+        }
+    };
+
+    const handleEquipoVisitanteChange = (e) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            equipoVisitante: e.target.value,
+        }));
+    };
+
+    // Fetch inicial para cargar categorías, campos y árbitros
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const categoriasResponse = await fetch(`${baseURL}/api/categorias?min_id=38`);
+                const camposResponse = await fetch(`${baseURL}/api/campos`);
+                const responseCargo1 = await fetch(`${baseURL}/api/arbitros?cargo=1`);
+                const responseCargo2 = await fetch(`${baseURL}/api/arbitros?cargo=2`);
+
+                if (categoriasResponse.ok) setCategorias(await categoriasResponse.json());
+                if (camposResponse.ok) setCampos(await camposResponse.json());
+                if (responseCargo1.ok) setArbitrosCargo1(await responseCargo1.json());
+                if (responseCargo2.ok) setArbitrosCargo2(await responseCargo2.json());
+            } catch (error) {
+                console.error('Error al cargar los datos iniciales:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
     
     useEffect(() => {
         console.log("Estado de selectedPartido actualizado:", selectedPartido);
@@ -445,7 +579,7 @@ const Partidos = () => {
         <div className="partidos-container">
             <h1 className="partidos-title">Listado de Partidos-Informes</h1>
 
-            <button className="button">
+            <button className="button" onClick={openCreateModal}>
                 <IoCreateOutline style={{ marginRight: '8px' }} />
                 Crear Partido
             </button>
@@ -453,6 +587,182 @@ const Partidos = () => {
                 <CgImport style={{ marginRight: '8px' }} />
                 Generar Designación
             </button>
+
+            {isCreateModalOpen && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <span className="close" onClick={closeCreateModal}>&times;</span>
+                        <h2 style={{ textAlign: 'center' }}>Crear Partido</h2>
+                        <form>
+                            <label>
+                                <strong>Fecha:</strong>
+                                <input type="date" name="fecha" value={formData.fecha} onChange={handleInputChange} />
+                            </label>
+                            <br /><br />
+                            <label>
+                                <strong>Hora:</strong>
+                                <input type="time" name="hora" value={formData.hora} onChange={handleInputChange} />
+                            </label>
+                            <br /><br />
+                            <label>
+                                <strong>Categoría:</strong>
+                                <select
+                                    className="select-dropdown"
+                                    name="categoria"
+                                    value={formData.categoria}
+                                    onChange={handleCategoriaChange}
+                                    style={{ marginLeft: '10px' }}
+                                >
+                                    <option value="">Selecciona una categoría</option>
+                                    {categorias.map((categoria) => (
+                                        <option key={categoria.id} value={categoria.id}>
+                                            {categoria.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <br /><br />
+                            <label>
+                                <strong>Equipo Local:</strong>
+                                <select
+                                    className="select-dropdown"
+                                    name="equipoLocal"
+                                    value={formData.equipoLocal}
+                                    onChange={handleEquipoLocalChange}
+                                    style={{ marginLeft: '10px' }}
+                                >
+                                    <option value="">Selecciona un equipo</option>
+                                    {equipos.map((equipo) => (
+                                        <option key={equipo.id} value={equipo.id}>
+                                            {equipo.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <br /><br />
+                            <label>
+                                <strong>Equipo Visitante:</strong>
+                                <select
+                                    className="select-dropdown"
+                                    name="equipoVisitante"
+                                    value={formData.equipoVisitante}
+                                    onChange={handleEquipoVisitanteChange}
+                                    style={{ marginLeft: '10px' }}
+                                >
+                                    <option value="">Selecciona un equipo</option>
+                                    {equiposVisitante.map((equipo) => (
+                                        <option key={equipo.id} value={equipo.id}>
+                                            {equipo.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <br /><br />
+                            <label>
+                                <strong>Campo:</strong>
+                                <select className="select-dropdown" name="campo" value={formData.campo} onChange={handleInputChange} style={{ marginLeft: '10px' }}>
+                                    <option value="">Selecciona un campo</option>
+                                    {campos.map((campo) => (
+                                        <option key={campo.id} value={campo.id}>
+                                            {campo.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <br /><br />
+                            <label>
+                                <strong>Principal:</strong>
+                                <select className="select-dropdown" name="principal" value={formData.principal} onChange={handleInputChange} style={{ marginLeft: '10px' }}>
+                                    <option value="">Selecciona un árbitro</option>
+                                    {arbitrosCargo1.map((arbitro) => (
+                                        <option key={arbitro.id} value={arbitro.id}>
+                                            {arbitro.alias} - {arbitro.nombre} {arbitro.apellido}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <br /><br />
+                            <label>
+                                <strong>Auxiliar 1:</strong>
+                                <select className="select-dropdown" name="auxiliar1" value={formData.auxiliar1} onChange={handleInputChange} style={{ marginLeft: '10px' }}>
+                                    <option value="">Selecciona un árbitro</option>
+                                    {arbitrosCargo1.map((arbitro) => (
+                                        <option key={arbitro.id} value={arbitro.id}>
+                                            {arbitro.alias} - {arbitro.nombre} {arbitro.apellido}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <br /><br />
+                            <label>
+                                <strong>Auxiliar 2:</strong>
+                                <select className="select-dropdown" name="auxiliar2" value={formData.auxiliar2} onChange={handleInputChange} style={{ marginLeft: '10px' }}>
+                                    <option value="">Selecciona un árbitro</option>
+                                    {arbitrosCargo1.map((arbitro) => (
+                                        <option key={arbitro.id} value={arbitro.id}>
+                                            {arbitro.alias} - {arbitro.nombre} {arbitro.apellido}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <br /><br />
+                            <label>
+                                <strong>Anotador:</strong>
+                                <select className="select-dropdown" name="anotador" value={formData.anotador} onChange={handleInputChange} style={{ marginLeft: '10px' }}>
+                                    <option value="">Selecciona un árbitro</option>
+                                    {arbitrosCargo2.map((arbitro) => (
+                                        <option key={arbitro.id} value={arbitro.id}>
+                                            {arbitro.alias} - {arbitro.nombre} {arbitro.apellido}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <br /><br />
+                            <label>
+                                <strong>Cronometrador:</strong>
+                                <select className="select-dropdown" name="cronometrador" value={formData.cronometrador} onChange={handleInputChange} style={{ marginLeft: '10px' }}>
+                                    <option value="">Selecciona un árbitro</option>
+                                    {arbitrosCargo2.map((arbitro) => (
+                                        <option key={arbitro.id} value={arbitro.id}>
+                                            {arbitro.alias} - {arbitro.nombre} {arbitro.apellido}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <br /><br />
+                            <label>
+                                <strong>24 segundos:</strong>
+                                <select className="select-dropdown" name="segundos24" value={formData.segundos24} onChange={handleInputChange} style={{ marginLeft: '10px' }}>
+                                    <option value="">Selecciona un árbitro</option>
+                                    {arbitrosCargo2.map((arbitro) => (
+                                        <option key={arbitro.id} value={arbitro.id}>
+                                            {arbitro.alias} - {arbitro.nombre} {arbitro.apellido}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <br /><br />
+                            <label>
+                                <strong>Ayudante de Anotador:</strong>
+                                <select className="select-dropdown" name="ayudanteAnotador" value={formData.ayudanteAnotador} onChange={handleInputChange} style={{ marginLeft: '10px' }}>
+                                    <option value="">Selecciona un árbitro</option>
+                                    {arbitrosCargo2.map((arbitro) => (
+                                        <option key={arbitro.id} value={arbitro.id}>
+                                            {arbitro.alias} - {arbitro.nombre} {arbitro.apellido}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <br /><br />
+                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                <button className="save-button" onClick={handleCreateSubmit}>
+                                    Crear Partido
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
 
             {isModalOpen && (
                 <div className="modal">

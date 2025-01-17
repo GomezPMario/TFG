@@ -53,7 +53,7 @@ app.use((req, res, next) => {
 })();
 
 // Rutas
-app.use('/arbitros', arbitrosRoutes);
+app.use('/api/arbitros', arbitrosRoutes);
 app.use('/api/informes', informesRoutes);
 app.use('/api', tarifasRoutes);
 app.use('/api/partidos', partidosRoutes);

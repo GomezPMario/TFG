@@ -25,7 +25,7 @@ const fetchArbitros = async (baseURL, setArbitros, orderBy, orderType, permissio
         }
         if (search) params.append('search', search); // Añadir el parámetro de búsqueda
 
-        const response = await fetch(`${baseURL}/arbitros?${params.toString()}`);
+        const response = await fetch(`${baseURL}/api/arbitros?${params.toString()}`);
         if (!response.ok) throw new Error('Error en la respuesta de la API');
         const data = await response.json();
         setArbitros(data);
@@ -112,7 +112,7 @@ const Arbitros = () => {
 
     useEffect(() => {
         const fetchArbitrosOnMount = async () => {
-            const response = await fetch(`${baseURL}/arbitros`);
+            const response = await fetch(`${baseURL}/api/arbitros`);
             const data = await response.json();
             setArbitros(data);
         };
@@ -123,7 +123,7 @@ const Arbitros = () => {
 
     const handleNuevoArbitroCerrado = async () => {
         try {
-            const response = await fetch(`${baseURL}/arbitros`);
+            const response = await fetch(`${baseURL}/api/arbitros`);
             if (!response.ok) throw new Error('Error al obtener árbitros actualizados.');
             const updatedArbitros = await response.json();
 
@@ -168,7 +168,7 @@ const Arbitros = () => {
         }
 
         try {
-            const response = await fetch(`${baseURL}/arbitros`, {
+            const response = await fetch(`${baseURL}/api/arbitros`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

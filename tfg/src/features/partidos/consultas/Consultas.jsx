@@ -328,7 +328,7 @@ const Consultas = () => {
         setIsModalOpen(true);
 
         try {
-            const response = await axios.get(`${baseURL}/arbitros/foto/${companero.arbitro_id}`);
+            const response = await axios.get(`${baseURL}/api/arbitros/foto/${companero.arbitro_id}`);
             setFotoPerfil(response.data.foto);
         } catch (error) {
             console.error("Error al obtener la foto de perfil:", error);

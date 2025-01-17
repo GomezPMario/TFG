@@ -2,29 +2,68 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db_setup');
 
+// router.get('/', async (req, res) => {
+//     try {
+//         const query = `
+//             SELECT
+//                 e.id AS id,
+//                 e.nombre AS nombre,
+//                 c.nombre AS categoria_nombre,
+//                 c.id AS categoria_id,
+//                 ca.nombre AS campo_nombre,
+//                 ca.id AS campo_id
+//             FROM
+//                 equipos e
+//             LEFT JOIN
+//                 categorias c ON e.categoria_id = c.id
+//             LEFT JOIN
+//                 campos ca ON e.campo_id = ca.id;
+//         `;
+//         const [rows] = await db.query(query);
+//         console.log("Equipos con categorías:", rows); // Agrega esto para verificar
+//         res.json(rows);
+//     } catch (error) {
+//         console.error('Error al obtener equipos con categorías:', error);
+//         res.status(500).json({ error: 'Error al obtener los equipos con sus categorías' });
+//     }
+// });
+
 router.get('/', async (req, res) => {
+    const { categoria_id, exclude_id } = req.query; // Leer parámetros de consulta
+    let query = `
+        SELECT
+            e.id AS id,
+            e.nombre AS nombre,
+            c.nombre AS categoria_nombre,
+            c.id AS categoria_id,
+            ca.nombre AS campo_nombre,
+            ca.id AS campo_id
+        FROM
+            equipos e
+        LEFT JOIN
+            categorias c ON e.categoria_id = c.id
+        LEFT JOIN
+            campos ca ON e.campo_id = ca.id
+        WHERE 1=1
+    `;
+    const params = [];
+
+    if (categoria_id) {
+        query += ` AND e.categoria_id = ?`;
+        params.push(categoria_id);
+    }
+    if (exclude_id) {
+        query += ` AND e.id NOT IN (?)`;
+        params.push(exclude_id);
+    }
+
     try {
-        const query = `
-            SELECT
-                e.id AS id,
-                e.nombre AS nombre,
-                c.nombre AS categoria_nombre,
-                c.id AS categoria_id,
-                ca.nombre AS campo_nombre,
-                ca.id AS campo_id
-            FROM
-                equipos e
-            LEFT JOIN
-                categorias c ON e.categoria_id = c.id
-            LEFT JOIN
-                campos ca ON e.campo_id = ca.id;
-        `;
-        const [rows] = await db.query(query);
-        console.log("Equipos con categorías:", rows); // Agrega esto para verificar
+        const [rows] = await db.query(query, params);
+        console.log('Equipos con filtros:', rows); // Log para verificar
         res.json(rows);
     } catch (error) {
-        console.error('Error al obtener equipos con categorías:', error);
-        res.status(500).json({ error: 'Error al obtener los equipos con sus categorías' });
+        console.error('Error al obtener equipos con filtros:', error);
+        res.status(500).json({ error: 'Error al obtener los equipos.' });
     }
 });
 

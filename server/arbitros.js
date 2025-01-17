@@ -49,6 +49,63 @@ const bcrypt = require('bcrypt');
 //     }
 // });
 
+// router.get('/', async (req, res) => {
+//     let sql = `
+//         SELECT a.*, e.categoria, e.nivel
+//         FROM arbitros a
+//         LEFT JOIN escala e ON a.categoria_id = e.id
+//         WHERE 1=1
+//     `;
+
+//     const { orderBy, orderType, permission, category, search } = req.query;
+//     const params = [];
+
+//     // Filtro de búsqueda
+//     if (search) {
+//         sql += `
+//             AND (
+//                 a.nombre LIKE ? OR
+//                 a.alias LIKE ? OR
+//                 a.numero_colegiado LIKE ? OR
+//                 CONCAT(a.nombre, ' ', a.apellido) LIKE ?
+//             )
+//         `;
+//         params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
+//     }
+
+//     // Filtrar por tipo de cargo solo si hay un valor válido
+//     if (orderBy === 'tipo_cargo' && orderType && ['arbitro', 'oficial'].includes(orderType)) {
+//         sql += ` AND a.cargo = ?`;
+//         params.push(orderType === 'arbitro' ? 1 : 2);
+//     }
+
+//     // Filtrar por permiso
+//     if (orderBy === 'permiso' && permission) {
+//         sql += ` AND a.permiso = ?`;
+//         params.push(permission);
+//     }
+
+//     // Filtrar por categoría
+//     if (orderBy === 'categoria' && category) {
+//         sql += ` AND e.categoria = ? ORDER BY e.nivel ASC, a.orden ASC`;
+//         params.push(category);
+//     }
+
+//     // Ordenar por número colegiado
+//     if (orderBy === 'numero_colegiado') {
+//         sql += ` ORDER BY a.numero_colegiado ${orderType === 'desc' ? 'DESC' : 'ASC'}`;
+//     }
+
+//     try {
+//         const [result] = await db.query(sql, params);
+//         res.json(result);
+//     } catch (err) {
+//         console.error('Error querying the database:', err);
+//         res.status(500).send(err);
+//     }
+// });
+
+
 router.get('/', async (req, res) => {
     let sql = `
         SELECT a.*, e.categoria, e.nivel 
@@ -57,7 +114,7 @@ router.get('/', async (req, res) => {
         WHERE 1=1
     `;
 
-    const { orderBy, orderType, permission, category, search } = req.query;
+    const { orderBy, orderType, permission, category, search, cargo } = req.query;
     const params = [];
 
     // Filtro de búsqueda
@@ -73,25 +130,28 @@ router.get('/', async (req, res) => {
         params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
     }
 
-    // Filtrar por tipo de cargo solo si hay un valor válido
+    // Filtrar por cargo si se proporciona
+    if (cargo) {
+        sql += ` AND a.cargo = ?`;
+        params.push(cargo);
+    }
+
+    // Otros filtros existentes
     if (orderBy === 'tipo_cargo' && orderType && ['arbitro', 'oficial'].includes(orderType)) {
         sql += ` AND a.cargo = ?`;
         params.push(orderType === 'arbitro' ? 1 : 2);
     }
 
-    // Filtrar por permiso
     if (orderBy === 'permiso' && permission) {
         sql += ` AND a.permiso = ?`;
         params.push(permission);
     }
 
-    // Filtrar por categoría
     if (orderBy === 'categoria' && category) {
         sql += ` AND e.categoria = ? ORDER BY e.nivel ASC, a.orden ASC`;
         params.push(category);
     }
 
-    // Ordenar por número colegiado
     if (orderBy === 'numero_colegiado') {
         sql += ` ORDER BY a.numero_colegiado ${orderType === 'desc' ? 'DESC' : 'ASC'}`;
     }

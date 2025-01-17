@@ -53,7 +53,7 @@ const Perfil = ({ arbitroId, isAdminView = false }) => {
         if (id) {
             const fetchArbitro = async () => {
                 try {
-                    const response = await axios.get(`${baseURL}/arbitros/${id}`);
+                    const response = await axios.get(`${baseURL}/api/arbitros/${id}`);
                     setArbitro(response.data);
                     setUpdatedData(response.data);
 
@@ -68,7 +68,7 @@ const Perfil = ({ arbitroId, isAdminView = false }) => {
 
             const fetchFotoPerfil = async () => {
                 try {
-                    const response = await axios.get(`${baseURL}/arbitros/foto/${id}`);
+                    const response = await axios.get(`${baseURL}/api/arbitros/foto/${id}`);
                     setFotoPerfil(response.data.foto);
                 } catch (error) {
                     console.error('Error al obtener la foto de perfil:', error);
@@ -86,7 +86,7 @@ const Perfil = ({ arbitroId, isAdminView = false }) => {
 
         const fetchArbitro = async () => {
             try {
-                const response = await axios.get(`${baseURL}/arbitros/${arbitroId}`);
+                const response = await axios.get(`${baseURL}/api/arbitros/${arbitroId}`);
                 setArbitro(response.data);
                 setUpdatedData(response.data);
             } catch (error) {
@@ -99,7 +99,7 @@ const Perfil = ({ arbitroId, isAdminView = false }) => {
 
     const handlePasswordReset = async () => {
         try {
-            await axios.put(`${baseURL}/arbitros/${arbitro.id}/reset-password`, {
+            await axios.put(`${baseURL}/api/arbitros/${arbitro.id}/reset-password`, {
                 headers: { 'Content-Type': 'application/json' },
             });
             alert('Contraseña restablecida a "12345".');
@@ -122,7 +122,7 @@ const Perfil = ({ arbitroId, isAdminView = false }) => {
                     const base64Image = reader.result.split(',')[1];
                     try {
                         const response = await axios.put(
-                            `${baseURL}/arbitros/${arbitro.id}/foto`,
+                            `${baseURL}/api/arbitros/${arbitro.id}/foto`,
                             { foto: base64Image },
                             { headers: { 'Content-Type': 'application/json' } }
                         );
@@ -193,7 +193,7 @@ const Perfil = ({ arbitroId, isAdminView = false }) => {
             }
 
             // Realizar la solicitud PUT
-            await axios.put(`${baseURL}/arbitros/${id}`, dataToSend, {
+            await axios.put(`${baseURL}/api/arbitros/${id}`, dataToSend, {
                 headers: { 'Content-Type': 'application/json' },
             });
 

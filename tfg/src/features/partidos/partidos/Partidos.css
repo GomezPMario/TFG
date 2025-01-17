@@ -172,3 +172,14 @@
 .save-button:hover {
     background-color: #45a049;
 }
+
+.select-dropdown {
+    width: 100%; /* O un valor fijo como 300px si prefieres */
+    height: auto;
+    max-width: 400px; /* Opcional: limitar el ancho máximo */
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}

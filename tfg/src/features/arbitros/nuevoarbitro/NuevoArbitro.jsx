@@ -76,7 +76,7 @@ const NuevoArbitro = ({ onClose = null, isPublic = false, isManual = false, onAr
 
             if (isManual) {
                 // Caso manual (el usuario selecciona la categoría y nivel)
-                const categoriaResponse = await fetch(`${baseURL}/arbitros/categoria-id`, {
+                const categoriaResponse = await fetch(`${baseURL}/api/arbitros/categoria-id`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ const NuevoArbitro = ({ onClose = null, isPublic = false, isManual = false, onAr
                 permiso,
             };
 
-            const response = await fetch(`${baseURL}/arbitros/nuevoarbitro`, {
+            const response = await fetch(`${baseURL}/api/arbitros/nuevoarbitro`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
