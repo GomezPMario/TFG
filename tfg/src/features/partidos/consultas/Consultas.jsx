@@ -370,37 +370,6 @@ const Consultas = () => {
         }
     };
 
-    // useEffect(() => {
-    //     const fetchPartidos = async () => {
-    //         const arbitro = JSON.parse(localStorage.getItem('arbitro'));
-    //         const arbitroId = arbitro?.id;
-
-    //         if (!arbitroId) {
-    //             console.error("No se encontró el ID del árbitro logueado.");
-    //             setIsLoading(false);
-    //             return;
-    //         }
-
-    //         const { pastThursday, nextThursday } = getThursdayInterval();
-    //         const startDate = pastThursday.toISOString().split('T')[0];
-    //         const endDate = nextThursday.toISOString().split('T')[0];
-
-    //         try {
-    //             const response = await axios.get(`${baseURL}/api/partidos/intervalo/${arbitroId}`, {
-    //                 params: { startDate, endDate },
-    //             });
-    //             console.log('Datos recibidos:', response.data);
-    //             setPartidos(response.data);
-    //         } catch (error) {
-    //             console.error("Error al obtener los partidos:", error);
-    //         } finally {
-    //             setIsLoading(false);
-    //         }
-    //     };
-
-    //     fetchPartidos();
-    // }, []);
-
     useEffect(() => {
         const fetchPartidos = async () => {
             const arbitro = JSON.parse(localStorage.getItem('arbitro'));

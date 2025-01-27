@@ -358,7 +358,7 @@ const Categorias = () => {
                                 >
                                     <option value="">Seleccione un tipo</option>
                                     <option value="FEDERADO">FEDERADO</option>
-                                    <option value="ESCOLAR">ESCOLAR</option>
+                                    <option value="ESCOLAR">ESCOLAR</option> 
                                 </select>
                             </label>
 

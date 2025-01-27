@@ -78,34 +78,6 @@ const Arbitros = () => {
         ],
     };
 
-    // useEffect(() => {
-    //     const fetchArbitros = async () => {
-    //         try {
-    //             const params = new URLSearchParams();
-
-    //             if (orderBy) params.append('orderBy', orderBy);
-    //             if (orderType) params.append('orderType', orderType); // Solo enviar si no está vacío
-    //             if (permission && orderBy === 'permiso') params.append('permission', permission);
-    //             if (category && orderBy === 'categoria') {
-    //                 params.append('category', category);
-    //                 params.append(
-    //                     'categoryOrder',
-    //                     category === 'Escuela - ACB' ? 'desc' : 'asc'
-    //                 );
-    //             }
-
-    //             const response = await fetch(`${baseURL}/arbitros?${params.toString()}`);
-    //             if (!response.ok) throw new Error('Error en la respuesta de la API');
-    //             const data = await response.json();
-    //             setArbitros(data);
-    //         } catch (error) {
-    //             console.error('Error fetching arbitros:', error);
-    //         }
-    //     };
-
-    //     fetchArbitros();
-    // }, [orderBy, orderType, permission, category]);
-
     useEffect(() => {
         fetchArbitros(baseURL, setArbitros, orderBy, orderType, permission, category, search);
     }, [orderBy, orderType, permission, category, search]); // Agregar `search` como dependencia

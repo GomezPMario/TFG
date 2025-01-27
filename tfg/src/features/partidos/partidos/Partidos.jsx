@@ -1001,7 +1001,7 @@ const Partidos = () => {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="7">No hay partidos disponibles</td>
+                            <td colSpan="8">No hay partidos disponibles</td>
                         </tr>
                     )}
                 </tbody>

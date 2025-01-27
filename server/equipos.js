@@ -2,32 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db_setup');
 
-// router.get('/', async (req, res) => {
-//     try {
-//         const query = `
-//             SELECT
-//                 e.id AS id,
-//                 e.nombre AS nombre,
-//                 c.nombre AS categoria_nombre,
-//                 c.id AS categoria_id,
-//                 ca.nombre AS campo_nombre,
-//                 ca.id AS campo_id
-//             FROM
-//                 equipos e
-//             LEFT JOIN
-//                 categorias c ON e.categoria_id = c.id
-//             LEFT JOIN
-//                 campos ca ON e.campo_id = ca.id;
-//         `;
-//         const [rows] = await db.query(query);
-//         console.log("Equipos con categorías:", rows); // Agrega esto para verificar
-//         res.json(rows);
-//     } catch (error) {
-//         console.error('Error al obtener equipos con categorías:', error);
-//         res.status(500).json({ error: 'Error al obtener los equipos con sus categorías' });
-//     }
-// });
-
 router.get('/', async (req, res) => {
     const { categoria_id, exclude_id } = req.query; // Leer parámetros de consulta
     let query = `
@@ -69,7 +43,7 @@ router.get('/', async (req, res) => {
 
 // Crear un nuevo equipo
 router.post('/', async (req, res) => {
-    const { nombre, categoria_id, campo_id } = req.body; // Cambiar "campo" a "campo_id"
+    const { nombre, categoria_id, campo_id } = req.body;
 
     if (!nombre || !categoria_id || !campo_id) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
@@ -78,7 +52,7 @@ router.post('/', async (req, res) => {
     try {
         const result = await db.query(
             'INSERT INTO equipos (nombre, categoria_id, campo_id) VALUES (?, ?, ?)',
-            [nombre, categoria_id, campo_id] // Usar "campo_id"
+            [nombre, categoria_id, campo_id]
         );
         res.status(201).json({ id: result[0].insertId, nombre, categoria_id, campo_id });
     } catch (error) {

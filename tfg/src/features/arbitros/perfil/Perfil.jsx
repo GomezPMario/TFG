@@ -162,20 +162,6 @@ const Perfil = ({ arbitroId, isAdminView = false }) => {
         }
     };
 
-    // const actualizarPerfil = async (id) => {
-    //     try {
-    //         const dataToSend = { ...updatedData, fecha_nacimiento: fechaNacimiento };
-    //         await axios.put(`${baseURL}/arbitros/${id}`, dataToSend, {
-    //             headers: { 'Content-Type': 'application/json' },
-    //         });
-    //         setIsEditing(false);
-    //         setArbitro(dataToSend);
-    //         localStorage.setItem('arbitro', JSON.stringify(dataToSend));
-    //     } catch (error) {
-    //         console.error('Error al actualizar el perfil:', error.response ? error.response.data : error.message);
-    //     }
-    // };
-
     const handlePasswordChange = (e) => {
         setPassword(e.target.value); // Actualiza solo si el usuario escribe algo
     };
@@ -287,16 +273,6 @@ const Perfil = ({ arbitroId, isAdminView = false }) => {
                                 <input type="text" name="username" value={updatedData.username} onChange={handleChange} />
                                 : arbitro.username}
                             </li>
-                            {/* <li><FaKey className="icon" /> <strong>Contraseña:</strong>
-                                {isEditing && isEditable('password') ?
-                                <input type="text" name="password" value={updatedData.password} onChange={handleChange} />
-                                : arbitro.password}
-                                {arbitroLogueado?.id !== arbitro.id && (
-                                    <button className="restablecer-btn" onClick={handlePasswordReset}>
-                                        Restablecer
-                                    </button>
-                                )}
-                            </li> */}
                             <li>
                                 <FaKey className="icon" /> <strong>Contraseña:</strong>
                                 {isEditing ? (

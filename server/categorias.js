@@ -116,28 +116,6 @@ router.post('/', async (req, res) => {
 });
 
 // Actualizar categorías
-// router.put('/', async (req, res) => {
-//     const categorias = req.body;
-
-//     if (!Array.isArray(categorias) || categorias.length === 0) {
-//         return res.status(400).json({ error: 'Se requiere una lista de categorías para actualizar.' });
-//     }
-
-//     try {
-//         const promises = categorias.map(({ id, nombre, padre }) => {
-//             const query = 'UPDATE categorias SET nombre = ?, padre = ? WHERE id = ?';
-//             return db.query(query, [nombre, padre, id]);
-//         });
-
-//         await Promise.all(promises);
-//         res.status(200).json({ message: 'Categorías actualizadas con éxito.' });
-//     } catch (error) {
-//         console.error('Error al actualizar las categorías:', error);
-//         res.status(500).json({ error: 'Error al actualizar las categorías.' });
-//     }
-// });
-
-// Actualizar categorías
 router.put('/', async (req, res) => {
     const categorias = req.body;
 

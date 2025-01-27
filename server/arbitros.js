@@ -4,108 +4,6 @@ const db = require('./db_setup');
 const { hash } = require('bcrypt');
 const bcrypt = require('bcrypt');
 
-// router.get('/', async (req, res) => {
-//     let sql = 'SELECT * FROM arbitros WHERE 1=1'; // Consulta base
-//     const { orderBy, orderType, search, permission } = req.query;
-
-//     if (orderBy !== 'permiso') {
-//         if (search) {
-//             sql += ` AND (username LIKE ? OR nombre LIKE ? OR apellido LIKE ? OR alias LIKE ? OR numero_colegiado LIKE ?)`;
-//         }
-//     }
-
-//     if (orderBy === 'permiso') {
-//         if (permission) {
-//             sql += ` AND permiso = ?`;
-//         }
-//     } else {
-//         if (orderBy === 'tipo_cargo' && orderType) {
-//             if (orderType === 'arbitro') {
-//                 sql += ' AND cargo = 1';
-//             } else if (orderType === 'oficial') {
-//                 sql += ' AND cargo = 2';
-//             }
-//         }
-//     }
-
-//     const orderDirection = orderType === 'desc' ? 'DESC' : 'ASC';
-//     sql += ` ORDER BY numero_colegiado ${orderDirection}`;
-
-//     try {
-//         let params = [];
-//         if (search && orderBy !== 'permiso') {
-//             params = Array(5).fill(`%${search}%`);
-//         }
-//         if (permission) {
-//             params.push(permission);
-//         }
-
-//         console.log('Ejecutando consulta:', sql, params); // Debug
-//         const [result] = await db.query(sql, params);
-//         res.json(result);
-//     } catch (err) {
-//         console.error('Error querying the database:', err);
-//         return res.status(500).send(err);
-//     }
-// });
-
-// router.get('/', async (req, res) => {
-//     let sql = `
-//         SELECT a.*, e.categoria, e.nivel
-//         FROM arbitros a
-//         LEFT JOIN escala e ON a.categoria_id = e.id
-//         WHERE 1=1
-//     `;
-
-//     const { orderBy, orderType, permission, category, search } = req.query;
-//     const params = [];
-
-//     // Filtro de búsqueda
-//     if (search) {
-//         sql += `
-//             AND (
-//                 a.nombre LIKE ? OR
-//                 a.alias LIKE ? OR
-//                 a.numero_colegiado LIKE ? OR
-//                 CONCAT(a.nombre, ' ', a.apellido) LIKE ?
-//             )
-//         `;
-//         params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
-//     }
-
-//     // Filtrar por tipo de cargo solo si hay un valor válido
-//     if (orderBy === 'tipo_cargo' && orderType && ['arbitro', 'oficial'].includes(orderType)) {
-//         sql += ` AND a.cargo = ?`;
-//         params.push(orderType === 'arbitro' ? 1 : 2);
-//     }
-
-//     // Filtrar por permiso
-//     if (orderBy === 'permiso' && permission) {
-//         sql += ` AND a.permiso = ?`;
-//         params.push(permission);
-//     }
-
-//     // Filtrar por categoría
-//     if (orderBy === 'categoria' && category) {
-//         sql += ` AND e.categoria = ? ORDER BY e.nivel ASC, a.orden ASC`;
-//         params.push(category);
-//     }
-
-//     // Ordenar por número colegiado
-//     if (orderBy === 'numero_colegiado') {
-//         sql += ` ORDER BY a.numero_colegiado ${orderType === 'desc' ? 'DESC' : 'ASC'}`;
-//     }
-
-//     try {
-//         const [result] = await db.query(sql, params);
-//         res.json(result);
-//     } catch (err) {
-//         console.error('Error querying the database:', err);
-//         res.status(500).send(err);
-//     }
-// });
-
-
 router.get('/', async (req, res) => {
     let sql = `
         SELECT a.*, e.categoria, e.nivel 
@@ -354,40 +252,6 @@ router.delete('/licencia/:numero_colegiado', async (req, res) => {
     }
 });
 
-// router.post('/export', async (req, res) => {
-//     const { fields } = req.body;
-
-//     if (!fields || fields.length === 0) {
-//         return res.status(400).json({ error: 'No se seleccionaron campos para exportar.' });
-//     }
-
-//     try {
-//         // Genera la lista de columnas seleccionadas según los checkboxes
-//         let columns = fields.join(', ');
-
-//         // Incluye 'categoria' o 'nivel' en la consulta si han sido seleccionados individualmente
-//         if (fields.includes('categoria')) {
-//             columns += ', e.categoria';
-//         }
-//         if (fields.includes('nivel')) {
-//             columns += ', e.nivel';
-//         }
-
-//         // Ejecuta el JOIN solo si 'categoria' o 'nivel' están seleccionados
-//         const query = `
-//             SELECT ${columns}
-//             FROM arbitros a
-//             ${fields.includes('categoria') || fields.includes('nivel') ? 'JOIN escala e ON a.categoria_id = e.id' : ''}
-//         `;
-
-//         const [results] = await db.query(query);
-//         res.json(results);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: 'Error al exportar los datos.' });
-//     }
-// });
-
 router.post('/export', async (req, res) => {
     const { fields } = req.body;
 
@@ -462,107 +326,6 @@ router.get('/:id', async (req, res) => {
 });
 
 // Ruta para actualizar el perfil
-
-// router.put('/:id', async (req, res) => {
-//     const id = req.params.id;
-//     const updatedData = req.body;
-
-//     try {
-//         // Eliminar el campo "foto" de updatedData, si existe
-//         delete updatedData.foto;
-
-//         // Si existe el campo password, hashearlo
-//         if (updatedData.password) {
-//             const saltRounds = 10;
-//             updatedData.password = await bcrypt.hash(updatedData.password, saltRounds);
-//         }
-
-//         // Obtener el categoría_id basado en categoría y nivel
-//         const categoriaId = await obtenerCategoriaId(updatedData.categoria, updatedData.nivel);
-//         if (!categoriaId) {
-//             return res.status(404).json({ success: false, message: 'Categoría o subcategoría no encontrada' });
-//         }
-//         updatedData.categoria_id = categoriaId;
-
-//         // Actualizar el perfil del árbitro
-//         await db.query(
-//             `UPDATE arbitros
-//              SET username = ?, password = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria_id = ?, numero_colegiado = ?, alias = ?, fecha_nacimiento = ?, vehiculo = ?
-//              WHERE id = ?`,
-//             [
-//                 updatedData.username,
-//                 updatedData.password,
-//                 updatedData.nombre,
-//                 updatedData.apellido,
-//                 updatedData.domicilio,
-//                 updatedData.telefono,
-//                 updatedData.email,
-//                 updatedData.cuenta,
-//                 updatedData.permiso,
-//                 updatedData.categoria_id,
-//                 updatedData.numero_colegiado,
-//                 updatedData.alias,
-//                 updatedData.fecha_nacimiento,
-//                 updatedData.vehiculo,
-//                 id
-//             ]
-//         );
-
-//         res.json({ success: true, message: 'Perfil actualizado correctamente' });
-//     } catch (error) {
-//         console.error('Error al actualizar el perfil:', error);
-//         res.status(500).json({ success: false, message: 'Error al actualizar el perfil' });
-//     }
-// });
-
-// router.put('/:id', async (req, res) => {
-//     const id = req.params.id;
-//     const updatedData = req.body;
-
-//     try {
-//         // Eliminar el campo "foto" de updatedData, si existe
-//         delete updatedData.foto;
-
-//         // Manejo de la contraseña (solo actualizar si está presente)
-//         if (updatedData.password) {
-//             const saltRounds = 12;
-//             updatedData.password = await bcrypt.hash(updatedData.password, saltRounds);
-//         } else {
-//             delete updatedData.password; // No incluir contraseña vacía
-//         }
-
-//         // Actualizar el perfil del árbitro
-//         await db.query(
-//             `UPDATE arbitros
-//              SET username = ?, nombre = ?, apellido = ?, domicilio = ?, telefono = ?, email = ?, cuenta = ?, permiso = ?, categoria_id = ?, numero_colegiado = ?, alias = ?, fecha_nacimiento = ?, vehiculo = ? ${updatedData.password ? ', password = ?' : ''
-//             }
-//              WHERE id = ?`,
-//             [
-//                 updatedData.username,
-//                 updatedData.nombre,
-//                 updatedData.apellido,
-//                 updatedData.domicilio,
-//                 updatedData.telefono,
-//                 updatedData.email,
-//                 updatedData.cuenta,
-//                 updatedData.permiso,
-//                 updatedData.categoria_id,
-//                 updatedData.numero_colegiado,
-//                 updatedData.alias,
-//                 updatedData.fecha_nacimiento,
-//                 updatedData.vehiculo,
-//                 ...(updatedData.password ? [updatedData.password] : []),
-//                 id,
-//             ]
-//         );
-
-//         res.json({ success: true, message: 'Perfil actualizado correctamente' });
-//     } catch (error) {
-//         console.error('Error al actualizar el perfil:', error);
-//         res.status(500).json({ success: false, message: 'Error al actualizar el perfil' });
-//     }
-// });
-
 router.put('/:id', async (req, res) => {
     const id = req.params.id;
     const updatedData = req.body;
@@ -623,39 +386,6 @@ router.put('/:id', async (req, res) => {
 });
 
 // Ruta para actualizar la foto de perfil
-// router.put('/:id/foto', async (req, res) => {
-//     const { id } = req.params;
-//     const { foto } = req.body;
-
-//     try {
-//         // Primero, verifica si ya existe una foto para este árbitro
-//         const [rows] = await db.query(
-//             `SELECT id FROM foto_arbitros WHERE arbitro_id = ? LIMIT 1`,
-//             [id]
-//         );
-
-//         if (rows.length > 0) {
-//             // Si existe, realiza un UPDATE
-//             await db.query(
-//                 `UPDATE foto_arbitros SET foto = ? WHERE arbitro_id = ?`,
-//                 [Buffer.from(foto, 'base64'), id]
-//             );
-//             res.json({ success: true, message: 'Foto de perfil actualizada correctamente' });
-//         } else {
-//             // Si no existe, realiza un INSERT
-//             await db.query(
-//                 `INSERT INTO foto_arbitros (arbitro_id, foto) VALUES (?, ?)`,
-//                 [id, Buffer.from(foto, 'base64')]
-//             );
-//             res.json({ success: true, message: 'Foto de perfil guardada correctamente' });
-//         }
-//     } catch (error) {
-//         console.error('Error al guardar la foto de perfil:', error);
-//         res.status(500).json({ success: false, message: 'Error al guardar la foto de perfil' });
-//     }
-// });
-
-// Ruta para actualizar la foto de perfil
 router.put('/:id/foto', async (req, res) => {
     const { id } = req.params;
     const { foto } = req.body;
@@ -687,7 +417,7 @@ router.put('/:id/reset-password', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const saltRounds = 10;
+        const saltRounds = 12;
         const hashedPassword = await bcrypt.hash('12345', saltRounds);
 
         await db.query(
@@ -703,27 +433,6 @@ router.put('/:id/reset-password', async (req, res) => {
 });
 
 // Ruta para obtener la foto de perfil de un árbitro específico
-// router.get('/foto/:arbitroId', async (req, res) => {
-//     const { arbitroId } = req.params;
-
-//     try {
-//         const [rows] = await db.query(
-//             `SELECT foto FROM foto_arbitros WHERE arbitro_id = ? LIMIT 1`,
-//             [arbitroId]
-//         );
-
-//         if (rows.length > 0 && rows[0].foto) {
-//             const fotoBase64 = Buffer.from(rows[0].foto).toString('base64');
-//             res.json({ foto: `data:image/jpeg;base64,${fotoBase64}` });
-//         } else {
-//             res.status(404).json({ error: 'Foto no encontrada' });
-//         }
-//     } catch (error) {
-//         console.error("Error al obtener la foto:", error);
-//         res.status(500).json({ error: 'Error al obtener la foto' });
-//     }
-// });
-
 router.get('/foto/:arbitroId', async (req, res) => {
     const { arbitroId } = req.params;
 
